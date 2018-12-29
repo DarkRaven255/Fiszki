@@ -2,14 +2,14 @@
 
 DbManager::DbManager(const QString &name)
 {
-    user_db = QSqlDatabase::addDatabase("QSQLITE");
-    user_db.setDatabaseName(name);
+    database = QSqlDatabase::addDatabase("QSQLITE");
+    database.setDatabaseName(name);
 
-    if (!user_db.open())
+    if (!database.open())
     {
-       qDebug() << "ERROR: " << user_db.lastError();
+       qDebug() << "ERROR: " << database.lastError();
     }
-    if(!user_db.tables().contains(QLatin1String("users")))
+    if(!database.tables().contains(QLatin1String("users")))
     {
         QSqlQuery query("CREATE TABLE users(id integer primary key, name text, level integer)");
         if(!query.isActive())
@@ -17,19 +17,12 @@ DbManager::DbManager(const QString &name)
             qDebug() << "ERROR: " << query.lastError().text();
         }
     }
-
-}
-
-DbManager::DbManager()
-{
-    questions_db = QSqlDatabase::addDatabase("QSQLITE");
-    questions_db.setDatabaseName("questions.db");
-    if(questions_db.open())
+    if(!database.tables().contains(QLatin1String("questions")))
     {
-        qDebug() << "JESTOK " << questions_db.lastError();
+        qDebug() << "NO QUESTIONS IN DB!" << questions_db.lastError();
+//        QSqlQuery query("CREATE TABLE questions(id integer primary key, question_en text, explanation_en text, question_pl text, explanation_pl text, box integer)");
     }
 
-    QSqlQuery query("CREATE TABLE users(id integer primary key, name text, level integer)");
 }
 
 DbManager::~DbManager()
@@ -109,20 +102,47 @@ QStringList DbManager::displayAllUsers()
     QStringList userlist;
     QSqlQuery query("SELECT * FROM users");
     int idName = query.record().indexOf("name");
-    int idLevel = query.record().indexOf("level");
+//    int idLevel = query.record().indexOf("level");
     while (query.next())
     {
-       qDebug()<<query.value(idName).toString()<<"    "<<query.value(idLevel).toString();
+//       qDebug()<<query.value(idName).toString()<<"    "<<query.value(idLevel).toString();
        userlist += (query.value(idName).toString());
     }
 
     return userlist;
 }
 
-void DbManager::closeDB()
+void DbManager::closeUserDB()
 {
-    user_db.close();
-    qDebug() << "UserDB closed";
+    database.close();
+    //QSqlDatabase::removeDatabase(qt_sql_default_connection);
+    qDebug() << "DB closed";
 }
+
+void DbManager::returnQuestion(QString &setTopic, int &noQuestion, QString &q_en, QString &e_en, QString &q_pl)
+{
+        QSqlQuery query;
+        query.prepare("SELECT * FROM questions WHERE topic = (:setTopic)");
+        query.bindValue(":setTopic", setTopic);
+        query.exec();
+
+    //    if(query.last())
+    //    {
+    //        noQuestions = query.at() + 1;
+    //        query.first();
+    //    }
+    //    qDebug() << "No. questions:" << noQuestions;
+
+        int idQuestionEN = query.record().indexOf("question_en");
+        int idExplanationEN = query.record().indexOf("explanation_en");
+        int idQuestionPL = query.record().indexOf("question_pl");
+
+        query.seek(noQuestion);
+
+        q_en=query.value(idQuestionEN).toString();
+        e_en=query.value(idExplanationEN).toString();
+        q_pl=query.value(idQuestionPL).toString();
+}
+
 
 

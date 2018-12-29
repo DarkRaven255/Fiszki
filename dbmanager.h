@@ -18,9 +18,10 @@ public:
     bool removeAllUsers();
     bool removeUser(const QString& name);
     QStringList displayAllUsers();
-    void closeDB();
+    void closeUserDB();
+    void returnQuestion(QString &setTopic, int &noQuestion, QString &q_en, QString &e_en, QString &q_pl);
 private:
-    QSqlDatabase user_db;
+    QSqlDatabase database;
     QSqlDatabase questions_db;
 };
 

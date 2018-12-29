@@ -24,6 +24,11 @@ private slots:
 
 private:
     Ui::FiszkiMainWindow *ui;
+    DbManager *dbmanager = new DbManager("database.db");
+    QString q_en;
+    QString e_en;
+    QString q_pl;
+    int noQ;
 };
 
 #endif // FISZKIMAINWINDOW_H

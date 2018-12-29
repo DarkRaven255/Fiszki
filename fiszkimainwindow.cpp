@@ -2,8 +2,7 @@
 #include "ui_fiszkimainwindow.h"
 #include "userlistwindow.h"
 #include "addnewuserwindow.h"
-
-DbManager *dbmanager = new DbManager("users.db");
+#include "session.h"
 
 FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,7 +21,7 @@ FiszkiMainWindow::~FiszkiMainWindow()
 
 void FiszkiMainWindow::on_checkBtn_clicked()
 {
-    if(ui->enterAnwserLineEdit->text()=="pies")
+    if(ui->enterAnwserLineEdit->text()==q_pl)
     {
         ui->progressBar->setValue(10);
     }
@@ -30,14 +29,21 @@ void FiszkiMainWindow::on_checkBtn_clicked()
 
 void FiszkiMainWindow::on_startBtn_clicked()
 {
+    QString xD="zakupy";
     if(ui->availableUsersComboBox->count()==0)
     {
         AddNewUserWindow addnewuserwindow;
         addnewuserwindow.exec();
     }
     ui->stackedWidget->setCurrentIndex(1);
-    dbmanager->closeDB();
-    delete dbmanager;
+    Session session = *new Session(ui->availableUsersComboBox->currentText());
+
+    ui->activeUser->setText(ui->availableUsersComboBox->currentText());
+    ui->questionTextBrowser->setFontPointSize(48);
+    ui->questionTextBrowser->setAlignment(Qt::AlignRight);
+    dbmanager->returnQuestion(xD,noQ,q_en,e_en,q_pl);
+    ui->questionTextBrowser->setText(q_en);
+    ui->questionTextBrowser_2->setText(e_en);
 }
 
 void FiszkiMainWindow::on_exitBtn_clicked()
