@@ -4,8 +4,6 @@
 #include "addnewuserwindow.h"
 
 QString xD="";
-    int i=0;
-
 
 FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -26,6 +24,7 @@ FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
 FiszkiMainWindow::~FiszkiMainWindow()
 {
     delete ui;
+    dbmanager->closeUserDB();
 }
 
 void FiszkiMainWindow::on_checkBtn_clicked()
@@ -82,7 +81,7 @@ void FiszkiMainWindow::Session()
 
 void FiszkiMainWindow::Learn()
 {
-    dbmanager->returnQuestion(i,q_en,e_en,q_pl,e_pl);
+    dbmanager->returnQuestion(counterOfQuestions,q_en,e_en,q_pl,e_pl);
 
     ui->questionEnTextBrowser->setText(q_en);
     ui->explanationEnTextBrowser->setText(e_en);
@@ -90,15 +89,19 @@ void FiszkiMainWindow::Learn()
     ui->questionPlTextBrowser->setText(q_pl);
     ui->explanationPlTextBrowser->setText(e_pl);
 
-    i++;
+    counterOfQuestions++;
 }
 
 void FiszkiMainWindow::on_learnBtn_clicked()
 {
     ui->activeUser_2->setText(ui->availableUsersComboBox->currentText());
     ui->stackedWidget->setCurrentIndex(1);
-    i=0;
+
+    counterOfQuestions=0;
     on_nextFlashcardBtn_clicked();
+
+    ui->nextFlashcardBtn->setEnabled(true);
+    ui->nextFlashcardBtn->setText("Następna fiszka");
 }
 
 void FiszkiMainWindow::on_endLearnBtn_clicked()
@@ -108,7 +111,7 @@ void FiszkiMainWindow::on_endLearnBtn_clicked()
 
 void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
 {
-    if(i<numberOfQuestions)
+    if(counterOfQuestions<numberOfQuestions)
     {
         Learn();
     }
@@ -117,4 +120,9 @@ void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
         ui->nextFlashcardBtn->setEnabled(false);
         ui->nextFlashcardBtn->setText("Brak fiszek");
     }
+}
+
+void FiszkiMainWindow::on_rememberBtn_clicked()
+{
+    dbmanager->markAsKnown(q_en);
 }

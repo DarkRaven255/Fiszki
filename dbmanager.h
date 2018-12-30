@@ -21,10 +21,10 @@ public:
     void closeUserDB();
     void returnQuestion(QString &setTopic, int &noQuestion, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
     void returnQuestion(int &noQuestion, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
+    void markAsKnown(QString &q_en);
     int countQuestions();
 private:
     QSqlDatabase database;
-    QSqlDatabase questions_db;
 };
 
 #endif // DBMANAGER_H

@@ -19,7 +19,7 @@ DbManager::DbManager(const QString &name)
     }
     if(!database.tables().contains(QLatin1String("questions")))
     {
-        qDebug() << "NO QUESTIONS IN DB!" << questions_db.lastError();
+        qDebug() << "NO QUESTIONS IN DB!";
 //        QSqlQuery query("CREATE TABLE questions(id integer primary key, question_en text, explanation_en text, question_pl text, explanation_pl text, box integer)");
     }
 
@@ -121,29 +121,11 @@ void DbManager::closeUserDB()
 
 void DbManager::returnQuestion(QString &setTopic, int &noQuestion, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
 {
-        QSqlQuery query;
-        query.prepare("SELECT * FROM questions WHERE topic = (:setTopic)");
-        query.bindValue(":setTopic", setTopic);
-        query.exec();
-
-        int idQuestionEN = query.record().indexOf("question_en");
-        int idExplanationEN = query.record().indexOf("explanation_en");
-        int idQuestionPL = query.record().indexOf("question_pl");
-        int idExplanationPL = query.record().indexOf("explanation_pl");
-
-        query.seek(noQuestion);
-
-        q_en=query.value(idQuestionEN).toString();
-        e_en=query.value(idExplanationEN).toString();
-        q_pl=query.value(idQuestionPL).toString();
-        e_pl=query.value(idExplanationPL).toString();
-}
-
-void DbManager::returnQuestion(int &noQuestion, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
-{
     QSqlQuery query;
-    query.prepare("SELECT * FROM questions WHERE box = -1");
+    query.prepare("SELECT * FROM questions WHERE topic = (:setTopic)");
+    query.bindValue(":setTopic", setTopic);
     query.exec();
+    query.first();
 
     int idQuestionEN = query.record().indexOf("question_en");
     int idExplanationEN = query.record().indexOf("explanation_en");
@@ -156,6 +138,34 @@ void DbManager::returnQuestion(int &noQuestion, QString &q_en, QString &e_en, QS
     e_en=query.value(idExplanationEN).toString();
     q_pl=query.value(idQuestionPL).toString();
     e_pl=query.value(idExplanationPL).toString();
+}
+
+void DbManager::returnQuestion(int &noQuestion, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM questions WHERE box = -1");
+    query.exec();
+    query.first();
+
+    int idQuestionEN = query.record().indexOf("question_en");
+    int idExplanationEN = query.record().indexOf("explanation_en");
+    int idQuestionPL = query.record().indexOf("question_pl");
+    int idExplanationPL = query.record().indexOf("explanation_pl");
+
+    query.seek(noQuestion);
+
+    q_en=query.value(idQuestionEN).toString();
+    e_en=query.value(idExplanationEN).toString();
+    q_pl=query.value(idQuestionPL).toString();
+    e_pl=query.value(idExplanationPL).toString();
+}
+
+void DbManager::markAsKnown(QString &q_en)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE questions SET box = 0 WHERE question_en = (:q_en)");
+    query.bindValue(":q_en", q_en);
+    query.exec();
 }
 
 int DbManager::countQuestions()

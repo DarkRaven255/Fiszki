@@ -25,6 +25,8 @@ private slots:
     void on_endLearnBtn_clicked();
     void on_nextFlashcardBtn_clicked();
 
+    void on_rememberBtn_clicked();
+
 private:
     Ui::FiszkiMainWindow *ui;
     DbManager *dbmanager = new DbManager("database.db");
@@ -39,6 +41,7 @@ private:
     QString e_pl;
 
     int numberOfQuestions;
+    int counterOfQuestions;
 };
 
 #endif // FISZKIMAINWINDOW_H
