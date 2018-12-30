@@ -2,16 +2,25 @@
 #include "ui_fiszkimainwindow.h"
 #include "userlistwindow.h"
 #include "addnewuserwindow.h"
-#include "session.h"
+
+QString xD="";
+    int i=0;
+
 
 FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::FiszkiMainWindow)
+    ui(new Ui::FiszkiMainWindow),
+    numberOfQuestions(dbmanager->countQuestions())
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
     ui->availableUsersComboBox->addItems(dbmanager->displayAllUsers());
     connect(ui->enterAnwserLineEdit,SIGNAL(returnPressed()),ui->checkBtn,SIGNAL(clicked()));
+
+    ui->questionEnTextBrowser->setFontPointSize(48);
+    ui->questionPlTextBrowser->setFontPointSize(48);
+    qDebug()<<"ilsoc pytan:"<<numberOfQuestions;
+
 }
 
 FiszkiMainWindow::~FiszkiMainWindow()
@@ -29,21 +38,14 @@ void FiszkiMainWindow::on_checkBtn_clicked()
 
 void FiszkiMainWindow::on_startBtn_clicked()
 {
-    QString xD="zakupy";
     if(ui->availableUsersComboBox->count()==0)
     {
         AddNewUserWindow addnewuserwindow;
         addnewuserwindow.exec();
     }
-    ui->stackedWidget->setCurrentIndex(1);
-    Session session = *new Session(ui->availableUsersComboBox->currentText());
-
     ui->activeUser->setText(ui->availableUsersComboBox->currentText());
-    ui->questionTextBrowser->setFontPointSize(48);
-    ui->questionTextBrowser->setAlignment(Qt::AlignRight);
-    dbmanager->returnQuestion(xD,noQ,q_en,e_en,q_pl);
-    ui->questionTextBrowser->setText(q_en);
-    ui->questionTextBrowser_2->setText(e_en);
+    ui->stackedWidget->setCurrentIndex(2);
+    Session();
 }
 
 void FiszkiMainWindow::on_exitBtn_clicked()
@@ -59,5 +61,60 @@ void FiszkiMainWindow::on_userListBtn_clicked()
     {
         ui->availableUsersComboBox->clear();
         ui->availableUsersComboBox->addItems(dbmanager->displayAllUsers());
+    }
+}
+
+void FiszkiMainWindow::Session()
+{
+    int i=0;
+
+    while(i<10)
+    {
+
+        ui->questionTextBrowser->setFontPointSize(48);
+        ui->questionTextBrowser->setAlignment(Qt::AlignRight);
+        dbmanager->returnQuestion(xD,i,q_en,e_en,q_pl,e_pl);
+        ui->questionTextBrowser->setText(q_en);
+        ui->questionTextBrowser_2->setText(e_en);
+        i++;
+    }
+}
+
+void FiszkiMainWindow::Learn()
+{
+    dbmanager->returnQuestion(i,q_en,e_en,q_pl,e_pl);
+
+    ui->questionEnTextBrowser->setText(q_en);
+    ui->explanationEnTextBrowser->setText(e_en);
+
+    ui->questionPlTextBrowser->setText(q_pl);
+    ui->explanationPlTextBrowser->setText(e_pl);
+
+    i++;
+}
+
+void FiszkiMainWindow::on_learnBtn_clicked()
+{
+    ui->activeUser_2->setText(ui->availableUsersComboBox->currentText());
+    ui->stackedWidget->setCurrentIndex(1);
+    i=0;
+    on_nextFlashcardBtn_clicked();
+}
+
+void FiszkiMainWindow::on_endLearnBtn_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
+{
+    if(i<numberOfQuestions)
+    {
+        Learn();
+    }
+    else
+    {
+        ui->nextFlashcardBtn->setEnabled(false);
+        ui->nextFlashcardBtn->setText("Brak fiszek");
     }
 }

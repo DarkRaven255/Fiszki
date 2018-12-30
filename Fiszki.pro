@@ -30,16 +30,14 @@ SOURCES += \
     userlistwindow.cpp \
     dbmanager.cpp \
     addnewuserwindow.cpp \
-    errorcreatinguserwindow.cpp \
-    session.cpp
+    errorcreatinguserwindow.cpp
 
 HEADERS += \
         fiszkimainwindow.h \
     userlistwindow.h \
     dbmanager.h \
     addnewuserwindow.h \
-    errorcreatinguserwindow.h \
-    session.h
+    errorcreatinguserwindow.h
 
 FORMS += \
         fiszkimainwindow.ui \

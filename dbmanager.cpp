@@ -119,29 +119,57 @@ void DbManager::closeUserDB()
     qDebug() << "DB closed";
 }
 
-void DbManager::returnQuestion(QString &setTopic, int &noQuestion, QString &q_en, QString &e_en, QString &q_pl)
+void DbManager::returnQuestion(QString &setTopic, int &noQuestion, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
 {
         QSqlQuery query;
         query.prepare("SELECT * FROM questions WHERE topic = (:setTopic)");
         query.bindValue(":setTopic", setTopic);
         query.exec();
 
-    //    if(query.last())
-    //    {
-    //        noQuestions = query.at() + 1;
-    //        query.first();
-    //    }
-    //    qDebug() << "No. questions:" << noQuestions;
-
         int idQuestionEN = query.record().indexOf("question_en");
         int idExplanationEN = query.record().indexOf("explanation_en");
         int idQuestionPL = query.record().indexOf("question_pl");
+        int idExplanationPL = query.record().indexOf("explanation_pl");
 
         query.seek(noQuestion);
 
         q_en=query.value(idQuestionEN).toString();
         e_en=query.value(idExplanationEN).toString();
         q_pl=query.value(idQuestionPL).toString();
+        e_pl=query.value(idExplanationPL).toString();
+}
+
+void DbManager::returnQuestion(int &noQuestion, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM questions WHERE box = -1");
+    query.exec();
+
+    int idQuestionEN = query.record().indexOf("question_en");
+    int idExplanationEN = query.record().indexOf("explanation_en");
+    int idQuestionPL = query.record().indexOf("question_pl");
+    int idExplanationPL = query.record().indexOf("explanation_pl");
+
+    query.seek(noQuestion);
+
+    q_en=query.value(idQuestionEN).toString();
+    e_en=query.value(idExplanationEN).toString();
+    q_pl=query.value(idQuestionPL).toString();
+    e_pl=query.value(idExplanationPL).toString();
+}
+
+int DbManager::countQuestions()
+{
+    QSqlQuery query;
+    int noQuestions=0;
+    query.prepare("SELECT * FROM questions WHERE box = -1");
+    query.exec();
+    if(query.last())
+    {
+        noQuestions = query.at() + 1;
+        query.first();
+    }
+    return noQuestions;
 }
 
 
