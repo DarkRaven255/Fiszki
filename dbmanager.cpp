@@ -115,14 +115,13 @@ QStringList DbManager::displayAllUsers()
 void DbManager::closeUserDB()
 {
     database.close();
-    //QSqlDatabase::removeDatabase(qt_sql_default_connection);
     qDebug() << "DB closed";
 }
 
 void DbManager::returnQuestion(QString &setTopic, int &noQuestion, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
 {
     QSqlQuery query;
-    query.prepare("SELECT * FROM questions WHERE topic = (:setTopic)");
+    query.prepare("SELECT * FROM questions WHERE topic = (:setTopic) AND box IS NOT -1");
     query.bindValue(":setTopic", setTopic);
     query.exec();
     query.first();
@@ -182,5 +181,16 @@ int DbManager::countQuestions()
     return noQuestions;
 }
 
-
-
+int DbManager::countAllQuestions()
+{
+    QSqlQuery query;
+    int noQuestions=0;
+    query.prepare("SELECT * FROM questions");
+    query.exec();
+    if(query.last())
+    {
+        noQuestions = query.at() + 1;
+        query.first();
+    }
+    return noQuestions;
+}

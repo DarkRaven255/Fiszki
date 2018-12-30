@@ -23,6 +23,7 @@ public:
     void returnQuestion(int &noQuestion, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
     void markAsKnown(QString &q_en);
     int countQuestions();
+    int countAllQuestions();
 private:
     QSqlDatabase database;
 };
