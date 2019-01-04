@@ -23,18 +23,22 @@ private slots:
     void on_learnBtn_clicked();
     void on_endLearnBtn_clicked();
     void on_nextFlashcardBtn_clicked();
+    void on_backFlashcardBtn_clicked();
     void on_rememberBtn_clicked();
     void on_stopBtn_clicked();
     void on_testBtn_clicked();
     void on_availableUsersComboBox_currentIndexChanged(const QString &arg1);
+
+
 
 private:
     Ui::FiszkiMainWindow *ui;
     DbManager *dbmanager = new DbManager("database.db");
 
     void Test();
-    void Learn();
+    void LoadQuestion(int i);
     void RecalculateQuestions();
+    void LockBtns();
 
     QString user;
     QString q_en;
@@ -45,6 +49,8 @@ private:
     int numberOfQuestions;
     int counterOfQuestions;
     int knownQuestions;
+
+    bool lastBtn; //1-next 0-back
 };
 
 #endif // FISZKIMAINWINDOW_H

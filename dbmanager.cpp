@@ -49,7 +49,6 @@ bool DbManager::addUser(const QString &name)
         }
     }
     return false;
-
 }
 
 bool DbManager::findUser(const QString &name)
@@ -108,7 +107,6 @@ QStringList DbManager::displayAllUsers()
 //       qDebug()<<query.value(idName).toString()<<"    "<<query.value(idLevel).toString();
        userlist += (query.value(idName).toString());
     }
-
     return userlist;
 }
 
@@ -175,7 +173,7 @@ int DbManager::countQuestions()
     query.exec();
     if(query.last())
     {
-        noQuestions = query.at() + 1;
+        noQuestions = query.at()+1;
         query.first();
     }
     return noQuestions;
@@ -189,7 +187,7 @@ int DbManager::countAllQuestions()
     query.exec();
     if(query.last())
     {
-        noQuestions = query.at() + 1;
+        noQuestions = query.at()+1;
         query.first();
     }
     return noQuestions;

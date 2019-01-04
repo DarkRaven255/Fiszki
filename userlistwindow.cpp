@@ -46,6 +46,9 @@ void UserListWindow::refresh()
 
 void UserListWindow::on_deleteUser_clicked()
 {
-    dbmanager->removeUser(ui->listWidget->currentItem()->text());
-    refresh();
+    if(ui->listWidget->currentItem())
+    {
+        dbmanager->removeUser(ui->listWidget->currentItem()->text());
+        refresh();
+    }
 }
