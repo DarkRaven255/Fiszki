@@ -35,21 +35,24 @@ private:
     Ui::FiszkiMainWindow *ui;
     DbManager *dbmanager = new DbManager("database.db");
 
-    void Test();
+    void Test(int i);
     void LoadQuestion(int i, int noBox);
     void RecalculateQuestions();
     void LockBtns();
     void ChceckUserList();
 
     QString user;
+
+    int q_id;
     QString q_en;
     QString e_en;
     QString q_pl;
     QString e_pl;
 
     int unknownQuestions;
-    int learnQuestions;
     int testQuestions;
+    int learnQuestions;
+    int testCounterQuestions;
 };
 
 #endif // FISZKIMAINWINDOW_H

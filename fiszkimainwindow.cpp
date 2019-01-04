@@ -7,7 +7,9 @@ FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FiszkiMainWindow),
     unknownQuestions(dbmanager->countQuestions(-1)),
-    testQuestions(dbmanager->countQuestions(6))
+    testQuestions(dbmanager->countQuestions(6)),
+    learnQuestions(0),
+    testCounterQuestions(0)
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
@@ -73,7 +75,7 @@ void FiszkiMainWindow::on_learnBtn_clicked()
 void FiszkiMainWindow::on_testBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
-    Test();
+    Test(0);
 }
 
 
@@ -122,7 +124,7 @@ void FiszkiMainWindow::LoadQuestion(int i, int noBox)
     }
     else
     {
-        dbmanager->returnQuestion(learnQuestions,noBox,q_en,e_en,q_pl,e_pl);
+        dbmanager->returnQuestion(learnQuestions,noBox,q_id,q_en,e_en,q_pl,e_pl);
 
         ui->questionEnTextBrowser->setText(q_en);
         ui->explanationEnTextBrowser->setText(e_en);
@@ -135,6 +137,7 @@ void FiszkiMainWindow::LoadQuestion(int i, int noBox)
 void FiszkiMainWindow::RecalculateQuestions()
 {
     unknownQuestions=dbmanager->countQuestions(-1);
+    testQuestions=dbmanager->countQuestions(6);
 }
 
 void FiszkiMainWindow::LockBtns()
@@ -169,7 +172,7 @@ void FiszkiMainWindow::on_backFlashcardBtn_clicked()
 
 void FiszkiMainWindow::on_rememberBtn_clicked()
 {
-    dbmanager->markAsKnown(q_en);
+    dbmanager->setBox(q_id);
     RecalculateQuestions();
     LoadQuestion(0,-1);
 }
@@ -180,10 +183,11 @@ void FiszkiMainWindow::on_stopBtn_clicked()
 }
 
 /////////////////////////////////////////TEST PAGE
-void FiszkiMainWindow::Test()
+void FiszkiMainWindow::Test(int i)
 {
     int noBox=6;
-    dbmanager->returnQuestion(learnQuestions,noBox,q_en,e_en,q_pl,e_pl);
+    testCounterQuestions+=i;
+    dbmanager->returnQuestion(testCounterQuestions,noBox,q_id,q_en,e_en,q_pl,e_pl);
 
     ui->questionTextBrowser->setText(q_en);
     ui->explanationTextBrowser->setText(e_en);
@@ -194,6 +198,7 @@ void FiszkiMainWindow::on_checkBtn_clicked()
 {
     if(ui->enterAnwserLineEdit->text()==q_pl)
     {
-        ui->progressBar->setValue(10);
+        ui->progressBar->setValue(testCounterQuestions%testQuestions);
     }
+    Test(1);
 }

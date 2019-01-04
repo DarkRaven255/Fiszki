@@ -116,28 +116,7 @@ void DbManager::closeUserDB()
     qDebug() << "DB closed";
 }
 
-//void DbManager::returnQuestion(QString &setTopic, int &noQuestion, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
-//{
-//    QSqlQuery query;
-//    query.prepare("SELECT * FROM questions WHERE topic = (:setTopic) AND box IS NOT -1");
-//    query.bindValue(":setTopic", setTopic);
-//    query.exec();
-//    query.first();
-
-//    int idQuestionEN = query.record().indexOf("question_en");
-//    int idExplanationEN = query.record().indexOf("explanation_en");
-//    int idQuestionPL = query.record().indexOf("question_pl");
-//    int idExplanationPL = query.record().indexOf("explanation_pl");
-
-//    query.seek(noQuestion);
-
-//    q_en=query.value(idQuestionEN).toString();
-//    e_en=query.value(idExplanationEN).toString();
-//    q_pl=query.value(idQuestionPL).toString();
-//    e_pl=query.value(idExplanationPL).toString();
-//}
-
-void DbManager::returnQuestion(int &noQuestion, int &noBox, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
+void DbManager::returnQuestion(int &noQuestion, int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
 {
     QSqlQuery query;
 
@@ -156,6 +135,7 @@ void DbManager::returnQuestion(int &noQuestion, int &noBox, QString &q_en, QStri
     query.exec();
     query.first();
 
+    int idQuestion=query.record().indexOf("id");
     int idQuestionEN = query.record().indexOf("question_en");
     int idExplanationEN = query.record().indexOf("explanation_en");
     int idQuestionPL = query.record().indexOf("question_pl");
@@ -163,17 +143,18 @@ void DbManager::returnQuestion(int &noQuestion, int &noBox, QString &q_en, QStri
 
     query.seek(noQuestion);
 
+    q_id=query.value(idQuestion).toInt();
     q_en=query.value(idQuestionEN).toString();
     e_en=query.value(idExplanationEN).toString();
     q_pl=query.value(idQuestionPL).toString();
     e_pl=query.value(idExplanationPL).toString();
 }
 
-void DbManager::markAsKnown(QString &q_en)
+void DbManager::setBox(int &q_id)
 {
     QSqlQuery query;
-    query.prepare("UPDATE questions SET box = 0 WHERE question_en = (:q_en)");
-    query.bindValue(":q_en", q_en);
+    query.prepare("UPDATE questions SET box = box+1 WHERE id = (:q_id)");
+    query.bindValue(":q_id", q_id);
     query.exec();
 }
 

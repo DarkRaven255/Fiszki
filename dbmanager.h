@@ -19,8 +19,8 @@ public:
     bool removeUser(const QString& name);
     QStringList displayAllUsers();
     void closeUserDB();
-    void returnQuestion(int &noQuestion, int &noBox, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
-    void markAsKnown(QString &q_en);
+    void returnQuestion(int &noQuestion, int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
+    void setBox(int &q_id);
     int countQuestions(int noBox);
 
 private:
