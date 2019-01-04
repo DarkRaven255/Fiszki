@@ -36,7 +36,7 @@ private:
     DbManager *dbmanager = new DbManager("database.db");
 
     void Test();
-    void LoadQuestion(int i);
+    void LoadQuestion(int i, int noBox);
     void RecalculateQuestions();
     void LockBtns();
 
@@ -49,8 +49,6 @@ private:
     int numberOfQuestions;
     int counterOfQuestions;
     int knownQuestions;
-
-    bool lastBtn; //1-next 0-back
 };
 
 #endif // FISZKIMAINWINDOW_H

@@ -3,13 +3,10 @@
 #include "userlistwindow.h"
 #include "addnewuserwindow.h"
 
-QString xD="";
-
 FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FiszkiMainWindow),
-    numberOfQuestions(dbmanager->countQuestions()),
-    lastBtn(1)
+    numberOfQuestions(dbmanager->countQuestions())
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
@@ -23,7 +20,7 @@ FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     ui->explanationPlTextBrowser->setFontPointSize(10);
     ui->explanationTextBrowser->setFontPointSize(10);
 
-    qDebug()<<"Liczba pytan"<<numberOfQuestions;
+    qDebug()<<"Liczba pytan:"<<numberOfQuestions;
 }
 
 FiszkiMainWindow::~FiszkiMainWindow()
@@ -31,7 +28,6 @@ FiszkiMainWindow::~FiszkiMainWindow()
     delete ui;
     dbmanager->closeUserDB();
 }
-
 
 /////////////////////////////////////////////MAIN MENU PAGE
 void FiszkiMainWindow::on_exitBtn_clicked()
@@ -64,7 +60,7 @@ void FiszkiMainWindow::on_learnBtn_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 
     counterOfQuestions=0;
-    LoadQuestion(0);
+    LoadQuestion(0,-1);
 
     if(numberOfQuestions>0) ui->nextFlashcardBtn->setEnabled(true);
     else LockBtns();
@@ -84,7 +80,7 @@ void FiszkiMainWindow::on_testBtn_clicked()
 
 
 ////////////////////////////////////LEARN PAGE
-void FiszkiMainWindow::LoadQuestion(int i)
+void FiszkiMainWindow::LoadQuestion(int i, int noBox)
 {
     counterOfQuestions+=i;
     if(counterOfQuestions==numberOfQuestions-1)
@@ -118,7 +114,7 @@ void FiszkiMainWindow::LoadQuestion(int i)
     }
     else
     {
-        dbmanager->returnQuestion(counterOfQuestions,q_en,e_en,q_pl,e_pl);
+        dbmanager->returnQuestion(counterOfQuestions,noBox,q_en,e_en,q_pl,e_pl);
 
         ui->questionEnTextBrowser->setText(q_en);
         ui->explanationEnTextBrowser->setText(e_en);
@@ -151,14 +147,14 @@ void FiszkiMainWindow::on_endLearnBtn_clicked()
 
 void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
 {
-    LoadQuestion(1);
+    LoadQuestion(1,-1);
     if(!ui->backFlashcardBtn->isEnabled())ui->backFlashcardBtn->setEnabled(true);
 }
 
 
 void FiszkiMainWindow::on_backFlashcardBtn_clicked()
 {
-    LoadQuestion(-1);
+    LoadQuestion(-1,-1);
     if(!ui->nextFlashcardBtn->isEnabled())ui->nextFlashcardBtn->setEnabled(true);
 }
 
@@ -167,7 +163,7 @@ void FiszkiMainWindow::on_rememberBtn_clicked()
 {
     dbmanager->markAsKnown(q_en);
     RecalculateQuestions();
-    LoadQuestion(0);
+    LoadQuestion(0,-1);
 }
 
 void FiszkiMainWindow::on_stopBtn_clicked()
