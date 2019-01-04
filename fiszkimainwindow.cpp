@@ -187,8 +187,12 @@ void FiszkiMainWindow::Test(int i)
 {
     int noBox=6;
     testCounterQuestions+=i;
+    if(testCounterQuestions==testQuestions-1)
+    {
+        testQuestions=testQuestions-1;
+        ui->checkBtn->setEnabled(false);
+    }
     dbmanager->returnQuestion(testCounterQuestions,noBox,q_id,q_en,e_en,q_pl,e_pl);
-
     ui->questionTextBrowser->setText(q_en);
     ui->explanationTextBrowser->setText(e_en);
 }
@@ -199,6 +203,8 @@ void FiszkiMainWindow::on_checkBtn_clicked()
     if(ui->enterAnwserLineEdit->text()==q_pl)
     {
         ui->progressBar->setValue(testCounterQuestions%testQuestions);
+        dbmanager->setBox(q_id);
+        ui->enterAnwserLineEdit->clear();
     }
     Test(1);
 }
