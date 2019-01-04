@@ -6,7 +6,8 @@
 FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FiszkiMainWindow),
-    numberOfQuestions(dbmanager->countQuestions())
+    unknownQuestions(dbmanager->countQuestions(-1)),
+    testQuestions(dbmanager->countQuestions(6))
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
@@ -20,7 +21,9 @@ FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     ui->explanationPlTextBrowser->setFontPointSize(10);
     ui->explanationTextBrowser->setFontPointSize(10);
 
-    qDebug()<<"Liczba pytan:"<<numberOfQuestions;
+    qDebug()<<"Liczba pytan:"<<testQuestions+unknownQuestions;
+    qDebug()<<"Liczba nieznanych pytan:"<<unknownQuestions;
+    qDebug()<<"Liczba znanych pytan:"<<testQuestions;
 }
 
 FiszkiMainWindow::~FiszkiMainWindow()
@@ -59,62 +62,67 @@ void FiszkiMainWindow::on_learnBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
 
-    counterOfQuestions=0;
+    learnQuestions=0;
     LoadQuestion(0,-1);
 
-    if(numberOfQuestions>0) ui->nextFlashcardBtn->setEnabled(true);
+    if(unknownQuestions>0) ui->nextFlashcardBtn->setEnabled(true);
     else LockBtns();
 }
 
 
 void FiszkiMainWindow::on_testBtn_clicked()
 {
+    ui->stackedWidget->setCurrentIndex(2);
+    Test();
+}
+
+
+void FiszkiMainWindow::ChceckUserList()
+{
     if(ui->availableUsersComboBox->count()==0)
     {
         AddNewUserWindow addnewuserwindow;
         addnewuserwindow.exec();
     }
-    ui->stackedWidget->setCurrentIndex(2);
-    Test();
 }
 
 
 ////////////////////////////////////LEARN PAGE
 void FiszkiMainWindow::LoadQuestion(int i, int noBox)
 {
-    counterOfQuestions+=i;
-    if(counterOfQuestions==numberOfQuestions-1)
+    learnQuestions+=i;
+    if(learnQuestions==unknownQuestions-1)
     {
         ui->nextFlashcardBtn->setEnabled(false);
     }
-    else if(counterOfQuestions==0)
+    else if(learnQuestions==0)
     {
         ui->backFlashcardBtn->setEnabled(false);
     }
-    else if(counterOfQuestions>numberOfQuestions-1)
+    else if(learnQuestions>unknownQuestions-1)
     {
-        counterOfQuestions=numberOfQuestions-1;
+        learnQuestions=unknownQuestions-1;
         ui->nextFlashcardBtn->setEnabled(false);
     }
-    else if(counterOfQuestions<0)
+    else if(learnQuestions<0)
     {
-        counterOfQuestions=0;
+        learnQuestions=0;
         ui->backFlashcardBtn->setEnabled(false);
     }
 
-    if (numberOfQuestions==1)
+    if (unknownQuestions==1)
     {
         ui->backFlashcardBtn->setEnabled(false);
         ui->nextFlashcardBtn->setEnabled(false);
     }
 
-    if(numberOfQuestions==0)
+    if(unknownQuestions==0)
     {
         LockBtns();
     }
     else
     {
-        dbmanager->returnQuestion(counterOfQuestions,noBox,q_en,e_en,q_pl,e_pl);
+        dbmanager->returnQuestion(learnQuestions,noBox,q_en,e_en,q_pl,e_pl);
 
         ui->questionEnTextBrowser->setText(q_en);
         ui->explanationEnTextBrowser->setText(e_en);
@@ -126,7 +134,7 @@ void FiszkiMainWindow::LoadQuestion(int i, int noBox)
 
 void FiszkiMainWindow::RecalculateQuestions()
 {
-    numberOfQuestions=dbmanager->countQuestions();
+    unknownQuestions=dbmanager->countQuestions(-1);
 }
 
 void FiszkiMainWindow::LockBtns()
@@ -174,7 +182,11 @@ void FiszkiMainWindow::on_stopBtn_clicked()
 /////////////////////////////////////////TEST PAGE
 void FiszkiMainWindow::Test()
 {
-    //ui->questionTextBrowser->
+    int noBox=6;
+    dbmanager->returnQuestion(learnQuestions,noBox,q_en,e_en,q_pl,e_pl);
+
+    ui->questionTextBrowser->setText(q_en);
+    ui->explanationTextBrowser->setText(e_en);
 }
 
 

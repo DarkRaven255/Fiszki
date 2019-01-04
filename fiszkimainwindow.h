@@ -39,6 +39,7 @@ private:
     void LoadQuestion(int i, int noBox);
     void RecalculateQuestions();
     void LockBtns();
+    void ChceckUserList();
 
     QString user;
     QString q_en;
@@ -46,9 +47,9 @@ private:
     QString q_pl;
     QString e_pl;
 
-    int numberOfQuestions;
-    int counterOfQuestions;
-    int knownQuestions;
+    int unknownQuestions;
+    int learnQuestions;
+    int testQuestions;
 };
 
 #endif // FISZKIMAINWINDOW_H

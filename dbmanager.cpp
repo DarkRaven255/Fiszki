@@ -140,8 +140,19 @@ void DbManager::closeUserDB()
 void DbManager::returnQuestion(int &noQuestion, int &noBox, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
 {
     QSqlQuery query;
-    query.prepare("SELECT * FROM questions WHERE box = (:box)");
-    query.bindValue(":box",noBox);
+
+    switch(noBox)
+    {
+    case -1: case 0: case 1: case 2: case 3: case 4: case 5:
+        query.prepare("SELECT * FROM questions WHERE box is (:box)");
+        query.bindValue(":box",noBox);
+        break;
+    case 6:
+        query.prepare("SELECT * FROM questions WHERE box is not (:box)");
+        query.bindValue(":box",-1);
+        break;
+    }
+
     query.exec();
     query.first();
 
@@ -166,25 +177,23 @@ void DbManager::markAsKnown(QString &q_en)
     query.exec();
 }
 
-int DbManager::countQuestions()
+int DbManager::countQuestions(int noBox)
 {
     QSqlQuery query;
     int noQuestions=0;
-    query.prepare("SELECT * FROM questions WHERE box = -1");
-    query.exec();
-    if(query.last())
-    {
-        noQuestions = query.at()+1;
-        query.first();
-    }
-    return noQuestions;
-}
 
-int DbManager::countAllQuestions()
-{
-    QSqlQuery query;
-    int noQuestions=0;
-    query.prepare("SELECT * FROM questions");
+    switch(noBox)
+    {
+    case -1: case 0: case 1: case 2: case 3: case 4: case 5:
+        query.prepare("SELECT * FROM questions WHERE box is (:box)");
+        query.bindValue(":box",noBox);
+        break;
+    case 6:
+        query.prepare("SELECT * FROM questions WHERE box is not (:box)");
+        query.bindValue(":box",-1);
+        break;
+    }
+
     query.exec();
     if(query.last())
     {
