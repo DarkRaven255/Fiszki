@@ -116,7 +116,7 @@ void DbManager::closeUserDB()
     qDebug() << "DB closed";
 }
 
-void DbManager::returnQuestion(int &noQuestion, int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
+void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
 {
     QSqlQuery query;
 
@@ -127,8 +127,10 @@ void DbManager::returnQuestion(int &noQuestion, int &noBox, int &q_id, QString &
         query.bindValue(":box",noBox);
         break;
     case 6:
-        query.prepare("SELECT * FROM questions WHERE box is not (:box)");
-        query.bindValue(":box",-1);
+        query.prepare("SELECT * FROM questions WHERE box is not -1 and box < 7");
+        break;
+    case 7:
+        query.prepare("SELECT * FROM questions WHERE box > 6");
         break;
     }
 
@@ -150,7 +152,7 @@ void DbManager::returnQuestion(int &noQuestion, int &noBox, int &q_id, QString &
     e_pl=query.value(idExplanationPL).toString();
 }
 
-void DbManager::setBox(int &q_id)
+void DbManager::setBox(const int &q_id)
 {
     QSqlQuery query;
     query.prepare("UPDATE questions SET box = box+1 WHERE id = (:q_id)");
@@ -158,7 +160,7 @@ void DbManager::setBox(int &q_id)
     query.exec();
 }
 
-int DbManager::countQuestions(int noBox)
+int DbManager::countQuestions(const int noBox)
 {
     QSqlQuery query;
     int noQuestions=0;
@@ -170,8 +172,10 @@ int DbManager::countQuestions(int noBox)
         query.bindValue(":box",noBox);
         break;
     case 6:
-        query.prepare("SELECT * FROM questions WHERE box is not (:box)");
-        query.bindValue(":box",-1);
+        query.prepare("SELECT * FROM questions WHERE box is not -1 and box < 7");
+        break;
+    case 7:
+        query.prepare("SELECT * FROM questions WHERE box > 6");
         break;
     }
 

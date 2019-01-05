@@ -30,20 +30,23 @@ SOURCES += \
     userlistwindow.cpp \
     dbmanager.cpp \
     addnewuserwindow.cpp \
-    errorcreatinguserwindow.cpp
+    errorcreatinguserwindow.cpp \
+    aboutwindow.cpp
 
 HEADERS += \
         fiszkimainwindow.h \
     userlistwindow.h \
     dbmanager.h \
     addnewuserwindow.h \
-    errorcreatinguserwindow.h
+    errorcreatinguserwindow.h \
+    aboutwindow.h
 
 FORMS += \
         fiszkimainwindow.ui \
     userlistwindow.ui \
     addnewuserwindow.ui \
-    errorcreatinguserwindow.ui
+    errorcreatinguserwindow.ui \
+    aboutwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

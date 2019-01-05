@@ -2,6 +2,7 @@
 #include "ui_fiszkimainwindow.h"
 #include "userlistwindow.h"
 #include "addnewuserwindow.h"
+#include "aboutwindow.h"
 
 FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -78,6 +79,8 @@ void FiszkiMainWindow::on_testBtn_clicked()
     testCounterQuestions=0;
     RecalculateQuestions();
     progressPercent=0;
+    ui->checkBtn->setEnabled(true);
+    ui->enterAnwserLineEdit->setEnabled(true);
     Test(0);
 }
 
@@ -89,6 +92,13 @@ void FiszkiMainWindow::ChceckUserList()
         AddNewUserWindow addnewuserwindow;
         addnewuserwindow.exec();
     }
+}
+
+
+void FiszkiMainWindow::on_aboutBtn_clicked()
+{
+    AboutWindow aboutwindow;
+    aboutwindow.exec();
 }
 
 
@@ -193,9 +203,9 @@ void FiszkiMainWindow::Test(int i)
     if(testCounterQuestions>testQuestions-1)
     {
         testCounterQuestions=testQuestions-1;
-        ui->checkBtn->setEnabled(false);
         ui->questionTextBrowser->clear();
-        ui->explanationTextBrowser->setText("Dodaj nowe fiszki w opcji \"Nauka\"");
+        ui->explanationTextBrowser->setText("Dodaj nowe fiszki do powtórek, w opcji \"Nauka\"");
+        ui->checkBtn->setEnabled(false);
         ui->enterAnwserLineEdit->setEnabled(false);
     }
     else
@@ -204,9 +214,7 @@ void FiszkiMainWindow::Test(int i)
         ui->questionTextBrowser->setText(q_en);
         ui->explanationTextBrowser->setText(e_en);
     }
-
 }
-
 
 void FiszkiMainWindow::on_checkBtn_clicked()
 {
@@ -215,11 +223,7 @@ void FiszkiMainWindow::on_checkBtn_clicked()
         dbmanager->setBox(q_id);
         ui->enterAnwserLineEdit->clear();
     }
-
     progressPercent=static_cast<int>(static_cast<float>(testCounterQuestions+1)/static_cast<float>(testQuestions)*100);
     ui->progressBar->setValue(progressPercent);
-    qDebug()<<progressPercent;
-
-
     Test(1);
 }

@@ -31,6 +31,8 @@ private slots:
 
 
 
+    void on_aboutBtn_clicked();
+
 private:
     Ui::FiszkiMainWindow *ui;
     DbManager *dbmanager = new DbManager("database.db");
