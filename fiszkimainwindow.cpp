@@ -75,6 +75,9 @@ void FiszkiMainWindow::on_learnBtn_clicked()
 void FiszkiMainWindow::on_testBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
+    testCounterQuestions=0;
+    RecalculateQuestions();
+    progressPercent=0;
     Test(0);
 }
 
@@ -187,14 +190,21 @@ void FiszkiMainWindow::Test(int i)
 {
     int noBox=6;
     testCounterQuestions+=i;
-    if(testCounterQuestions==testQuestions-1)
+    if(testCounterQuestions>testQuestions-1)
     {
-        testQuestions=testQuestions-1;
+        testCounterQuestions=testQuestions-1;
         ui->checkBtn->setEnabled(false);
+        ui->questionTextBrowser->clear();
+        ui->explanationTextBrowser->setText("Dodaj nowe fiszki w opcji \"Nauka\"");
+        ui->enterAnwserLineEdit->setEnabled(false);
     }
-    dbmanager->returnQuestion(testCounterQuestions,noBox,q_id,q_en,e_en,q_pl,e_pl);
-    ui->questionTextBrowser->setText(q_en);
-    ui->explanationTextBrowser->setText(e_en);
+    else
+    {
+        dbmanager->returnQuestion(testCounterQuestions,noBox,q_id,q_en,e_en,q_pl,e_pl);
+        ui->questionTextBrowser->setText(q_en);
+        ui->explanationTextBrowser->setText(e_en);
+    }
+
 }
 
 
@@ -202,9 +212,14 @@ void FiszkiMainWindow::on_checkBtn_clicked()
 {
     if(ui->enterAnwserLineEdit->text()==q_pl)
     {
-        ui->progressBar->setValue(testCounterQuestions%testQuestions);
         dbmanager->setBox(q_id);
         ui->enterAnwserLineEdit->clear();
     }
+
+    progressPercent=static_cast<int>(static_cast<float>(testCounterQuestions+1)/static_cast<float>(testQuestions)*100);
+    ui->progressBar->setValue(progressPercent);
+    qDebug()<<progressPercent;
+
+
     Test(1);
 }

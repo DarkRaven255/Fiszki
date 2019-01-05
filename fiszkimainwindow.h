@@ -53,6 +53,7 @@ private:
     int testQuestions;
     int learnQuestions;
     int testCounterQuestions;
+    int progressPercent;
 };
 
 #endif // FISZKIMAINWINDOW_H
