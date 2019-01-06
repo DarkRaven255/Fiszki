@@ -11,6 +11,9 @@ Session::Session(QObject *parent):
     qDebug()<<"Liczba pytan:"<<testQuestions+unknownQuestions;
     qDebug()<<"Liczba nieznanych pytan:"<<unknownQuestions;
     qDebug()<<"Liczba znanych pytan:"<<testQuestions;
+
+    QTime time = QTime::currentTime();
+    qsrand(static_cast<uint>(time.msec()));
 }
 
 Session::~Session()
