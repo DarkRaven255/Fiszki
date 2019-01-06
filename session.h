@@ -9,8 +9,8 @@
 class Session : public QObject
 {
     Q_OBJECT
-public:
 
+public:
     explicit Session(QObject *parent = nullptr);
     ~Session();
 
@@ -24,8 +24,10 @@ public:
     void markQuestion();
     void deleteQuestion();
     void testWords();
+    void checkAnswer(QString answer);
 
     Question *question;
+
 
 private:
     int unknownQuestions;

@@ -67,69 +67,14 @@ void FiszkiMainWindow::on_testBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
     setBtns(session->infoQuestions());
-    Test(0);
+    test();
 }
-
-void FiszkiMainWindow::ChceckUserList()
-{
-    if(ui->availableUsersComboBox->count()==0)
-    {
-        AddNewUserWindow addnewuserwindow;
-        addnewuserwindow.exec();
-    }
-}
-
 
 void FiszkiMainWindow::on_aboutBtn_clicked()
 {
     AboutWindow aboutwindow;
     aboutwindow.exec();
 }
-
-////////////////////////////////////LEARN PAGE
-//void FiszkiMainWindow::LoadQuestion(int i, int noBox)
-//{
-//    learnQuestions+=i;
-//    if(learnQuestions==unknownQuestions-1)
-//    {
-//        ui->nextFlashcardBtn->setEnabled(false);
-//    }
-//    else if(learnQuestions==0)
-//    {
-//        ui->backFlashcardBtn->setEnabled(false);
-//    }
-//    else if(learnQuestions>unknownQuestions-1)
-//    {
-//        learnQuestions=unknownQuestions-1;
-//        ui->nextFlashcardBtn->setEnabled(false);
-//    }
-//    else if(learnQuestions<0)
-//    {
-//        learnQuestions=0;
-//        ui->backFlashcardBtn->setEnabled(false);
-//    }
-
-//    if (unknownQuestions==1)
-//    {
-//        ui->backFlashcardBtn->setEnabled(false);
-//        ui->nextFlashcardBtn->setEnabled(false);
-//    }
-
-//    if(unknownQuestions==0)
-//    {
-//        LockBtns();
-//    }
-//    else
-//    {
-//        dbmanager->returnQuestion(learnQuestions,noBox,q_id,q_en,e_en,q_pl,e_pl);
-
-//        ui->questionEnTextBrowser->setText(q_en);
-//        ui->explanationEnTextBrowser->setText(e_en);
-
-//        ui->questionPlTextBrowser->setText(q_pl);
-//        ui->explanationPlTextBrowser->setText(e_pl);
-//    }
-//}
 
 bool FiszkiMainWindow::setBtns(infoQuestions info)
 {
@@ -164,6 +109,7 @@ bool FiszkiMainWindow::setBtns(infoQuestions info)
     return false;
 }
 
+////////////////////////////////////LEARN PAGE
 void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
@@ -202,7 +148,7 @@ void FiszkiMainWindow::on_stopBtn_clicked()
 }
 
 /////////////////////////////////////////TEST PAGE
-void FiszkiMainWindow::Test(int i)
+void FiszkiMainWindow::test()
 {
 //    int noBox=6;
 //    testCounterQuestions+=i;
@@ -220,19 +166,21 @@ void FiszkiMainWindow::Test(int i)
 //        ui->questionTextBrowser->setText(q_en);
 //        ui->explanationTextBrowser->setText(e_en);
 //    }
-    session->testWords();
 
-    ui->questionTextBrowser->setText(session->question->getQ_en());
-    ui->explanationTextBrowser->setText(session->question->getE_en());
+//    if(session->infoQuestions()!=LockAll)
+//    {
+        session->testWords();
+
+        ui->questionTextBrowser->setText(session->question->getQ_en());
+        ui->explanationTextBrowser->setText(session->question->getE_en());
+//    }
+//    setBtns(session->infoQuestions());
 }
 
 void FiszkiMainWindow::on_checkBtn_clicked()
 {
-    if(ui->enterAnwserLineEdit->text()==session->question->getQ_pl())
-    {
-        session->markQuestion();
-        ui->enterAnwserLineEdit->clear();
-    }
+    session->checkAnswer(ui->enterAnwserLineEdit->text());
+    ui->enterAnwserLineEdit->clear();
     ui->progressBar->setValue(session->getProgressPercent());
-    Test(1);
+    test();
 }

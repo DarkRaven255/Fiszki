@@ -30,6 +30,7 @@ int Session::getProgressPercent()
     return static_cast<int>(static_cast<float>(testCounterQuestions+1)/static_cast<float>(testQuestions)*100);
 }
 
+//Funkcja zwracająca informacje o stanie pytań w bazie
 infoQuestions Session::infoQuestions()
 {
     if(learnQuestions==unknownQuestions-1)
@@ -85,6 +86,15 @@ void Session::testWords()
     recalculateQuestions();
     question = new Question(nullptr,randomInt(0,testQuestions-1),6);
     testCounterQuestions++;
+}
+
+//Funkcja sprawdzająca odpowiedź
+void Session::checkAnswer(QString answer)
+{
+    if(answer==question->getQ_pl())
+    {
+        markQuestion();
+    }
 }
 
 //Funkcja pobierająca listę użytkowników z bazy danych

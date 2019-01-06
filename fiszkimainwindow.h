@@ -36,10 +36,8 @@ private:
 
     Session *session = new Session();
 
-    void Test(int i);
-    void LoadQuestion(int i, int noBox);
+    void test();
     bool setBtns(infoQuestions info);
-    void ChceckUserList();
 
     QString user;
 };
