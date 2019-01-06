@@ -96,7 +96,7 @@ bool DbManager::removeUser(const QString &name)
     return true;
 }
 
-QStringList DbManager::displayAllUsers()
+QStringList DbManager::returnAllUsers()
 {
     QStringList userlist;
     QSqlQuery query("SELECT * FROM users");

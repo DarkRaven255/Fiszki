@@ -2,7 +2,8 @@
 #define FISZKIMAINWINDOW_H
 
 #include <QMainWindow>
-#include <dbmanager.h>
+#include "session.h"
+//#include <dbmanager.h>
 
 namespace Ui {
 class FiszkiMainWindow;
@@ -28,34 +29,19 @@ private slots:
     void on_stopBtn_clicked();
     void on_testBtn_clicked();
     void on_availableUsersComboBox_currentIndexChanged(const QString &arg1);
-
-
-
     void on_aboutBtn_clicked();
 
 private:
     Ui::FiszkiMainWindow *ui;
-    DbManager *dbmanager = new DbManager("database.db");
+
+    Session *session = new Session();
 
     void Test(int i);
     void LoadQuestion(int i, int noBox);
-    void RecalculateQuestions();
-    void LockBtns();
+    bool setBtns(infoQuestions info);
     void ChceckUserList();
 
     QString user;
-
-    int q_id;
-    QString q_en;
-    QString e_en;
-    QString q_pl;
-    QString e_pl;
-
-    int unknownQuestions;
-    int testQuestions;
-    int learnQuestions;
-    int testCounterQuestions;
-    int progressPercent;
 };
 
 #endif // FISZKIMAINWINDOW_H

@@ -31,7 +31,9 @@ SOURCES += \
     dbmanager.cpp \
     addnewuserwindow.cpp \
     errorcreatinguserwindow.cpp \
-    aboutwindow.cpp
+    aboutwindow.cpp \
+    question.cpp \
+    session.cpp
 
 HEADERS += \
         fiszkimainwindow.h \
@@ -39,7 +41,10 @@ HEADERS += \
     dbmanager.h \
     addnewuserwindow.h \
     errorcreatinguserwindow.h \
-    aboutwindow.h
+    aboutwindow.h \
+    question.h \
+    session.h \
+    enums.h
 
 FORMS += \
         fiszkimainwindow.ui \
