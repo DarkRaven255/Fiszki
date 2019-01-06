@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include "session.h"
-//#include <dbmanager.h>
 
 namespace Ui {
 class FiszkiMainWindow;

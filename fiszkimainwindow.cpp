@@ -6,6 +6,8 @@
 #include "question.h"
 #include "enums.h"
 
+#include <QDebug>
+
 FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FiszkiMainWindow)

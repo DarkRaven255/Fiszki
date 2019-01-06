@@ -1,10 +1,8 @@
 #ifndef QUESTION_H
 #define QUESTION_H
 
-#include <QString>
-#include <dbmanager.h>
-#include <QtGlobal>
-#include <QTime>
+#include <QObject>
+#include "dbmanager.h"
 
 class Question : public QObject
 {

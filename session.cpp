@@ -1,4 +1,6 @@
 #include "session.h"
+#include <QTime>
+#include <QDebug>
 
 Session::Session(QObject *parent):
     QObject(parent),

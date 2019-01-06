@@ -1,7 +1,6 @@
 #ifndef SESSION_H
 #define SESSION_H
-#include <QTime>
-#include <QDebug>
+
 #include "dbmanager.h"
 #include "question.h"
 #include "enums.h"

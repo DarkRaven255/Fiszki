@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include "dbmanager.h"
-#include "addnewuserwindow.h"
 
 namespace Ui {
 class UserListWindow;

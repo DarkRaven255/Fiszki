@@ -1,11 +1,7 @@
 #ifndef DBMANAGER_H
 #define DBMANAGER_H
+
 #include <QSqlDatabase>
-#include <QSqlDriver>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
-#include <QtDebug>
 
 class DbManager
 {

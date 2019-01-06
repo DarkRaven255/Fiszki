@@ -1,4 +1,9 @@
 #include "dbmanager.h"
+#include <QSqlDriver>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QtDebug>
 
 DbManager::DbManager(const QString &name)
 {
