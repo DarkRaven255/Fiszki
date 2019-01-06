@@ -122,8 +122,7 @@ void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
     qDebug()<<session->infoQuestions();
     if(session->infoQuestions()!=LockAll)
     {
-        session->learnWords();
-
+        session->nextLearnBtn();
         ui->questionEnTextBrowser->setText(session->question->getQ_en());
         ui->explanationEnTextBrowser->setText(session->question->getE_en());
         ui->questionPlTextBrowser->setText(session->question->getQ_pl());
@@ -134,8 +133,11 @@ void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
 
 void FiszkiMainWindow::on_backFlashcardBtn_clicked()
 {
-    //LoadQuestion(-1,-1);
-    //if(!ui->nextFlashcardBtn->isEnabled())ui->nextFlashcardBtn->setEnabled(true);
+    session->backLearnBtn();
+    ui->questionEnTextBrowser->setText(session->question->getQ_en());
+    ui->explanationEnTextBrowser->setText(session->question->getE_en());
+    ui->questionPlTextBrowser->setText(session->question->getQ_pl());
+    ui->explanationPlTextBrowser->setText(session->question->getE_pl());
 }
 
 void FiszkiMainWindow::on_rememberBtn_clicked()

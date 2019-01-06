@@ -5,7 +5,9 @@
 Session::Session(QObject *parent):
     QObject(parent),
     learnQuestions(0),
-    testCounterQuestions(0)
+    testCounterQuestions(0),
+    backLearnQuestions(0)
+
 {
     recalculateQuestions();
     setUserList();
@@ -70,7 +72,31 @@ infoQuestions Session::infoQuestions()
 //Funkcja pobierająca pytania do nauki słówek
 void Session::learnWords()
 {
-    question = new Question(nullptr,randomInt(0,unknownQuestions-1),-1);
+    qList.resize(learnQuestions+1);
+    qList[learnQuestions] = new Question(nullptr,randomInt(0,unknownQuestions-1),-1);
+    question=qList[learnQuestions];
+    backLearnQuestions=learnQuestions;
+}
+
+
+void Session::nextLearnBtn()
+{
+    if(backLearnQuestions!=learnQuestions)
+    {
+        backLearnQuestions++;
+        question=qList[backLearnQuestions];
+    }
+    else
+    {
+        learnQuestions++;
+        learnWords();
+    }
+}
+
+void Session::backLearnBtn()
+{
+    backLearnQuestions--;
+    question=qList[backLearnQuestions];
 }
 
 //Funkcja zmieniająca "pudełko"

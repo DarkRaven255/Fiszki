@@ -4,6 +4,9 @@
 #include "dbmanager.h"
 #include "question.h"
 #include "enums.h"
+#include <iostream>
+
+#include <QVector>
 
 class Session : public QObject
 {
@@ -24,15 +27,19 @@ public:
     void deleteQuestion();
     void testWords();
     void checkAnswer(QString answer);
+    void nextLearnBtn();
+    void backLearnBtn();
 
     Question *question;
-
 
 private:
     int unknownQuestions;
     int testQuestions;
     int learnQuestions;
     int testCounterQuestions;
+    int backLearnQuestions;
+
+    QVector<Question*> qList;
 
     QStringList userList;
 
