@@ -45,46 +45,48 @@ int Session::getProgressPercent()
 //Funkcja pobierająca pytania do nauki słówek
 void Session::learnWords()
 {
-    bool isRepeated;
-    int random;
-    if(learnQuestions>2)
-    {
-        do
-        {
-            isRepeated=false;
-            random=randomInt(0,unknownQuestions-1);
-            for(int i=1;i<learnQuestions;i++)
-            {
-                if(qList[i]->getQ_id()==random)
-                {
-                    isRepeated=true;
-                }
-            }
-        }while(isRepeated);
+//    bool isRepeated;
+//    int random;
+//    if(learnQuestions>2)
+//    {
+//        do
+//        {
+//            isRepeated=false;
+//            random=randomInt(0,unknownQuestions-1);
+//            for(int i=0;i<learnQuestions-1;i++)
+//            {
+//                if(qList[i]->getQ_id()==random)
+//                {
+//                    isRepeated=true;
+//                    //qDebug()<<qList[i]->getQ_id()<<" id"<<endl<<random<<" random";
 
-        qList.resize(learnQuestions+1);
-        qList[learnQuestions] = new Question(nullptr,random,-1);
-        question=qList[learnQuestions];
-        position=learnQuestions;
-    }
+//                }
+//            }
+//        }while(isRepeated==true);
+
+//        qList.resize(learnQuestions+1);
+//        qList[learnQuestions] = new Question(nullptr,random,-1);
+//        question=qList[learnQuestions];
+//        position=learnQuestions;
+//    }
     qList.resize(learnQuestions+1);
     qList[learnQuestions] = new Question(nullptr,randomInt(0,unknownQuestions-1),-1);
     question=qList[learnQuestions];
     position=learnQuestions;
+    learnQuestions++;
+
 }
 
 
 void Session::nextLearnBtn()
 {
-    if(position!=learnQuestions)
+    if(position<learnQuestions-1)
     {
         position++;
         question=qList[position];
     }
     else
     {
-        learnQuestions++;
-        position++;
         learnWords();
     }
 }
@@ -97,42 +99,36 @@ void Session::backLearnBtn()
 
 void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB)
 {
+//    noQuestionsInDB=false;
 
-    qDebug()<<"Learn Questions:"<<learnQuestions;
-    qDebug()<<"position:"<<position;
-
-    noQuestionsInDB=false;
-
-    if(position==0) back=false;
-    if(position>0) back=true;
-    if(position==testQuestions+unknownQuestions) next=false;
-    if(position<testQuestions+unknownQuestions) next=true;
-    if(unknownQuestions==1)
-    {
-        next=false;
-        back=false;
-    }
-    if(unknownQuestions==0)
-    {
-        next=false;
-        back=false;
-        remember=false;
-        noQuestionsInDB=true;
-    }
-    if(position!=0)
-    {
-        //qDebug()<<qList[position]->qetQ_box();
-        if(qList[position]->qetQ_box()>-1)
-        {
-            remember=false;
-        }
-        else
-        {
-            remember=true;
-        }
-    }
-
-
+//    if(position==0) back=false;
+//    if(position>0) back=true;
+//    if(position==testQuestions+unknownQuestions) next=false;
+//    if(position<testQuestions+unknownQuestions) next=true;
+//    if(unknownQuestions==1)
+//    {
+//        next=false;
+//        back=false;
+//    }
+//    if(unknownQuestions==0)
+//    {
+//        next=false;
+//        back=false;
+//        remember=false;
+//        noQuestionsInDB=true;
+//    }
+//    if(position!=0)
+//    {
+//        //qDebug()<<qList[position]->qetQ_box();
+//        if(qList[position]->qetQ_box()>-1)
+//        {
+//            remember=false;
+//        }
+//        else
+//        {
+//            remember=true;
+//        }
+//    }
 }
 
 //Funkcja zmieniająca "pudełko"
