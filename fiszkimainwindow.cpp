@@ -25,7 +25,10 @@ FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     ui->explanationPlTextBrowser->setFontPointSize(10);
     ui->explanationTextBrowser->setFontPointSize(10);
 
+    ui->userListBtn->setEnabled(false);
+    ui->availableUsersComboBox->setEnabled(false);
 
+    setBtns();
 }
 
 FiszkiMainWindow::~FiszkiMainWindow()
@@ -62,13 +65,13 @@ void FiszkiMainWindow::on_learnBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
     on_nextFlashcardBtn_clicked();
-    setBtns(session->infoQuestions());
+    //setBtns();
 }
 
 void FiszkiMainWindow::on_testBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
-    setBtns(session->infoQuestions());
+    //setBtns();
     test();
 }
 
@@ -78,37 +81,17 @@ void FiszkiMainWindow::on_aboutBtn_clicked()
     aboutwindow.exec();
 }
 
-bool FiszkiMainWindow::setBtns(infoQuestions info)
+void FiszkiMainWindow::setBtns()
 {
+    session->getButtonStatus(back,remember,next,noQuestionsInDB);
 
-    switch (info)
-    {
-    case Null:
-        break;
-    case LockNext:
-        ui->nextFlashcardBtn->setEnabled(false);
-        break;
-    case LockBack:
-        ui->backFlashcardBtn->setEnabled(false);
-        break;
-    case LockNextBack:
-        ui->nextFlashcardBtn->setEnabled(false);
-        ui->backFlashcardBtn->setEnabled(false);
-        break;
-    case LockRemember:
-        ui->rememberBtn->setEnabled(false);
-        break;
-    case LockAll:
-        ui->nextFlashcardBtn->setEnabled(false);
-        ui->backFlashcardBtn->setEnabled(false);
-        ui->rememberBtn->setEnabled(false);
-        ui->questionEnTextBrowser->setText("Zobaczyłeś");
-        ui->explanationEnTextBrowser->setText("wszystkie");
-        ui->questionPlTextBrowser->setText("fiszki");
-        ui->explanationPlTextBrowser->setText("w bazie!");
-        return true;
-    }
-    return false;
+    qDebug()<<"back:"<<back<<"remember:"<<remember<<"next:"<<next;
+
+    ui->nextFlashcardBtn->setEnabled(next);
+    ui->backFlashcardBtn->setEnabled(back);
+    ui->rememberBtn->setEnabled(remember);
+
+
 }
 
 ////////////////////////////////////LEARN PAGE
@@ -119,21 +102,31 @@ void FiszkiMainWindow::on_endLearnBtn_clicked()
 
 void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
 {
-    qDebug()<<session->infoQuestions();
-    if(session->infoQuestions()!=LockAll)
+    setBtns();
+
+    if(!noQuestionsInDB)
     {
         session->nextLearnBtn();
+
         ui->questionEnTextBrowser->setText(session->question->getQ_en());
         ui->explanationEnTextBrowser->setText(session->question->getE_en());
         ui->questionPlTextBrowser->setText(session->question->getQ_pl());
         ui->explanationPlTextBrowser->setText(session->question->getE_pl());
     }
-    setBtns(session->infoQuestions());
+    else
+    {
+        ui->questionEnTextBrowser->setText("Zobaczyłeś");
+        ui->explanationEnTextBrowser->setText("wszystkie");
+        ui->questionPlTextBrowser->setText("fiszki");
+        ui->explanationPlTextBrowser->setText("w bazie!");
+    }
+
 }
 
 void FiszkiMainWindow::on_backFlashcardBtn_clicked()
 {
     session->backLearnBtn();
+    setBtns();
     ui->questionEnTextBrowser->setText(session->question->getQ_en());
     ui->explanationEnTextBrowser->setText(session->question->getE_en());
     ui->questionPlTextBrowser->setText(session->question->getQ_pl());

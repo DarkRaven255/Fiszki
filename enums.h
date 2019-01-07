@@ -10,6 +10,8 @@ enum infoQuestions
     LockNextBack = 4,
     LockAll = 5,
     NoMore = 6,
+    UnlockBack = 7,
+    UnlockNext = 8,
 
 };
 

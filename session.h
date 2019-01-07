@@ -20,15 +20,14 @@ public:
 
     int getProgressPercent();
 
-    infoQuestions infoQuestions();
-
     void learnWords();
     void markQuestion();
-    void deleteQuestion();
     void testWords();
     void checkAnswer(QString answer);
     void nextLearnBtn();
     void backLearnBtn();
+
+    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB);
 
     Question *question;
 
@@ -37,7 +36,7 @@ private:
     int testQuestions;
     int learnQuestions;
     int testCounterQuestions;
-    int backLearnQuestions;
+    int position;
 
     QVector<Question*> qList;
 

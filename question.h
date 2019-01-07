@@ -14,6 +14,10 @@ public:
     QString getE_en();
     QString getQ_pl();
     QString getE_pl();
+    int qetQ_box();
+
+    //DO POPRAWY!
+    void setQ_box();
 
 private:
     int q_id;
@@ -21,6 +25,7 @@ private:
     QString e_en;
     QString q_pl;
     QString e_pl;
+    int q_box;
 
     DbManager *dbmanager;
 };

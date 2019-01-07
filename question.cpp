@@ -3,7 +3,7 @@
 Question::Question(QObject *parent, const int &noQuestion, const int &noBox):
     QObject(parent)
 {
-    dbmanager->returnQuestion(noQuestion,noBox,q_id,q_en,e_en,q_pl,e_pl);
+    dbmanager->returnQuestion(noQuestion,noBox,q_id,q_en,e_en,q_pl,e_pl,q_box);
 }
 
 int Question::getQ_id()
@@ -29,4 +29,14 @@ QString Question::getQ_pl()
 QString Question::getE_pl()
 {
     return e_pl;
+}
+
+int Question::qetQ_box()
+{
+    return q_box;
+}
+
+void Question::setQ_box()
+{
+    q_box++;
 }

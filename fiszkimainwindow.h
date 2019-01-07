@@ -36,7 +36,12 @@ private:
     Session *session = new Session();
 
     void test();
-    bool setBtns(infoQuestions info);
+    void setBtns();
+
+    bool next;
+    bool back;
+    bool remember;
+    bool noQuestionsInDB;
 
     QString user;
 };
