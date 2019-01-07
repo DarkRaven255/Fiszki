@@ -103,10 +103,8 @@ void FiszkiMainWindow::on_endLearnBtn_clicked()
 void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
 {
 
-//    setBtns();
-
-//    if(!noQuestionsInDB)
-//    {
+    if(!noQuestionsInDB)
+    {
 
         session->nextLearnBtn();
 
@@ -114,27 +112,28 @@ void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
         ui->explanationEnTextBrowser->setText(session->question->getE_en());
         ui->questionPlTextBrowser->setText(session->question->getQ_pl());
         ui->explanationPlTextBrowser->setText(session->question->getE_pl());
-//    }
-//    else
-//    {
-//        ui->questionEnTextBrowser->setText("Zobaczyłeś");
-//        ui->explanationEnTextBrowser->setText("wszystkie");
-//        ui->questionPlTextBrowser->setText("fiszki");
-//        ui->explanationPlTextBrowser->setText("w bazie!");
-//    }
+    }
+    else
+    {
+        ui->questionEnTextBrowser->setText("Zobaczyłeś");
+        ui->explanationEnTextBrowser->setText("wszystkie");
+        ui->questionPlTextBrowser->setText("fiszki");
+        ui->explanationPlTextBrowser->setText("w bazie!");
+    }
+    setBtns();
 
 }
 
 void FiszkiMainWindow::on_backFlashcardBtn_clicked()
 {
-//    setBtns();
-
     session->backLearnBtn();
 
     ui->questionEnTextBrowser->setText(session->question->getQ_en());
     ui->explanationEnTextBrowser->setText(session->question->getE_en());
     ui->questionPlTextBrowser->setText(session->question->getQ_pl());
     ui->explanationPlTextBrowser->setText(session->question->getE_pl());
+
+    setBtns();
 }
 
 void FiszkiMainWindow::on_rememberBtn_clicked()

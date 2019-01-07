@@ -99,36 +99,37 @@ void Session::backLearnBtn()
 
 void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB)
 {
-//    noQuestionsInDB=false;
+    qDebug()<<position;
 
-//    if(position==0) back=false;
-//    if(position>0) back=true;
-//    if(position==testQuestions+unknownQuestions) next=false;
-//    if(position<testQuestions+unknownQuestions) next=true;
-//    if(unknownQuestions==1)
-//    {
-//        next=false;
-//        back=false;
-//    }
-//    if(unknownQuestions==0)
-//    {
-//        next=false;
-//        back=false;
-//        remember=false;
-//        noQuestionsInDB=true;
-//    }
-//    if(position!=0)
-//    {
-//        //qDebug()<<qList[position]->qetQ_box();
-//        if(qList[position]->qetQ_box()>-1)
-//        {
-//            remember=false;
-//        }
-//        else
-//        {
-//            remember=true;
-//        }
-//    }
+    noQuestionsInDB=false;
+
+    if(position==0) back=false;
+    if(position>0) back=true;
+    if(position==testQuestions+unknownQuestions) next=false;
+    if(position<testQuestions+unknownQuestions) next=true;
+    if(unknownQuestions==1)
+    {
+        next=false;
+        back=false;
+    }
+    if(unknownQuestions==0)
+    {
+        next=false;
+        back=false;
+        remember=false;
+        noQuestionsInDB=true;
+    }
+    if(position!=0)
+    {
+        if(qList[position]->qetQ_box()>-1)
+        {
+            remember=false;
+        }
+        else
+        {
+            remember=true;
+        }
+    }
 }
 
 //Funkcja zmieniająca "pudełko"
