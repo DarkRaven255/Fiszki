@@ -154,7 +154,7 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_i
     int idExplanationPL = query.record().indexOf("explanation_pl");
     int idBox = query.record().indexOf("box");
 
-    //query.seek(noQuestion);
+    if(noBox==6)query.seek(noQuestion);
 
     q_id=query.value(idQuestion).toInt();
     q_en=query.value(idQuestionEN).toString();

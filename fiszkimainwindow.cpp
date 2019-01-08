@@ -70,6 +70,7 @@ void FiszkiMainWindow::on_learnBtn_clicked()
 
 void FiszkiMainWindow::on_testBtn_clicked()
 {
+    session = new Session();
     ui->stackedWidget->setCurrentIndex(2);
     //setBtns();
     test();
@@ -83,21 +84,21 @@ void FiszkiMainWindow::on_aboutBtn_clicked()
 
 void FiszkiMainWindow::setBtns()
 {
-    session->getButtonStatus(back,remember,next,noQuestionsInDB);
+    session->getButtonStatus(back,remember,next,noQuestionsInDB,noTestQuestions);
 
     //qDebug()<<"back:"<<back<<"remember:"<<remember<<"next:"<<next;
 
     ui->nextFlashcardBtn->setEnabled(next);
     ui->backFlashcardBtn->setEnabled(back);
     ui->rememberBtn->setEnabled(remember);
-
-
+    ui->checkBtn->setEnabled(!noTestQuestions);
 }
 
 ////////////////////////////////////LEARN PAGE
 void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
+    delete session;
 }
 
 void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
@@ -150,31 +151,20 @@ void FiszkiMainWindow::on_stopBtn_clicked()
 /////////////////////////////////////////TEST PAGE
 void FiszkiMainWindow::test()
 {
-//    int noBox=6;
-//    testCounterQuestions+=i;
-//    if(testCounterQuestions>testQuestions-1)
-//    {
-//        testCounterQuestions=testQuestions-1;
-//        ui->questionTextBrowser->clear();
-//        ui->explanationTextBrowser->setText("Dodaj nowe fiszki do powtórek, w opcji \"Nauka\"");
-//        ui->checkBtn->setEnabled(false);
-//        ui->enterAnwserLineEdit->setEnabled(false);
-//    }
-//    else
-//    {
-//        dbmanager->returnQuestion(testCounterQuestions,noBox,q_id,q_en,e_en,q_pl,e_pl);
-//        ui->questionTextBrowser->setText(q_en);
-//        ui->explanationTextBrowser->setText(e_en);
-//    }
-
-//    if(session->infoQuestions()!=LockAll)
-//    {
+    setBtns();
+    if(!noTestQuestions)
+    {
         session->testWords();
 
         ui->questionTextBrowser->setText(session->question->getQ_en());
         ui->explanationTextBrowser->setText(session->question->getE_en());
-//    }
-//    setBtns(session->infoQuestions());
+    }
+    else
+    {
+        ui->questionTextBrowser->setText("");
+        ui->explanationTextBrowser->setText("Dodaj nowe fiszki do powtórek, w opcji \"Nauka\"");
+    }
+
 }
 
 void FiszkiMainWindow::on_checkBtn_clicked()

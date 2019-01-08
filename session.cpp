@@ -23,6 +23,12 @@ Session::~Session()
     {
         delete question;
     }
+
+    foreach (Question *question, qListTest)
+    {
+        delete question;
+    }
+
     dbmanager->closeUserDB();
 }
 
@@ -35,7 +41,7 @@ QStringList Session::getUserList()
 //Funkcja wyświetlająca procent przebiegu lekcji
 int Session::getProgressPercent()
 {
-    return static_cast<int>(static_cast<float>(testCounterQuestions+1)/static_cast<float>(testQuestions)*100);
+    return static_cast<int>(static_cast<float>(testCounterQuestions)/static_cast<float>(testQuestions)*100);
 }
 
 //Funkcja pobierająca pytania do nauki słówek
@@ -94,11 +100,12 @@ void Session::backLearnBtn()
     question=qList[position];
 }
 
-void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB)
+void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions)
 {
-    qDebug()<<position;
+   // qDebug()<<position;
 
     noQuestionsInDB=false;
+    noTestQuestions=false;
 
     if(position==0) back=false;
     if(position>0) back=true;
@@ -109,6 +116,7 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
         next=false;
         back=false;
     }
+
     if(unknownQuestions==0)
     {
         next=false;
@@ -116,7 +124,8 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
         remember=false;
         noQuestionsInDB=true;
     }
-    if(position!=0)
+
+    if(position!=0||learnQuestions!=0)
     {
         if(qList[position]->qetQ_box()>-1)
         {
@@ -127,6 +136,10 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
             remember=true;
         }
     }
+
+    //if(testQuestions==0) noTestQuestions=true;
+
+    if(testCounterQuestions==testQuestions) noTestQuestions=true;
 }
 
 //Funkcja zmieniająca "pudełko"
@@ -141,7 +154,10 @@ void Session::markQuestion()
 void Session::testWords()
 {
     recalculateQuestions();
-    question = new Question(nullptr,randomInt(0,testQuestions-1),6);
+    if(testCounterQuestions<testQuestions)
+    {
+        question = new Question(nullptr,randomInt(0,testQuestions),6);
+    }
     testCounterQuestions++;
 }
 

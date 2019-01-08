@@ -27,7 +27,7 @@ public:
     void nextLearnBtn();
     void backLearnBtn();
 
-    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB);
+    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions);
 
     Question *question;
 
@@ -39,6 +39,7 @@ private:
     int position;
 
     QVector<Question*> qList;
+    QVector<Question*> qListTest;
 
     QStringList userList;
 
