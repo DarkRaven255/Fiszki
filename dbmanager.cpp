@@ -137,6 +137,11 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_i
     case 7:
         query.prepare("SELECT * FROM questions WHERE box > 6");
         break;
+    case 8:
+        query.prepare("SELECT * FROM questions WHERE id is (:noQuestion)");
+        //query.bindValue(":box",noBox);
+        query.bindValue(":noQuestion",noQuestion);
+        break;
     }
 
     query.exec();
@@ -149,7 +154,7 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_i
     int idExplanationPL = query.record().indexOf("explanation_pl");
     int idBox = query.record().indexOf("box");
 
-    query.seek(noQuestion);
+    //query.seek(noQuestion);
 
     q_id=query.value(idQuestion).toInt();
     q_en=query.value(idQuestionEN).toString();

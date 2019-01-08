@@ -15,10 +15,6 @@ Session::Session(QObject *parent):
     qDebug()<<"Liczba pytan:"<<testQuestions+unknownQuestions;
     qDebug()<<"Liczba nieznanych pytan:"<<unknownQuestions;
     qDebug()<<"Liczba znanych pytan:"<<testQuestions;
-
-
-    QTime time = QTime::currentTime();
-    qsrand(static_cast<uint>(time.msec()));
 }
 
 Session::~Session()
@@ -45,36 +41,37 @@ int Session::getProgressPercent()
 //Funkcja pobierająca pytania do nauki słówek
 void Session::learnWords()
 {
-//    bool isRepeated;
-//    int random;
-//    if(learnQuestions>2)
-//    {
-//        do
-//        {
-//            isRepeated=false;
-//            random=randomInt(0,unknownQuestions-1);
-//            for(int i=0;i<learnQuestions-1;i++)
-//            {
-//                if(qList[i]->getQ_id()==random)
-//                {
-//                    isRepeated=true;
-//                    //qDebug()<<qList[i]->getQ_id()<<" id"<<endl<<random<<" random";
+    bool isRepeated;
+    int random;
+    if(learnQuestions>0)
+    {
+        do
+        {
+            isRepeated=false;
+            random=randomInt(1,testQuestions+unknownQuestions);
+            for(int i=0;i<learnQuestions;i++)
+            {
+                if(qList[i]->getQ_id()==random)
+                {
+                    isRepeated=true;
+                }
+            }
+        }while(isRepeated);
 
-//                }
-//            }
-//        }while(isRepeated==true);
-
-//        qList.resize(learnQuestions+1);
-//        qList[learnQuestions] = new Question(nullptr,random,-1);
-//        question=qList[learnQuestions];
-//        position=learnQuestions;
-//    }
-    qList.resize(learnQuestions+1);
-    qList[learnQuestions] = new Question(nullptr,randomInt(0,unknownQuestions-1),-1);
-    question=qList[learnQuestions];
-    position=learnQuestions;
-    learnQuestions++;
-
+        qList.resize(learnQuestions+1);
+        qList[learnQuestions] = new Question(nullptr,random,8);
+        question=qList[learnQuestions];
+        position=learnQuestions;
+        learnQuestions++;
+    }
+    else
+    {
+        qList.resize(learnQuestions+1);
+        qList[learnQuestions] = new Question(nullptr,randomInt(1,testQuestions+unknownQuestions),8);
+        question=qList[learnQuestions];
+        position=learnQuestions;
+        learnQuestions++;
+    }
 }
 
 
@@ -105,8 +102,8 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
 
     if(position==0) back=false;
     if(position>0) back=true;
-    if(position==testQuestions+unknownQuestions) next=false;
-    if(position<testQuestions+unknownQuestions) next=true;
+    if(position==testQuestions+unknownQuestions-1) next=false;
+    if(position<testQuestions+unknownQuestions-1) next=true;
     if(unknownQuestions==1)
     {
         next=false;
@@ -173,5 +170,7 @@ void Session::recalculateQuestions()
 //Funkcja zwracająca losowe liczby
 int Session::randomInt(int min, int max)
 {
+    QTime time = QTime::currentTime();
+    qsrand(static_cast<uint>(time.msec()));
     return qrand() % ((max + 1) - min) + min;
 }
