@@ -70,7 +70,6 @@ void FiszkiMainWindow::on_learnBtn_clicked()
 
 void FiszkiMainWindow::on_testBtn_clicked()
 {
-    session = new Session();
     ui->stackedWidget->setCurrentIndex(2);
     //setBtns();
     test();
@@ -97,8 +96,8 @@ void FiszkiMainWindow::setBtns()
 ////////////////////////////////////LEARN PAGE
 void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
+    session->exportBoxToDB();
     ui->stackedWidget->setCurrentIndex(0);
-    delete session;
 }
 
 void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
@@ -143,11 +142,6 @@ void FiszkiMainWindow::on_rememberBtn_clicked()
     on_nextFlashcardBtn_clicked();
 }
 
-void FiszkiMainWindow::on_stopBtn_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(0);
-}
-
 /////////////////////////////////////////TEST PAGE
 void FiszkiMainWindow::test()
 {
@@ -164,8 +158,13 @@ void FiszkiMainWindow::test()
         ui->questionTextBrowser->setText("");
         ui->explanationTextBrowser->setText("Dodaj nowe fiszki do powtórek, w opcji \"Nauka\"");
     }
-
 }
+
+void FiszkiMainWindow::on_stopBtn_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
 
 void FiszkiMainWindow::on_checkBtn_clicked()
 {

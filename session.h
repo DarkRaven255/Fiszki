@@ -23,29 +23,32 @@ public:
     void learnWords();
     void markQuestion();
     void testWords();
-    void checkAnswer(QString answer);
+    void checkAnswer(const QString &answer);
     void nextLearnBtn();
     void backLearnBtn();
 
     void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions);
+    void exportBoxToDB();
 
     Question *question;
 
 private:
     int unknownQuestions;
     int testQuestions;
-    int learnQuestions;
+    int toLearnWords;
     int testCounterQuestions;
     int position;
 
     QVector<Question*> qList;
-    QVector<Question*> qListTest;
 
     QStringList userList;
 
     int randomInt(int min, int max);
+
+    void randomTable();
     void setUserList();
     void recalculateQuestions();
+
 
     DbManager *dbmanager = new DbManager("database.db");
 

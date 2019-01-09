@@ -1,9 +1,10 @@
 #include "question.h"
 
 Question::Question(QObject *parent, const int &noQuestion, const int &noBox):
-    QObject(parent)
+    QObject(parent),
+    isChanged(false)
 {
-    dbmanager->returnQuestion(noQuestion,noBox,q_id,q_en,e_en,q_pl,e_pl,q_box);
+    dbmanager->returnQuestion(noQuestion,noBox,q_id,q_en,e_en,q_pl,e_pl/*,q_box*/);
 }
 
 int Question::getQ_id()
@@ -31,12 +32,12 @@ QString Question::getE_pl()
     return e_pl;
 }
 
-int Question::qetQ_box()
+bool Question::qet_isChanged()
 {
-    return q_box;
+    return isChanged;
 }
 
-void Question::setQ_box()
+void Question::set_isChanged()
 {
-    q_box++;
+    isChanged=true;
 }

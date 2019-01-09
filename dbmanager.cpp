@@ -121,7 +121,7 @@ void DbManager::closeUserDB()
     qDebug() << "DB closed";
 }
 
-void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl, int &q_box)
+void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl/*, int &q_box*/)
 {
     QSqlQuery query;
 
@@ -146,22 +146,23 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_i
 
     query.exec();
     query.first();
+    query.seek(noQuestion);
 
     int idQuestion=query.record().indexOf("id");
     int idQuestionEN = query.record().indexOf("question_en");
     int idExplanationEN = query.record().indexOf("explanation_en");
     int idQuestionPL = query.record().indexOf("question_pl");
     int idExplanationPL = query.record().indexOf("explanation_pl");
-    int idBox = query.record().indexOf("box");
+    //int idBox = query.record().indexOf("box");
 
-    if(noBox==6)query.seek(noQuestion);
+    ///*if(noBox==6)*/query.seek(noQuestion);
 
     q_id=query.value(idQuestion).toInt();
     q_en=query.value(idQuestionEN).toString();
     e_en=query.value(idExplanationEN).toString();
     q_pl=query.value(idQuestionPL).toString();
     e_pl=query.value(idExplanationPL).toString();
-    q_box=query.value(idBox).toInt();
+    //q_box=query.value(idBox).toInt();
 }
 
 void DbManager::setBox(const int &q_id)
