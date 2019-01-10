@@ -127,20 +127,12 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_i
 
     switch(noBox)
     {
-    case -1: case 0: case 1: case 2: case 3: case 4: case 5:
+    case -1: case 0: case 1: case 2: case 3: case 4: case 5: case 6:
         query.prepare("SELECT * FROM questions WHERE box is (:box)");
         query.bindValue(":box",noBox);
         break;
-    case 6:
-        query.prepare("SELECT * FROM questions WHERE box is not -1 and box < 7");
-        break;
     case 7:
-        query.prepare("SELECT * FROM questions WHERE box > 6");
-        break;
-    case 8:
-        query.prepare("SELECT * FROM questions WHERE id is (:noQuestion)");
-        //query.bindValue(":box",noBox);
-        query.bindValue(":noQuestion",noQuestion);
+        query.prepare("SELECT * FROM questions WHERE box is not -1 and box < 7");
         break;
     }
 
@@ -180,15 +172,12 @@ int DbManager::countQuestions(const int noBox)
 
     switch(noBox)
     {
-    case -1: case 0: case 1: case 2: case 3: case 4: case 5:
+    case -1: case 0: case 1: case 2: case 3: case 4: case 5: case 6:
         query.prepare("SELECT * FROM questions WHERE box is (:box)");
         query.bindValue(":box",noBox);
         break;
-    case 6:
-        query.prepare("SELECT * FROM questions WHERE box is not -1 and box < 7");
-        break;
     case 7:
-        query.prepare("SELECT * FROM questions WHERE box > 6");
+        query.prepare("SELECT * FROM questions WHERE box is not -1 and box < 7");
         break;
     }
 

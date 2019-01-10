@@ -11,11 +11,9 @@ Session::Session(QObject *parent):
     recalculateQuestions();
     setUserList();
 
-    qDebug()<<"Liczba pytan:"<<testQuestions+unknownQuestions;
-    qDebug()<<"Liczba nieznanych pytan:"<<unknownQuestions;
-    qDebug()<<"Liczba znanych pytan:"<<testQuestions;
-
-
+    qDebug()<<"Liczba pytan:"<<noTestWords+noMinusOneWords;
+    qDebug()<<"Liczba nieznanych pytan:"<<noMinusOneWords;
+    qDebug()<<"Liczba znanych pytan:"<<noTestWords;
 }
 
 Session::~Session()
@@ -32,7 +30,7 @@ QStringList Session::getUserList()
 //Funkcja wyświetlająca procent przebiegu lekcji
 int Session::getProgressPercent()
 {
-    return static_cast<int>(static_cast<float>(testCounterQuestions)/static_cast<float>(testQuestions)*100);
+    return static_cast<int>(static_cast<float>(position)/static_cast<float>(noTestWords)*100);
 }
 
 //Funkcja pobierająca pytania do nauki słówek
@@ -45,30 +43,6 @@ void Session::learnWords()
     toLearnWords++;
 }
 
-//void Session::randomTable()
-//{
-//    bool isRepeated;
-//    int random=0;
-
-//    randomList.resize(unknownQuestions);
-//    do
-//    {
-//        int j=0;
-//        isRepeated=false;
-//        random=randomInt(0,unknownQuestions-1);
-//        for(int i=0;i<unknownQuestions;i++)
-//        {
-//            if(randomList[i]==random)
-//            {
-//                isRepeated=true;
-//            }
-//        }
-//        random[j]
-//    }while(isRepeated);
-
-//}
-
-
 void Session::nextLearnBtn()
 {
     if(position<toLearnWords-1)
@@ -76,7 +50,7 @@ void Session::nextLearnBtn()
         position++;
         question=qList.at(position);
     }
-    else if(position==unknownQuestions-1)
+    else if(position==noMinusOneWords-1)
     {
         question=qList.at(position);
     }
@@ -92,24 +66,24 @@ void Session::backLearnBtn()
     question=qList.at(position);
 }
 
-void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions)
+void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check)
 {
-    qDebug()<<position;
+    //qDebug()<<position;
 
     noQuestionsInDB=false;
     noTestQuestions=false;
 
     if(position==0) back=false;
     if(position>0) back=true;
-    if(position==unknownQuestions-1) next=false;
-    if(position<unknownQuestions-1) next=true;
-    if(unknownQuestions==1)
+    if(position==noMinusOneWords-1) next=false;
+    if(position<noMinusOneWords-1) next=true;
+    if(noMinusOneWords==1)
     {
         next=false;
         back=false;
     }
 
-    if(unknownQuestions==0)
+    if(noMinusOneWords==0)
     {
         next=false;
         back=false;
@@ -128,9 +102,10 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
             remember=true;
         }
     }
-    //if(testQuestions==0) noTestQuestions=true;
 
-    if(testCounterQuestions==testQuestions) noTestQuestions=true;
+    if(noTestWords==0) noTestQuestions=true;
+
+    if(position==noTestWords) check=false;
 }
 
 //Funkcja zmieniająca "pudełko"
@@ -139,15 +114,52 @@ void Session::markQuestion()
     question->set_isChanged();
 }
 
+void Session::nextTestBtn()
+{
+    if(position<noTestWords-1)
+    {
+        position++;
+        question=qList.at(position);
+    }
+
+}
+
 //Funkcja pobierająca pytania do testu
 void Session::testWords()
 {
-    recalculateQuestions();
-    if(testCounterQuestions<testQuestions)
+    randomTable();
+    qList.resize(noTestWords);
+    for(int i=0;i<noTestWords;i++)
     {
-        question = new Question(nullptr,randomInt(0,testQuestions),6);
+        qList[i] = new Question(nullptr,testWordsList.at(i),7);
     }
-    testCounterQuestions++;
+    nextTestBtn();
+}
+
+void Session::randomTable()
+{
+    bool isRepeated;
+    int random;
+
+    testWordsList.resize(noTestWords);
+
+    for(int j=0;j<noTestWords;j++)
+    {
+        do
+        {
+            isRepeated=false;
+            random=randomInt(0,noTestWords-1);
+            for(int i=0;i<noTestWords;i++)
+            {
+                if(testWordsList.at(i)==random)
+                {
+
+                    isRepeated=true;
+                }
+            }
+            testWordsList[j]=random;
+        }while(isRepeated);
+    }
 }
 
 //Funkcja sprawdzająca odpowiedź
@@ -157,6 +169,7 @@ void Session::checkAnswer(const QString &answer)
     {
         markQuestion();
     }
+    nextTestBtn();
 }
 
 //Funkcja pobierająca listę użytkowników z bazy danych
@@ -168,8 +181,17 @@ void Session::setUserList()
 //Funkcja przeliczająca pytania w bazie danych
 void Session::recalculateQuestions()
 {
-    unknownQuestions=dbmanager->countQuestions(-1);
-    testQuestions=dbmanager->countQuestions(6);
+    noMinusOneWords=dbmanager->countQuestions(-1);
+    noZeroWords=dbmanager->countQuestions(0);
+    noOneWords=dbmanager->countQuestions(1);
+    noTwoWords=dbmanager->countQuestions(2);
+    noThreeWords=dbmanager->countQuestions(3);
+    noFourWords=dbmanager->countQuestions(4);
+    noFiveWords=dbmanager->countQuestions(5);
+    noSixWords=dbmanager->countQuestions(6);
+
+    noTestWords=dbmanager->countQuestions(7);
+
     toLearnWords=0;
     position=0;
 }
@@ -181,6 +203,21 @@ void Session::exportBoxToDB()
         if(qList.at(i)->qet_isChanged())
         {
             dbmanager->setBox(qList.at(i)->getQ_id());
+            qDebug()<<"DZIALAM";
+        }
+        delete qList.at(i);
+    }
+    recalculateQuestions();
+}
+
+void Session::exportBoxToDB2()
+{
+    for(int i=0;i<noTestWords;i++)
+    {
+        if(qList.at(i)->qet_isChanged())
+        {
+            dbmanager->setBox(qList.at(i)->getQ_id());
+            qDebug()<<"DZIALAM";
         }
         delete qList.at(i);
     }

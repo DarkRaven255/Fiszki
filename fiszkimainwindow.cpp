@@ -65,13 +65,12 @@ void FiszkiMainWindow::on_learnBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
     on_nextFlashcardBtn_clicked();
-    //setBtns();
 }
 
 void FiszkiMainWindow::on_testBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
-    //setBtns();
+    setBtns();
     test();
 }
 
@@ -83,7 +82,7 @@ void FiszkiMainWindow::on_aboutBtn_clicked()
 
 void FiszkiMainWindow::setBtns()
 {
-    session->getButtonStatus(back,remember,next,noQuestionsInDB,noTestQuestions);
+    session->getButtonStatus(back,remember,next,noQuestionsInDB,noTestQuestions,check);
 
     //qDebug()<<"back:"<<back<<"remember:"<<remember<<"next:"<<next;
 
@@ -91,6 +90,7 @@ void FiszkiMainWindow::setBtns()
     ui->backFlashcardBtn->setEnabled(back);
     ui->rememberBtn->setEnabled(remember);
     ui->checkBtn->setEnabled(!noTestQuestions);
+    ui->checkBtn->setEnabled(check);
 }
 
 ////////////////////////////////////LEARN PAGE
@@ -102,7 +102,6 @@ void FiszkiMainWindow::on_endLearnBtn_clicked()
 
 void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
 {
-
     if(!noQuestionsInDB)
     {
 
@@ -121,7 +120,6 @@ void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
         ui->explanationPlTextBrowser->setText("w bazie!");
     }
     setBtns();
-
 }
 
 void FiszkiMainWindow::on_backFlashcardBtn_clicked()
@@ -145,7 +143,6 @@ void FiszkiMainWindow::on_rememberBtn_clicked()
 /////////////////////////////////////////TEST PAGE
 void FiszkiMainWindow::test()
 {
-    setBtns();
     if(!noTestQuestions)
     {
         session->testWords();
@@ -162,6 +159,7 @@ void FiszkiMainWindow::test()
 
 void FiszkiMainWindow::on_stopBtn_clicked()
 {
+    session->exportBoxToDB2();
     ui->stackedWidget->setCurrentIndex(0);
 }
 
@@ -171,5 +169,6 @@ void FiszkiMainWindow::on_checkBtn_clicked()
     session->checkAnswer(ui->enterAnwserLineEdit->text());
     ui->enterAnwserLineEdit->clear();
     ui->progressBar->setValue(session->getProgressPercent());
+    session->markQuestion();
     test();
 }

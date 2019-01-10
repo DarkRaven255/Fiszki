@@ -43,6 +43,7 @@ private:
     bool remember;
     bool noQuestionsInDB;
     bool noTestQuestions;
+    bool check;
 
     QString user;
 };

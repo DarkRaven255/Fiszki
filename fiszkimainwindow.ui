@@ -57,7 +57,7 @@
      </size>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="menu">
      <widget class="QLabel" name="labelSelectUser">
@@ -471,7 +471,7 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
       <property name="text">
-       <string>Wróć</string>
+       <string>Zakończ</string>
       </property>
      </widget>
     </widget>

@@ -27,19 +27,31 @@ public:
     void nextLearnBtn();
     void backLearnBtn();
 
-    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions);
+    void nextTestBtn();
+
+    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check);
     void exportBoxToDB();
+    void exportBoxToDB2();
 
     Question *question;
 
 private:
-    int unknownQuestions;
-    int testQuestions;
+    int noMinusOneWords;
+    int noZeroWords;
+    int noOneWords;
+    int noTwoWords;
+    int noThreeWords;
+    int noFourWords;
+    int noFiveWords;
+    int noSixWords;
+    int noTestWords;
+
     int toLearnWords;
     int testCounterQuestions;
     int position;
 
     QVector<Question*> qList;
+    QVector<int> testWordsList;
 
     QStringList userList;
 
