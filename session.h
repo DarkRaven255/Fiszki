@@ -31,8 +31,8 @@ public:
     void nextTestBtn();
 
     void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check);
-    void exportBoxToDB();
-    void exportBoxToDB2();
+    void exportBoxToDB(Status status);
+    //void exportBoxToDB2();
 
     Question *question;
 
@@ -51,7 +51,7 @@ private:
     int testCounterQuestions;
     int position;
 
-    QVector<Question*> qList;
+    QVector<Question *> qList;
     QVector<int> testWordsList;
 
     QStringList userList;

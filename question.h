@@ -13,7 +13,9 @@ public:
     QString getQ_pl();
     QString getE_pl();
 
-    friend class Session;
+    bool qet_isChanged();
+    void set_isChanged();
+
 
 private:
     int q_id;
@@ -21,9 +23,6 @@ private:
     QString e_en;
     QString q_pl;
     QString e_pl;
-
-    bool qet_isChanged();
-    void set_isChanged();
 
     bool isChanged;
 

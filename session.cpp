@@ -33,39 +33,10 @@ int Session::getProgressPercent()
     return static_cast<int>(static_cast<float>(position-1)/static_cast<float>(noTestWords)*100);
 }
 
-//Funkcja pobierająca pytania do nauki słówek
-void Session::learnWords()
+//Funkcja zmieniająca "pudełko"
+inline void Session::markQuestion()
 {
-    qList.resize(toLearnWords+1);
-    qList[toLearnWords] = new Question(toLearnWords,-1);
-    question=qList.at(toLearnWords);
-    position=toLearnWords;
-    toLearnWords++;
-}
-
-//Funkcja pokazująca następne pytanie
-void Session::nextLearnBtn()
-{
-    if(position<toLearnWords-1)
-    {
-        position++;
-        question=qList.at(position);
-    }
-    else if(position==noMinusOneWords-1)
-    {
-        question=qList.at(position);
-    }
-    else
-    {
-        learnWords();
-    }
-}
-
-//Funkcja cofająca pytanie
-void Session::backLearnBtn()
-{
-    position--;
-    question=qList.at(position);
+    question->set_isChanged();
 }
 
 //Funkcja ustawiająca flagi przycisków
@@ -73,6 +44,7 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
 {
     noQuestionsInDB=false;
     noTestQuestions=false;
+    check=true;
 
     if(position==0) back=false;
     if(position>0) back=true;
@@ -121,11 +93,59 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
     }
 }
 
-//Funkcja zmieniająca "pudełko"
-void Session::markQuestion()
+//Funkcja przeliczająca pytania w bazie danych
+void Session::recalculateQuestions()
 {
-    question->set_isChanged();
+    noMinusOneWords=dbmanager->countQuestions(-1);
+    noZeroWords=dbmanager->countQuestions(0);
+    noOneWords=dbmanager->countQuestions(1);
+    noTwoWords=dbmanager->countQuestions(2);
+    noThreeWords=dbmanager->countQuestions(3);
+    noFourWords=dbmanager->countQuestions(4);
+    noFiveWords=dbmanager->countQuestions(5);
+    noSixWords=dbmanager->countQuestions(6);
+
+    noTestWords=dbmanager->countQuestions(7);
+
+    toLearnWords=0;
+    position=0;
 }
+
+//Funkcja pobierająca pytania do nauki słówek
+void Session::learnWords()
+{
+    qList.resize(toLearnWords+1);
+    qList[toLearnWords] = new Question(toLearnWords,-1);
+    question=qList.at(toLearnWords);
+    position=toLearnWords;
+    toLearnWords++;
+}
+
+//Funkcja pokazująca następne pytanie
+void Session::nextLearnBtn()
+{
+    if(position<toLearnWords-1)
+    {
+        position++;
+        question=qList.at(position);
+    }
+    else if(position==noMinusOneWords-1)
+    {
+        question=qList.at(position);
+    }
+    else
+    {
+        learnWords();
+    }
+}
+
+//Funkcja cofająca pytanie
+void Session::backLearnBtn()
+{
+    position--;
+    question=qList.at(position);
+}
+
 
 //Funkcja pokazująca następne pytanie w opcji testu
 void Session::nextTestBtn()
@@ -203,42 +223,22 @@ void Session::setUserList()
     userList=dbmanager->returnAllUsers();
 }
 
-//Funkcja przeliczająca pytania w bazie danych
-void Session::recalculateQuestions()
+//Funkcja do przeniesienia informacji do DB
+void Session::exportBoxToDB(Status status)
 {
-    noMinusOneWords=dbmanager->countQuestions(-1);
-    noZeroWords=dbmanager->countQuestions(0);
-    noOneWords=dbmanager->countQuestions(1);
-    noTwoWords=dbmanager->countQuestions(2);
-    noThreeWords=dbmanager->countQuestions(3);
-    noFourWords=dbmanager->countQuestions(4);
-    noFiveWords=dbmanager->countQuestions(5);
-    noSixWords=dbmanager->countQuestions(6);
+    int size=0;
+    //qDebug()<<status;
 
-    noTestWords=dbmanager->countQuestions(7);
-
-    toLearnWords=0;
-    position=0;
-}
-
-//Tymczasowa funkcja do przeniesienia informacji do DB
-void Session::exportBoxToDB()
-{
-    for(int i=0;i<toLearnWords;i++)
+    if(status == LearnMode)
     {
-        if(qList.at(i)->qet_isChanged())
-        {
-            dbmanager->setBox(qList.at(i)->getQ_id());
-        }
-        delete qList.at(i);
+        size = toLearnWords;
     }
-    recalculateQuestions();
-}
+    else if(status == TestMode)
+    {
+        size = noTestWords;
+    }
 
-//Tymczasowa funkcja do przeniesienia informacji do DB
-void Session::exportBoxToDB2()
-{
-    for(int i=0;i<noTestWords;i++)
+    for(int i=0;i<size;i++)
     {
         if(qList.at(i)->qet_isChanged())
         {

@@ -37,6 +37,7 @@ private:
 
     void test();
     void setBtns();
+    void setWindowIndex(Status status);
 
     bool next;
     bool back;
@@ -46,6 +47,8 @@ private:
     bool check;
 
     QString user;
+
+    Status currStatus;
 };
 
 #endif // FISZKIMAINWINDOW_H

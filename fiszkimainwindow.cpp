@@ -13,7 +13,7 @@ FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     ui(new Ui::FiszkiMainWindow)
 {
     ui->setupUi(this);
-    ui->stackedWidget->setCurrentIndex(0);
+    setWindowIndex(Menu);
 
     ui->availableUsersComboBox->addItems(session->getUserList());
     connect(ui->enterAnwserLineEdit,SIGNAL(returnPressed()),ui->checkBtn,SIGNAL(clicked()));
@@ -63,13 +63,13 @@ void FiszkiMainWindow::on_availableUsersComboBox_currentIndexChanged(const QStri
 
 void FiszkiMainWindow::on_learnBtn_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(1);
+    setWindowIndex(LearnMode);
     on_nextFlashcardBtn_clicked();
 }
 
 void FiszkiMainWindow::on_testBtn_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(2);
+    setWindowIndex(TestMode);
     setBtns();
     session->testWords();
     test();
@@ -89,14 +89,21 @@ void FiszkiMainWindow::setBtns()
     ui->backFlashcardBtn->setEnabled(back);
     ui->rememberBtn->setEnabled(remember);
     ui->checkBtn->setEnabled(check);
+    ui->enterAnwserLineEdit->setEnabled(check);
     ui->testBtn->setEnabled(!noTestQuestions);
+}
+
+void FiszkiMainWindow::setWindowIndex(Status status)
+{
+    ui->stackedWidget->setCurrentIndex(status);
+    currStatus=status;
 }
 
 ////////////////////////////////////LEARN PAGE
 void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
-    session->exportBoxToDB();
-    ui->stackedWidget->setCurrentIndex(0);
+    session->exportBoxToDB(currStatus);
+    setWindowIndex(Menu);
     setBtns();
 }
 
@@ -104,7 +111,6 @@ void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
 {
     if(!noQuestionsInDB)
     {
-
         session->nextLearnBtn();
 
         ui->questionEnTextBrowser->setText(session->question->getQ_en());
@@ -144,7 +150,7 @@ void FiszkiMainWindow::on_rememberBtn_clicked()
 void FiszkiMainWindow::test()
 {
     ui->progressBar->setValue(session->getProgressPercent());
-    if(!noTestQuestions)
+    if(check)
     {
         ui->questionTextBrowser->setText(session->question->getQ_en());
         ui->explanationTextBrowser->setText(session->question->getE_en());
@@ -158,8 +164,8 @@ void FiszkiMainWindow::test()
 
 void FiszkiMainWindow::on_stopBtn_clicked()
 {
-    session->exportBoxToDB2();
-    ui->stackedWidget->setCurrentIndex(0);
+    session->exportBoxToDB(currStatus);
+    setWindowIndex(Menu);
     setBtns();
 }
 
@@ -168,7 +174,6 @@ void FiszkiMainWindow::on_checkBtn_clicked()
 {
     session->checkAnswer(ui->enterAnwserLineEdit->text());
     ui->enterAnwserLineEdit->clear();
-    session->markQuestion();
     setBtns();
     test();
 }

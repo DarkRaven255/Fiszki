@@ -1,18 +1,11 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
-enum infoQuestions
+enum Status
 {
-    Null = 0,
-    LockNext = 1,
-    LockBack = 2,
-    LockRemember = 3,
-    LockNextBack = 4,
-    LockAll = 5,
-    NoMore = 6,
-    UnlockBack = 7,
-    UnlockNext = 8,
-
+    Menu = 0,
+    LearnMode = 1,
+    TestMode = 2,
 };
 
 #endif // ENUMS_H
