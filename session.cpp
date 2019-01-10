@@ -37,7 +37,7 @@ int Session::getProgressPercent()
 void Session::learnWords()
 {
     qList.resize(toLearnWords+1);
-    qList[toLearnWords] = new Question(nullptr,toLearnWords,-1);
+    qList[toLearnWords] = new Question(toLearnWords,-1);
     question=qList.at(toLearnWords);
     position=toLearnWords;
     toLearnWords++;
@@ -122,7 +122,6 @@ void Session::nextTestBtn()
 {
     if(position<noTestWords)
     {
-
         question=qList.at(position);
         position++;
     }
@@ -139,7 +138,7 @@ void Session::testWords()
     qList.resize(noTestWords);
     for(int i=0;i<noTestWords;i++)
     {
-        qList[i] = new Question(nullptr,testWordsList.at(i),7);
+        qList[i] = new Question(testWordsList.at(i),7);
     }
     nextTestBtn();
 }

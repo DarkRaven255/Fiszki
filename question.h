@@ -1,21 +1,19 @@
 #ifndef QUESTION_H
 #define QUESTION_H
 
-#include <QObject>
 #include "dbmanager.h"
 
-class Question : public QObject
+class Question
 {
-    Q_OBJECT
 public:
-    Question(QObject *parent, const int &noQuestion, const int &noBox);
+    Question(const int &noQuestion, const int &noBox);
     int getQ_id();
     QString getQ_en();
     QString getE_en();
     QString getQ_pl();
     QString getE_pl();
-    bool qet_isChanged();
-    void set_isChanged();
+
+    friend class Session;
 
 private:
     int q_id;
@@ -23,6 +21,9 @@ private:
     QString e_en;
     QString q_pl;
     QString e_pl;
+
+    bool qet_isChanged();
+    void set_isChanged();
 
     bool isChanged;
 

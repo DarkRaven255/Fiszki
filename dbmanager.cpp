@@ -145,16 +145,12 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_i
     int idExplanationEN = query.record().indexOf("explanation_en");
     int idQuestionPL = query.record().indexOf("question_pl");
     int idExplanationPL = query.record().indexOf("explanation_pl");
-    //int idBox = query.record().indexOf("box");
-
-    ///*if(noBox==6)*/query.seek(noQuestion);
 
     q_id=query.value(idQuestion).toInt();
     q_en=query.value(idQuestionEN).toString();
     e_en=query.value(idExplanationEN).toString();
     q_pl=query.value(idQuestionPL).toString();
     e_pl=query.value(idExplanationPL).toString();
-    //q_box=query.value(idBox).toInt();
 }
 
 void DbManager::setBox(const int &q_id)

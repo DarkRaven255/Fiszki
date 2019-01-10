@@ -1,7 +1,6 @@
 #include "question.h"
 
-Question::Question(QObject *parent, const int &noQuestion, const int &noBox):
-    QObject(parent),
+Question::Question(const int &noQuestion, const int &noBox):
     isChanged(false)
 {
     dbmanager->returnQuestion(noQuestion,noBox,q_id,q_en,e_en,q_pl,e_pl/*,q_box*/);
@@ -15,6 +14,7 @@ int Question::getQ_id()
 QString Question::getQ_en()
 {
     return q_en;
+
 }
 
 QString Question::getE_en()

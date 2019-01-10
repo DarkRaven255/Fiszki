@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include <QVector>
+#include <QObject>
 
 class Session : public QObject
 {
@@ -60,7 +61,6 @@ private:
     void randomTable();
     void setUserList();
     void recalculateQuestions();
-
 
     DbManager *dbmanager = new DbManager("database.db");
 
