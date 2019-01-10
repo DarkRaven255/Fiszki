@@ -14,7 +14,6 @@ int Question::getQ_id()
 QString Question::getQ_en()
 {
     return q_en;
-
 }
 
 QString Question::getE_en()

@@ -104,6 +104,15 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
         }
     }
 
+    if(noTestWords==0)
+    {
+        noTestQuestions=true;
+    }
+    else
+    {
+        noTestQuestions=false;
+    }
+
     if(position>noTestWords)
     {
         noTestQuestions=true;
@@ -134,11 +143,18 @@ void Session::nextTestBtn()
 //Funkcja pobierająca pytania do testu
 void Session::testWords()
 {
-    randomTable();
     qList.resize(noTestWords);
-    for(int i=0;i<noTestWords;i++)
+    if(noTestWords==1)
     {
-        qList[i] = new Question(testWordsList.at(i),7);
+        qList[0] = new Question(0,7);
+    }
+    else
+    {
+        randomTable();
+        for(int i=0;i<noTestWords;i++)
+        {
+            qList[i] = new Question(testWordsList.at(i),7);
+        }
     }
     nextTestBtn();
 }

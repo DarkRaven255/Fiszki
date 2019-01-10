@@ -85,13 +85,11 @@ void FiszkiMainWindow::setBtns()
 {
     session->getButtonStatus(back,remember,next,noQuestionsInDB,noTestQuestions,check);
 
-    //qDebug()<<"back:"<<back<<"remember:"<<remember<<"next:"<<next;
-
     ui->nextFlashcardBtn->setEnabled(next);
     ui->backFlashcardBtn->setEnabled(back);
     ui->rememberBtn->setEnabled(remember);
-    //ui->checkBtn->setEnabled(!noTestQuestions);
     ui->checkBtn->setEnabled(check);
+    ui->testBtn->setEnabled(!noTestQuestions);
 }
 
 ////////////////////////////////////LEARN PAGE
@@ -144,6 +142,7 @@ void FiszkiMainWindow::on_rememberBtn_clicked()
 /////////////////////////////////////////TEST PAGE
 void FiszkiMainWindow::test()
 {
+    ui->progressBar->setValue(session->getProgressPercent());
     if(!noTestQuestions)
     {
         ui->questionTextBrowser->setText(session->question->getQ_en());
@@ -151,7 +150,7 @@ void FiszkiMainWindow::test()
     }
     else
     {
-        ui->questionTextBrowser->setText("");
+        ui->questionTextBrowser->setText("Koniec");
         ui->explanationTextBrowser->setText("Dodaj nowe fiszki do powtórek, w opcji \"Nauka\"");
     }
 }
@@ -167,7 +166,6 @@ void FiszkiMainWindow::on_checkBtn_clicked()
 {
     session->checkAnswer(ui->enterAnwserLineEdit->text());
     ui->enterAnwserLineEdit->clear();
-    ui->progressBar->setValue(session->getProgressPercent());
     session->markQuestion();
     setBtns();
     test();
