@@ -104,19 +104,20 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
         }
     }
 
-    if(noTestWords==0)
-    {
-        noTestQuestions=true;
-    }
-    else
-    {
-        noTestQuestions=false;
-    }
-
     if(position>noTestWords)
     {
         noTestQuestions=true;
         check=false;
+    }
+
+    if(noTestWords==0)
+    {
+        noTestQuestions=true;
+    }
+
+    if(noTestWords!=0)
+    {
+        noTestQuestions=false;
     }
 }
 
@@ -159,7 +160,7 @@ void Session::testWords()
     nextTestBtn();
 }
 
-//Funkcja generująca losową tablicę
+//Funkcja generująca losową tablicę bez powtórzeń
 void Session::randomTable()
 {
     bool isRepeated;

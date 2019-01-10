@@ -97,6 +97,7 @@ void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
     session->exportBoxToDB();
     ui->stackedWidget->setCurrentIndex(0);
+    setBtns();
 }
 
 void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
@@ -159,6 +160,7 @@ void FiszkiMainWindow::on_stopBtn_clicked()
 {
     session->exportBoxToDB2();
     ui->stackedWidget->setCurrentIndex(0);
+    setBtns();
 }
 
 
