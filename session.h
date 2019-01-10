@@ -21,12 +21,14 @@ public:
 
     int getProgressPercent();
 
-    void learnWords();
+
     void markQuestion();
     void testWords();
     void checkAnswer(const QString &answer);
-    void nextLearnBtn();
-    void backLearnBtn();
+
+//    void learnWords();
+//    void nextLearnBtn();
+//    void backLearnBtn();
 
     void nextTestBtn();
 
@@ -36,7 +38,9 @@ public:
 
     Question *question;
 
-private:
+protected:
+    QVector<Question*> qList;
+
     int noMinusOneWords;
     int noZeroWords;
     int noOneWords;
@@ -51,7 +55,7 @@ private:
     int testCounterQuestions;
     int position;
 
-    QVector<Question*> qList;
+private:
     QVector<int> testWordsList;
 
     QStringList userList;

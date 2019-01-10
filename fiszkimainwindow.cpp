@@ -105,7 +105,7 @@ void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
     if(!noQuestionsInDB)
     {
 
-        session->nextLearnBtn();
+        learn->nextLearnBtn();
 
         ui->questionEnTextBrowser->setText(session->question->getQ_en());
         ui->explanationEnTextBrowser->setText(session->question->getE_en());
@@ -124,7 +124,7 @@ void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
 
 void FiszkiMainWindow::on_backFlashcardBtn_clicked()
 {
-    session->backLearnBtn();
+    learn->backLearnBtn();
 
     ui->questionEnTextBrowser->setText(session->question->getQ_en());
     ui->explanationEnTextBrowser->setText(session->question->getE_en());

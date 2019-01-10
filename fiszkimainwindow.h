@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "session.h"
+#include "learn.h"
 
 namespace Ui {
 class FiszkiMainWindow;
@@ -34,6 +35,8 @@ private:
     Ui::FiszkiMainWindow *ui;
 
     Session *session = new Session();
+
+    Learn *learn;
 
     void test();
     void setBtns();

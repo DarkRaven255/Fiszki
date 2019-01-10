@@ -33,40 +33,40 @@ int Session::getProgressPercent()
     return static_cast<int>(static_cast<float>(position-1)/static_cast<float>(noTestWords)*100);
 }
 
-//Funkcja pobierająca pytania do nauki słówek
-void Session::learnWords()
-{
-    qList.resize(toLearnWords+1);
-    qList[toLearnWords] = new Question(toLearnWords,-1);
-    question=qList.at(toLearnWords);
-    position=toLearnWords;
-    toLearnWords++;
-}
+////Funkcja pobierająca pytania do nauki słówek
+//void Session::learnWords()
+//{
+//    qList.resize(toLearnWords+1);
+//    qList[toLearnWords] = new Question(toLearnWords,-1);
+//    question=qList.at(toLearnWords);
+//    position=toLearnWords;
+//    toLearnWords++;
+//}
 
-//Funkcja pokazująca następne pytanie
-void Session::nextLearnBtn()
-{
-    if(position<toLearnWords-1)
-    {
-        position++;
-        question=qList.at(position);
-    }
-    else if(position==noMinusOneWords-1)
-    {
-        question=qList.at(position);
-    }
-    else
-    {
-        learnWords();
-    }
-}
+////Funkcja pokazująca następne pytanie
+//void Session::nextLearnBtn()
+//{
+//    if(position<toLearnWords-1)
+//    {
+//        position++;
+//        question=qList.at(position);
+//    }
+//    else if(position==noMinusOneWords-1)
+//    {
+//        question=qList.at(position);
+//    }
+//    else
+//    {
+//        learnWords();
+//    }
+//}
 
-//Funkcja cofająca pytanie
-void Session::backLearnBtn()
-{
-    position--;
-    question=qList.at(position);
-}
+////Funkcja cofająca pytanie
+//void Session::backLearnBtn()
+//{
+//    position--;
+//    question=qList.at(position);
+//}
 
 //Funkcja ustawiająca flagi przycisków
 void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check)
