@@ -71,6 +71,7 @@ void FiszkiMainWindow::on_testBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
     setBtns();
+    session->testWords();
     test();
 }
 
@@ -89,7 +90,7 @@ void FiszkiMainWindow::setBtns()
     ui->nextFlashcardBtn->setEnabled(next);
     ui->backFlashcardBtn->setEnabled(back);
     ui->rememberBtn->setEnabled(remember);
-    ui->checkBtn->setEnabled(!noTestQuestions);
+    //ui->checkBtn->setEnabled(!noTestQuestions);
     ui->checkBtn->setEnabled(check);
 }
 
@@ -145,8 +146,6 @@ void FiszkiMainWindow::test()
 {
     if(!noTestQuestions)
     {
-        session->testWords();
-
         ui->questionTextBrowser->setText(session->question->getQ_en());
         ui->explanationTextBrowser->setText(session->question->getE_en());
     }
@@ -170,5 +169,6 @@ void FiszkiMainWindow::on_checkBtn_clicked()
     ui->enterAnwserLineEdit->clear();
     ui->progressBar->setValue(session->getProgressPercent());
     session->markQuestion();
+    setBtns();
     test();
 }
