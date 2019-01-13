@@ -36,7 +36,7 @@ QStringList Session::getUserList()
 //Funkcja dodająca nowego użytkownika i przypisująca mu wolny noBox
 bool Session::addUser(const QString &name)
 {
-    if(dbmanager->countUsers()<=MaxUsers)
+    if(dbmanager->countUsers()>=MaxUsers)
     {
         return false;
     }
