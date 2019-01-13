@@ -15,20 +15,10 @@ DbManager::DbManager(const QString &name)
     {
        qDebug() << "ERROR: " << database.lastError();
     }
-//    if(!database.tables().contains(QLatin1String("users")))
-//    {
-//        QSqlQuery query("CREATE TABLE users(id integer primary key, name text, level integer)");
-//        if(!query.isActive())
-//        {
-//            qDebug() << "ERROR: " << query.lastError().text();
-//        }
-//    }
     if(!database.tables().contains(QLatin1String("questions")))
     {
         qDebug() << "NO QUESTIONS IN DB!";
-//        QSqlQuery query("CREATE TABLE questions(id integer primary key, question_en text, explanation_en text, question_pl text, explanation_pl text, box integer)");
     }
-
 }
 
 DbManager::~DbManager()
@@ -113,6 +103,13 @@ bool DbManager::removeUser(const QString &name)
     return true;
 }
 
+void DbManager::resetUserBox(const QString &userBox)
+{
+    QSqlQuery query;
+    query.exec("UPDATE questions SET " + userBox + "=-1");
+}
+
+
 QStringList DbManager::returnUserList()
 {
     QStringList userlist;
@@ -161,7 +158,6 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QS
     e_en=query.value(idExplanationEN).toString();
     q_pl=query.value(idQuestionPL).toString();
     e_pl=query.value(idExplanationPL).toString();
-    qDebug()<<q_en;
 }
 
 void DbManager::setBox(const int &q_id, const QString &userBox)

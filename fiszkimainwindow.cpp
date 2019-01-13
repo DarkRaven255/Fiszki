@@ -47,6 +47,8 @@ void FiszkiMainWindow::setBtns()
 
     ui->testBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
     ui->learnBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
+
+    ui->setUserBtn->setEnabled(!(ui->availableUsersComboBox->count()==0));
 }
 
 void FiszkiMainWindow::setWindowIndex(Status status)
@@ -70,6 +72,7 @@ void FiszkiMainWindow::on_userListBtn_clicked()
         ui->availableUsersComboBox->clear();
         ui->availableUsersComboBox->addItems(session->getUserList());
     }
+    setBtns();
 }
 
 void FiszkiMainWindow::on_learnBtn_clicked()

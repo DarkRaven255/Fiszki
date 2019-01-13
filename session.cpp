@@ -9,10 +9,6 @@ Session::Session(QObject *parent):
     position(0)
 {
     setUserList();
-
-    qDebug()<<"Liczba pytan:"<<noTestWords+noMinusOneWords;
-    qDebug()<<"Liczba nieznanych pytan:"<<noMinusOneWords;
-    qDebug()<<"Liczba znanych pytan:"<<noTestWords;
 }
 
 Session::~Session()
@@ -70,6 +66,7 @@ bool Session::addUser(const QString &name)
 
     if(dbmanager->addUser(name,freeBox))
     {
+        dbmanager->resetUserBox("box"+static_cast<QString>(freeBox+48));
         return true;
     }
     return false;
