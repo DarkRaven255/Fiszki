@@ -1,8 +1,8 @@
 #include "user.h"
 
-User::User(QString setName, int setNoBox, QObject *parent):
-  name(setName),
-  noBox(setNoBox)
+User::User(QString setName,QObject *parent):
+  name(setName)/*,
+  noBox(setNoBox)*/
 {
 
 }

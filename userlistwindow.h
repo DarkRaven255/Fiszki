@@ -2,7 +2,7 @@
 #define SELECTUSERLISTWINDOW_H
 
 #include <QDialog>
-#include "dbmanager.h"
+#include "session.h"
 
 namespace Ui {
 class UserListWindow;
@@ -13,10 +13,10 @@ class UserListWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit UserListWindow(QWidget *parent = nullptr);
+    explicit UserListWindow(Session *session, QWidget *parent = nullptr);
     ~UserListWindow();
     inline void refresh();
-    DbManager *dbmanager;
+    //DbManager *dbmanager;
 
 private slots:
     void on_okBtn_clicked();
@@ -26,6 +26,8 @@ private slots:
 
 private:
     Ui::UserListWindow *ui;
+    Session *session;
+    DbManager *dbmanager;
 
 };
 

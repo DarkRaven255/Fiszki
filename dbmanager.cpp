@@ -4,6 +4,7 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QtDebug>
+#include "enums.h"
 
 DbManager::DbManager(const QString &name)
 {
@@ -35,7 +36,7 @@ DbManager::~DbManager()
 
 }
 
-bool DbManager::addUser(const QString &name)
+bool DbManager::addUser(const QString &name, const int &noBox)
 {
     if(!findUser(name))
     {
@@ -43,7 +44,7 @@ bool DbManager::addUser(const QString &name)
 
         query.prepare("INSERT INTO users (name, noBox) VALUES (:name, :noBox)");
         query.bindValue(":name", name);
-        query.bindValue(":noBox", 0);
+        query.bindValue(":noBox", noBox);
         if(query.exec())
         {
             return true;
@@ -199,29 +200,16 @@ int DbManager::countUsers()
     return noUsers;
 }
 
-QVector<int> DbManager::returnBoxesInUse()
+void DbManager::returnBoxesInUse(QVector<int> &listFreeBoxes)
 {
-    QSqlQuery query;
-    QVector<int> *listFreeBoxes = nullptr;
-    //listFreeBoxes->resize(5);
-
     int noUsers=countUsers();
-    qDebug()<<noUsers;
 
+    QSqlQuery query;
     query.exec("SELECT * FROM users");
 
-    for(int i=0;i<noUsers && i<5;i++)
+    for(int i=0;i<noUsers && i<MaxUsers;i++)
     {
         query.seek(i);
-        qDebug()<<query.value(query.record().indexOf("noBox")).toInt();
-        //listFreeBoxes = query.value(query.record().indexOf("noBox")).toInt();
-        listFreeBoxes->push_back(query.value(query.record().indexOf("noBox")).toInt());
+        listFreeBoxes[i] = query.value(query.record().indexOf("noBox")).toInt();
     }
-
-//    for(int i=0;i<5;i++)
-//    {
-//        qDebug()<<listFreeBoxes[i];
-//    }
-
-    return *listFreeBoxes;
 }

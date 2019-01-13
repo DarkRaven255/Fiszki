@@ -30,6 +30,7 @@ public:
     void nextTestBtn();
     void checkAnswer(const QString &answer);
 
+    bool addUser(const QString &name);
     void setUser(const QString &name);
     QString getUser();
     void deleteUser();
@@ -55,7 +56,7 @@ private:
 
     QVector<Question *> qList;
     QVector<int> testWordsList;
-    QVector<int> *boxesInUse;
+    QVector<int> boxesInUse;
 
     QStringList userList;
 

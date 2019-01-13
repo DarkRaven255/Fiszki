@@ -2,9 +2,10 @@
 #include "ui_userlistwindow.h"
 #include "addnewuserwindow.h"
 
-UserListWindow::UserListWindow(QWidget *parent) :
+UserListWindow::UserListWindow(Session *session, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::UserListWindow)
+    ui(new Ui::UserListWindow),
+    session(session)
 {
     ui->setupUi(this);
     ui->okBtn->setFocus();
@@ -23,7 +24,7 @@ void UserListWindow::on_okBtn_clicked()
 
 void UserListWindow::on_addNewUserBtn_clicked()
 {
-    AddNewUserWindow addnewuserwindow;
+    AddNewUserWindow addnewuserwindow(session,this);
     addnewuserwindow.exec();
     if(&AddNewUserWindow::destroyed)
     {

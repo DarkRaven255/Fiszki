@@ -2,7 +2,7 @@
 #define ADDNEWUSERWINDOW_H
 
 #include <QDialog>
-#include "dbmanager.h"
+#include "session.h"
 
 
 namespace Ui {
@@ -14,7 +14,7 @@ class AddNewUserWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddNewUserWindow(QWidget *parent = nullptr);
+    explicit AddNewUserWindow(Session *session, QWidget *parent = nullptr);
     ~AddNewUserWindow();
 
 public slots:
@@ -22,7 +22,7 @@ public slots:
 
 private:
     Ui::AddNewUserWindow *ui;
-    DbManager *dbmanager;
+    Session *session;
 };
 
 #endif // ADDNEWUSERWINDOW_H

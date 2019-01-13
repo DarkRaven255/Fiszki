@@ -8,4 +8,9 @@ enum Status
     TestMode = 2,
 };
 
+enum Constans
+{
+    MaxUsers = 5,
+};
+
 #endif // ENUMS_H

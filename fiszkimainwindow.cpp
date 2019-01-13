@@ -63,7 +63,7 @@ void FiszkiMainWindow::on_exitBtn_clicked()
 
 void FiszkiMainWindow::on_userListBtn_clicked()
 {
-    UserListWindow userlistwindow;
+    UserListWindow userlistwindow(session,this);
     userlistwindow.exec();
     if(&UserListWindow::destroyed)
     {

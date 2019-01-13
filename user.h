@@ -7,7 +7,7 @@ class User : public QObject
 {
     Q_OBJECT
 public:
-    explicit User (QString setName, int setNoBox, QObject *parent = nullptr);
+    explicit User (QString setName, QObject *parent = nullptr);
     ~User();
 
     QString getUserName();

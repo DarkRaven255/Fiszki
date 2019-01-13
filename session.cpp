@@ -34,10 +34,50 @@ QStringList Session::getUserList()
     return userList;
 }
 
+bool Session::addUser(const QString &name)
+{
+    if(dbmanager->countUsers()<=MaxUsers)
+    {
+        return false;
+    }
+
+    boxesInUse.resize(MaxUsers);
+    boxesInUse.fill(0,MaxUsers);
+
+    dbmanager->returnBoxesInUse(boxesInUse);
+
+    ///RANDOM TABLE DO UNIFIKACJI !!!////////////////////////////////////////////////////////////////////
+    int isRepeated;
+    int freeBox = 1;
+
+    for(int j=0;j<dbmanager->countUsers();j++)
+    {
+        do
+        {
+            isRepeated=false;
+            int random=randomInt(1,MaxUsers);
+            for(int i=0;i<MaxUsers;i++)
+            {
+                if(boxesInUse.at(i)==random)
+                {
+
+                    isRepeated=true;
+                }
+            }
+            freeBox=random;
+        }while(isRepeated);
+    }
+
+    if(dbmanager->addUser(name,freeBox))
+    {
+        return true;
+    }
+    return false;
+}
+
 void Session::setUser(const QString &name)
 {
-    //*boxesInUse=dbmanager->returnBoxesInUse();
-    user = new User(name,0,this);
+    user = new User(name,this);
 }
 
 QString Session::getUser()

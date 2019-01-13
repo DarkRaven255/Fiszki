@@ -14,6 +14,7 @@ class FiszkiMainWindow : public QMainWindow
 
 public:
     explicit FiszkiMainWindow(QWidget *parent = nullptr);
+
     ~FiszkiMainWindow();
 
 private slots:
