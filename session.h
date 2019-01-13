@@ -4,7 +4,7 @@
 #include "dbmanager.h"
 #include "question.h"
 #include "enums.h"
-#include <iostream>
+#include "user.h"
 
 #include <QVector>
 #include <QObject>
@@ -17,22 +17,24 @@ public:
     explicit Session(QObject *parent = nullptr);
     ~Session();
 
-    QStringList getUserList();
-
     int getProgressPercent();
+    void markQuestion();
+    void exportBoxToDB(Status status);
+    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check);
 
     void learnWords();
-    void markQuestion();
-    void testWords();
-    void checkAnswer(const QString &answer);
     void nextLearnBtn();
     void backLearnBtn();
 
+    void testWords();
     void nextTestBtn();
+    void checkAnswer(const QString &answer);
 
-    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check);
-    void exportBoxToDB(Status status);
-    //void exportBoxToDB2();
+    void setUser(const QString &name);
+    QString getUser();
+    void deleteUser();
+
+    QStringList getUserList();
 
     Question *question;
 
@@ -53,6 +55,7 @@ private:
 
     QVector<Question *> qList;
     QVector<int> testWordsList;
+    QVector<int> *boxesInUse;
 
     QStringList userList;
 
@@ -63,6 +66,7 @@ private:
     void recalculateQuestions();
 
     DbManager *dbmanager = new DbManager("database.db");
+    User *user;
 
 signals:
 

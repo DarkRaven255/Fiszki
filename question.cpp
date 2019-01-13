@@ -3,7 +3,7 @@
 Question::Question(const int &noQuestion, const int &noBox):
     isChanged(false)
 {
-    dbmanager->returnQuestion(noQuestion,noBox,q_id,q_en,e_en,q_pl,e_pl/*,q_box*/);
+    dbmanager->returnQuestion(noQuestion,noBox,q_id,q_en,e_en,q_pl,e_pl);
 }
 
 int Question::getQ_id()

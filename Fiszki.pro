@@ -33,7 +33,8 @@ SOURCES += \
     errorcreatinguserwindow.cpp \
     aboutwindow.cpp \
     question.cpp \
-    session.cpp
+    session.cpp \
+    user.cpp
 
 HEADERS += \
         fiszkimainwindow.h \
@@ -44,7 +45,8 @@ HEADERS += \
     aboutwindow.h \
     question.h \
     session.h \
-    enums.h
+    enums.h \
+    user.h
 
 FORMS += \
         fiszkimainwindow.ui \

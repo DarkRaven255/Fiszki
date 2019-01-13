@@ -14,14 +14,14 @@ DbManager::DbManager(const QString &name)
     {
        qDebug() << "ERROR: " << database.lastError();
     }
-    if(!database.tables().contains(QLatin1String("users")))
-    {
-        QSqlQuery query("CREATE TABLE users(id integer primary key, name text, level integer)");
-        if(!query.isActive())
-        {
-            qDebug() << "ERROR: " << query.lastError().text();
-        }
-    }
+//    if(!database.tables().contains(QLatin1String("users")))
+//    {
+//        QSqlQuery query("CREATE TABLE users(id integer primary key, name text, level integer)");
+//        if(!query.isActive())
+//        {
+//            qDebug() << "ERROR: " << query.lastError().text();
+//        }
+//    }
     if(!database.tables().contains(QLatin1String("questions")))
     {
         qDebug() << "NO QUESTIONS IN DB!";
@@ -41,9 +41,9 @@ bool DbManager::addUser(const QString &name)
     {
         QSqlQuery query;
 
-        query.prepare("INSERT INTO users (name, level) VALUES (:name, :level)");
+        query.prepare("INSERT INTO users (name, noBox) VALUES (:name, :noBox)");
         query.bindValue(":name", name);
-        query.bindValue(":level", 0);
+        query.bindValue(":noBox", 0);
         if(query.exec())
         {
             return true;
@@ -101,7 +101,7 @@ bool DbManager::removeUser(const QString &name)
     return true;
 }
 
-QStringList DbManager::returnAllUsers()
+QStringList DbManager::returnUserList()
 {
     QStringList userlist;
     QSqlQuery query("SELECT * FROM users");
@@ -121,7 +121,7 @@ void DbManager::closeUserDB()
     qDebug() << "DB closed";
 }
 
-void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl/*, int &q_box*/)
+void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
 {
     QSqlQuery query;
 
@@ -184,4 +184,44 @@ int DbManager::countQuestions(const int noBox)
         query.first();
     }
     return noQuestions;
+}
+
+int DbManager::countUsers()
+{
+    QSqlQuery query;
+    int noUsers=0;
+    query.exec("SELECT * FROM users");
+    if(query.last())
+    {
+        noUsers = query.at()+1;
+        query.first();
+    }
+    return noUsers;
+}
+
+QVector<int> DbManager::returnBoxesInUse()
+{
+    QSqlQuery query;
+    QVector<int> *listFreeBoxes = nullptr;
+    //listFreeBoxes->resize(5);
+
+    int noUsers=countUsers();
+    qDebug()<<noUsers;
+
+    query.exec("SELECT * FROM users");
+
+    for(int i=0;i<noUsers && i<5;i++)
+    {
+        query.seek(i);
+        qDebug()<<query.value(query.record().indexOf("noBox")).toInt();
+        //listFreeBoxes = query.value(query.record().indexOf("noBox")).toInt();
+        listFreeBoxes->push_back(query.value(query.record().indexOf("noBox")).toInt());
+    }
+
+//    for(int i=0;i<5;i++)
+//    {
+//        qDebug()<<listFreeBoxes[i];
+//    }
+
+    return *listFreeBoxes;
 }

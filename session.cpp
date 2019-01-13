@@ -21,10 +21,33 @@ Session::~Session()
     dbmanager->closeUserDB();
 }
 
+//Funkcja pobierająca listę użytkowników z bazy danych
+void Session::setUserList()
+{
+    userList=dbmanager->returnUserList();
+}
+
 //Funkcja zwracająca listę użytkowników
 QStringList Session::getUserList()
 {
+    setUserList();
     return userList;
+}
+
+void Session::setUser(const QString &name)
+{
+    //*boxesInUse=dbmanager->returnBoxesInUse();
+    user = new User(name,0,this);
+}
+
+QString Session::getUser()
+{
+    return user->getUserName();
+}
+
+void Session::deleteUser()
+{
+    delete user;
 }
 
 //Funkcja wyświetlająca procent przebiegu lekcji
@@ -34,7 +57,7 @@ int Session::getProgressPercent()
 }
 
 //Funkcja zmieniająca "pudełko"
-inline void Session::markQuestion()
+void Session::markQuestion()
 {
     question->set_isChanged();
 }
@@ -215,12 +238,6 @@ void Session::checkAnswer(const QString &answer)
         markQuestion();
     }
     nextTestBtn();
-}
-
-//Funkcja pobierająca listę użytkowników z bazy danych
-void Session::setUserList()
-{
-    userList=dbmanager->returnAllUsers();
 }
 
 //Funkcja do przeniesienia informacji do DB

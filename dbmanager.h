@@ -12,11 +12,13 @@ public:
     bool findUser(const QString& name);
     bool removeAllUsers();
     bool removeUser(const QString& name);
-    QStringList returnAllUsers();
+    QStringList returnUserList();
     void closeUserDB();
-    void returnQuestion(const int &noQuestion, const int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl/*, int &q_box*/);
+    void returnQuestion(const int &noQuestion, const int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
     void setBox(const int &q_id);
     int countQuestions(const int noBox);
+    int countUsers();
+    QVector<int> returnBoxesInUse();
 
 private:
     QSqlDatabase database;

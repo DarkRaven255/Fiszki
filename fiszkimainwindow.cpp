@@ -3,7 +3,6 @@
 #include "userlistwindow.h"
 #include "addnewuserwindow.h"
 #include "aboutwindow.h"
-#include "question.h"
 #include "enums.h"
 
 #include <QDebug>
@@ -25,9 +24,6 @@ FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     ui->explanationPlTextBrowser->setFontPointSize(10);
     ui->explanationTextBrowser->setFontPointSize(10);
 
-    ui->userListBtn->setEnabled(false);
-    ui->availableUsersComboBox->setEnabled(false);
-
     setBtns();
 }
 
@@ -35,6 +31,28 @@ FiszkiMainWindow::~FiszkiMainWindow()
 {
     delete ui;
     delete session;
+}
+
+
+void FiszkiMainWindow::setBtns()
+{
+    session->getButtonStatus(back,remember,next,noQuestionsInDB,noTestQuestions,check);
+
+    ui->nextFlashcardBtn->setEnabled(next);
+    ui->backFlashcardBtn->setEnabled(back);
+    ui->rememberBtn->setEnabled(remember);
+    ui->checkBtn->setEnabled(check);
+    ui->enterAnwserLineEdit->setEnabled(check);
+    ui->testBtn->setEnabled(!noTestQuestions);
+
+    ui->testBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
+    ui->learnBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
+}
+
+void FiszkiMainWindow::setWindowIndex(Status status)
+{
+    ui->stackedWidget->setCurrentIndex(status);
+    currStatus=status;
 }
 
 /////////////////////////////////////////////MAIN MENU PAGE
@@ -52,13 +70,6 @@ void FiszkiMainWindow::on_userListBtn_clicked()
         ui->availableUsersComboBox->clear();
         ui->availableUsersComboBox->addItems(session->getUserList());
     }
-}
-
-void FiszkiMainWindow::on_availableUsersComboBox_currentIndexChanged(const QString &selectedUser)
-{
-    user=selectedUser;
-    ui->activeUser->setText(user);
-    ui->activeUser_2->setText(user);
 }
 
 void FiszkiMainWindow::on_learnBtn_clicked()
@@ -81,22 +92,23 @@ void FiszkiMainWindow::on_aboutBtn_clicked()
     aboutwindow.exec();
 }
 
-void FiszkiMainWindow::setBtns()
+void FiszkiMainWindow::on_setUserBtn_clicked()
 {
-    session->getButtonStatus(back,remember,next,noQuestionsInDB,noTestQuestions,check);
-
-    ui->nextFlashcardBtn->setEnabled(next);
-    ui->backFlashcardBtn->setEnabled(back);
-    ui->rememberBtn->setEnabled(remember);
-    ui->checkBtn->setEnabled(check);
-    ui->enterAnwserLineEdit->setEnabled(check);
-    ui->testBtn->setEnabled(!noTestQuestions);
-}
-
-void FiszkiMainWindow::setWindowIndex(Status status)
-{
-    ui->stackedWidget->setCurrentIndex(status);
-    currStatus=status;
+    ui->testBtn->setEnabled(ui->availableUsersComboBox->isEnabled());
+    ui->learnBtn->setEnabled(ui->availableUsersComboBox->isEnabled());
+    if(!ui->availableUsersComboBox->isEnabled())
+    {
+        ui->setUserBtn->setText("OK");
+        session->deleteUser();
+    }
+    else
+    {
+        ui->setUserBtn->setText("Zmień");
+        session->setUser(ui->availableUsersComboBox->currentText());
+        ui->activeUser->setText(session->getUser());
+        ui->activeUser_2->setText(session->getUser());
+    }
+    ui->availableUsersComboBox->setEnabled(!ui->availableUsersComboBox->isEnabled());
 }
 
 ////////////////////////////////////LEARN PAGE
@@ -158,7 +170,7 @@ void FiszkiMainWindow::test()
     else
     {
         ui->questionTextBrowser->setText("Koniec");
-        ui->explanationTextBrowser->setText("Dodaj nowe fiszki do powtórek, w opcji \"Nauka\"");
+        ui->explanationTextBrowser->setText("Wróć jutro, lub dodaj nowe fiszki do powtórek, w opcji \"Nauka\"");
     }
 }
 

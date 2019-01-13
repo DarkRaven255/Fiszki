@@ -57,7 +57,7 @@
      </size>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="menu">
      <widget class="QLabel" name="labelSelectUser">
@@ -156,6 +156,19 @@
       </property>
       <property name="text">
        <string>O programie</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="setUserBtn">
+      <property name="geometry">
+       <rect>
+        <x>440</x>
+        <y>100</y>
+        <width>51</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>OK</string>
       </property>
      </widget>
     </widget>

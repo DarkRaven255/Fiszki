@@ -27,8 +27,9 @@ private slots:
     void on_rememberBtn_clicked();
     void on_stopBtn_clicked();
     void on_testBtn_clicked();
-    void on_availableUsersComboBox_currentIndexChanged(const QString &arg1);
     void on_aboutBtn_clicked();
+
+    void on_setUserBtn_clicked();
 
 private:
     Ui::FiszkiMainWindow *ui;

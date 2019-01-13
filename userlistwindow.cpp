@@ -41,7 +41,7 @@ void UserListWindow::on_deleteAllUsersBtn_clicked()
 void UserListWindow::refresh()
 {
     ui->listWidget->clear();
-    ui->listWidget->addItems(dbmanager->returnAllUsers());
+    ui->listWidget->addItems(dbmanager->returnUserList());
 }
 
 void UserListWindow::on_deleteUser_clicked()
