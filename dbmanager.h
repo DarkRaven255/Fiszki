@@ -10,13 +10,14 @@ public:
     ~DbManager();
     bool addUser(const QString &name, const int &noBox);
     bool findUser(const QString &name);
+    int findUserBox(const QString &name);
     bool removeAllUsers();
     bool removeUser(const QString &name);
     QStringList returnUserList();
     void closeUserDB();
-    void returnQuestion(const int &noQuestion, const int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
-    void setBox(const int &q_id);
-    int countQuestions(const int noBox);
+    void returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
+    void setBox(const int &q_id, const QString &userBox);
+    int countQuestions(const int noBox, const QString &userBox);
     int countUsers();
     void returnBoxesInUse(QVector<int> &listFreeBoxes);
 

@@ -7,11 +7,11 @@ class User : public QObject
 {
     Q_OBJECT
 public:
-    explicit User (QString setName, QObject *parent = nullptr);
+    explicit User (QString setName, QString setNoBox, QObject *parent = nullptr);
     ~User();
 
     QString getUserName();
-    int getNoBox();
+    QString getNoBox();
 
 signals:
 
@@ -19,7 +19,7 @@ public slots:
 
 private:
     QString name;
-    int noBox;
+    QString noBox;
 };
 
 #endif // USER_H

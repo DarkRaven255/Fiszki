@@ -73,6 +73,17 @@ bool DbManager::findUser(const QString &name)
     return false;
 }
 
+int DbManager::findUserBox(const QString &name)
+{
+    QSqlQuery query;
+    query.prepare("SELECT noBox FROM users WHERE name = (:name)");
+    query.bindValue(":name", name);
+    query.exec();
+    query.first();
+    int idNoBox = query.record().indexOf("noBox");
+    return query.value(idNoBox).toInt();
+}
+
 bool DbManager::removeAllUsers()
 {
     QSqlQuery query;
@@ -107,10 +118,8 @@ QStringList DbManager::returnUserList()
     QStringList userlist;
     QSqlQuery query("SELECT * FROM users");
     int idName = query.record().indexOf("name");
-//    int idLevel = query.record().indexOf("level");
     while (query.next())
     {
-//       qDebug()<<query.value(idName).toString()<<"    "<<query.value(idLevel).toString();
        userlist += (query.value(idName).toString());
     }
     return userlist;
@@ -122,18 +131,18 @@ void DbManager::closeUserDB()
     qDebug() << "DB closed";
 }
 
-void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
+void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
 {
     QSqlQuery query;
 
     switch(noBox)
     {
     case -1: case 0: case 1: case 2: case 3: case 4: case 5: case 6:
-        query.prepare("SELECT * FROM questions WHERE box is (:box)");
-        query.bindValue(":box",noBox);
+        query.prepare("SELECT * FROM questions WHERE " + userBox + " = (:noBox)");
+        query.bindValue(":noBox",noBox);
         break;
     case 7:
-        query.prepare("SELECT * FROM questions WHERE box is not -1 and box < 7");
+        query.prepare("SELECT * FROM questions WHERE " + userBox + " is not -1 and box < 7");
         break;
     }
 
@@ -152,17 +161,18 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, int &q_i
     e_en=query.value(idExplanationEN).toString();
     q_pl=query.value(idQuestionPL).toString();
     e_pl=query.value(idExplanationPL).toString();
+    qDebug()<<q_en;
 }
 
-void DbManager::setBox(const int &q_id)
+void DbManager::setBox(const int &q_id, const QString &userBox)
 {
     QSqlQuery query;
-    query.prepare("UPDATE questions SET box = box+1 WHERE id = (:q_id)");
+    query.prepare("UPDATE questions SET "+ userBox +" = "+ userBox +" +1 WHERE id = (:q_id)");
     query.bindValue(":q_id", q_id);
     query.exec();
 }
 
-int DbManager::countQuestions(const int noBox)
+int DbManager::countQuestions(const int noBox, const QString &userBox)
 {
     QSqlQuery query;
     int noQuestions=0;
@@ -170,11 +180,11 @@ int DbManager::countQuestions(const int noBox)
     switch(noBox)
     {
     case -1: case 0: case 1: case 2: case 3: case 4: case 5: case 6:
-        query.prepare("SELECT * FROM questions WHERE box is (:box)");
+        query.prepare("SELECT * FROM questions WHERE "+ userBox +" is (:box)");
         query.bindValue(":box",noBox);
         break;
     case 7:
-        query.prepare("SELECT * FROM questions WHERE box is not -1 and box < 7");
+        query.prepare("SELECT * FROM questions WHERE "+ userBox +" is not -1 and box < 7");
         break;
     }
 

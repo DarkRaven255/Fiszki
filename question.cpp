@@ -1,9 +1,9 @@
 #include "question.h"
 
-Question::Question(const int &noQuestion, const int &noBox):
+Question::Question(const int &noQuestion, const QString &userBox, const int &noBox):
     isChanged(false)
 {
-    dbmanager->returnQuestion(noQuestion,noBox,q_id,q_en,e_en,q_pl,e_pl);
+    dbmanager->returnQuestion(noQuestion,noBox,userBox,q_id,q_en,e_en,q_pl,e_pl);
 }
 
 int Question::getQ_id()

@@ -6,7 +6,7 @@
 class Question
 {
 public:
-    Question(const int &noQuestion, const int &noBox);
+    Question(const int &noQuestion, const QString &userBox, const int &noBox);
     int getQ_id();
     QString getQ_en();
     QString getE_en();

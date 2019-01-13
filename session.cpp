@@ -8,7 +8,6 @@ Session::Session(QObject *parent):
     testCounterQuestions(0),
     position(0)
 {
-    recalculateQuestions();
     setUserList();
 
     qDebug()<<"Liczba pytan:"<<noTestWords+noMinusOneWords;
@@ -34,6 +33,7 @@ QStringList Session::getUserList()
     return userList;
 }
 
+//Funkcja dodająca nowego użytkownika i przypisująca mu wolny noBox
 bool Session::addUser(const QString &name)
 {
     if(dbmanager->countUsers()<=MaxUsers)
@@ -75,16 +75,20 @@ bool Session::addUser(const QString &name)
     return false;
 }
 
+//Stworzenie użytkownika w sesji
 void Session::setUser(const QString &name)
 {
-    user = new User(name,this);
+    user = new User(name,"box"+static_cast<QString>(dbmanager->findUserBox(name)+48),this);
+    recalculateQuestions();
 }
 
+//Pobranie nazwy użytkownika w sesji
 QString Session::getUser()
 {
     return user->getUserName();
 }
 
+//Usunięcie użytkownika w sesji
 void Session::deleteUser()
 {
     delete user;
@@ -159,16 +163,16 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
 //Funkcja przeliczająca pytania w bazie danych
 void Session::recalculateQuestions()
 {
-    noMinusOneWords=dbmanager->countQuestions(-1);
-    noZeroWords=dbmanager->countQuestions(0);
-    noOneWords=dbmanager->countQuestions(1);
-    noTwoWords=dbmanager->countQuestions(2);
-    noThreeWords=dbmanager->countQuestions(3);
-    noFourWords=dbmanager->countQuestions(4);
-    noFiveWords=dbmanager->countQuestions(5);
-    noSixWords=dbmanager->countQuestions(6);
+    noMinusOneWords=dbmanager->countQuestions(-1,user->getNoBox());
+    noZeroWords=dbmanager->countQuestions(0,user->getNoBox());
+    noOneWords=dbmanager->countQuestions(1,user->getNoBox());
+    noTwoWords=dbmanager->countQuestions(2,user->getNoBox());
+    noThreeWords=dbmanager->countQuestions(3,user->getNoBox());
+    noFourWords=dbmanager->countQuestions(4,user->getNoBox());
+    noFiveWords=dbmanager->countQuestions(5,user->getNoBox());
+    noSixWords=dbmanager->countQuestions(6,user->getNoBox());
 
-    noTestWords=dbmanager->countQuestions(7);
+    noTestWords=dbmanager->countQuestions(7,user->getNoBox());
 
     toLearnWords=0;
     position=0;
@@ -178,7 +182,7 @@ void Session::recalculateQuestions()
 void Session::learnWords()
 {
     qList.resize(toLearnWords+1);
-    qList[toLearnWords] = new Question(toLearnWords,-1);
+    qList[toLearnWords] = new Question(toLearnWords,user->getNoBox(),-1);
     question=qList.at(toLearnWords);
     position=toLearnWords;
     toLearnWords++;
@@ -230,14 +234,14 @@ void Session::testWords()
     qList.resize(noTestWords);
     if(noTestWords==1)
     {
-        qList[0] = new Question(0,7);
+        qList[0] = new Question(0,user->getNoBox(),7);
     }
     else
     {
         randomTable();
         for(int i=0;i<noTestWords;i++)
         {
-            qList[i] = new Question(testWordsList.at(i),7);
+            qList[i] = new Question(testWordsList.at(i),user->getNoBox(),7);
         }
     }
     nextTestBtn();
@@ -299,7 +303,7 @@ void Session::exportBoxToDB(Status status)
     {
         if(qList.at(i)->qet_isChanged())
         {
-            dbmanager->setBox(qList.at(i)->getQ_id());
+            dbmanager->setBox(qList.at(i)->getQ_id(),user->getNoBox());
         }
         delete qList.at(i);
     }
