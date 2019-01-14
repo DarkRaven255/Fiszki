@@ -139,7 +139,7 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QS
         query.bindValue(":noBox",noBox);
         break;
     case 7:
-        query.prepare("SELECT * FROM questions WHERE " + userBox + " is not -1 and box < 7");
+        query.prepare("SELECT * FROM questions WHERE "+ userBox +" > -1");
         break;
     }
 
@@ -180,7 +180,7 @@ int DbManager::countQuestions(const int noBox, const QString &userBox)
         query.bindValue(":box",noBox);
         break;
     case 7:
-        query.prepare("SELECT * FROM questions WHERE "+ userBox +" is not -1 and box < 7");
+        query.prepare("SELECT * FROM questions WHERE "+ userBox +" > -1");
         break;
     }
 

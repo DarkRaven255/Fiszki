@@ -249,7 +249,7 @@ void Session::randomTable()
 {
     bool isRepeated;
     int random;
-
+    recalculateQuestions();
     testWordsList.resize(noTestWords);
 
     for(int j=0;j<noTestWords;j++)
