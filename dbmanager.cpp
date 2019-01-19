@@ -93,7 +93,7 @@ bool DbManager::findWord(const QString &q_en)
 void DbManager::addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl)
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO questions (question_en, explanation_en, question_pl, explanation_pl) VALUES (:Q_EN, :E_EN, :Q_PL, :E_PL)");
+    query.prepare("INSERT INTO questions (question_en, explanation_en, question_pl, explanation_pl, box1, box2, box3, box4, box5) VALUES (:Q_EN, :E_EN, :Q_PL, :E_PL, -1, -1, -1, -1, -1)");
     query.bindValue(":Q_EN", q_en);
     query.bindValue(":E_EN", e_en);
     query.bindValue(":Q_PL", q_pl);
