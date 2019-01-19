@@ -35,6 +35,8 @@ public:
     QString getUser();
     void deleteUser();
 
+    void addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
+
     QStringList getUserList();
 
     Question *question;

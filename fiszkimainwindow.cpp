@@ -3,6 +3,7 @@
 #include "userlistwindow.h"
 #include "addnewuserwindow.h"
 #include "aboutwindow.h"
+#include "addquestionwindow.h"
 #include "enums.h"
 
 #include <QDebug>
@@ -191,4 +192,11 @@ void FiszkiMainWindow::on_checkBtn_clicked()
     ui->enterAnwserLineEdit->clear();
     setBtns();
     test();
+}
+
+void FiszkiMainWindow::on_addWordsBtn_clicked()
+{
+    AddQuestionWindow addquestionwindow(session, this);
+    addquestionwindow.exec();
+    setBtns();
 }
