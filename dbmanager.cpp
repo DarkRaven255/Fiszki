@@ -26,15 +26,17 @@ DbManager::~DbManager()
 
 }
 
-bool DbManager::addUser(const QString &name, const int &noBox)
+bool DbManager::addUser(const QString &name, const int &noBox, const long long &setStartDate, const long long &setLastUsed)
 {
     if(!findUser(name))
     {
         QSqlQuery query;
 
-        query.prepare("INSERT INTO users (name, noBox) VALUES (:name, :noBox)");
+        query.prepare("INSERT INTO users (name, noBox, start_date, last_used) VALUES (:name, :noBox, :setStartDate, :setLastUsed)");
         query.bindValue(":name", name);
         query.bindValue(":noBox", noBox);
+        query.bindValue(":setStartDate", setStartDate);
+        query.bindValue(":setLastUsed", setLastUsed);
         if(query.exec())
         {
             return true;
@@ -72,6 +74,28 @@ int DbManager::findUserBox(const QString &name)
     query.first();
     int idNoBox = query.record().indexOf("noBox");
     return query.value(idNoBox).toInt();
+}
+
+long long DbManager::getLastUsed(const QString &name)
+{
+    QSqlQuery query;
+    query.prepare("SELECT last_used FROM users WHERE name = (:name)");
+    query.bindValue(":name", name);
+    query.exec();
+    query.first();
+    int idLastUsed = query.record().indexOf("last_used");
+    return query.value(idLastUsed).toInt();
+}
+
+long long DbManager::getStartDate(const QString &name)
+{
+    QSqlQuery query;
+    query.prepare("SELECT start_date FROM users WHERE name = (:name)");
+    query.bindValue(":name", name);
+    query.exec();
+    query.first();
+    int idStartDate = query.record().indexOf("start_date");
+    return query.value(idStartDate).toInt();
 }
 
 bool DbManager::findWord(const QString &q_en)

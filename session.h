@@ -56,6 +56,8 @@ private:
     int testCounterQuestions;
     int position;
 
+    long long date;
+
     QVector<Question *> qList;
     QVector<int> testWordsList;
     QVector<int> boxesInUse;
@@ -67,6 +69,8 @@ private:
     void randomTable();
     void setUserList();
     void recalculateQuestions();
+
+    unsigned long long fibonacci(const int &n);
 
     DbManager *dbmanager = new DbManager("database.db");
     User *user;

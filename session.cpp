@@ -6,7 +6,8 @@ Session::Session(QObject *parent):
     QObject(parent),
     toLearnWords(0),
     testCounterQuestions(0),
-    position(0)
+    position(0),
+    date(QDate::currentDate().toJulianDay())
 {
     setUserList();
 }
@@ -64,7 +65,7 @@ bool Session::addUser(const QString &name)
         }while(isRepeated);
     }
 
-    if(dbmanager->addUser(name,freeBox))
+    if(dbmanager->addUser(name,freeBox,date))
     {
         dbmanager->resetUserBox("box"+static_cast<QString>(freeBox+48));
         return true;
@@ -75,7 +76,9 @@ bool Session::addUser(const QString &name)
 //Stworzenie użytkownika w sesji
 void Session::setUser(const QString &name)
 {
-    user = new User(name,"box"+static_cast<QString>(dbmanager->findUserBox(name)+48),this);
+    user = new User(name,"box"+static_cast<QString>(dbmanager->findUserBox(name)+48),dbmanager->getStartDate(name),dbmanager->getLastUsed(name),this);
+    qDebug()<<user->getLastUsed();
+    qDebug()<<user->getStartDate();
     recalculateQuestions();
 }
 
@@ -91,6 +94,7 @@ void Session::deleteUser()
     delete user;
 }
 
+//Funkcja dodająca nowe pytania do bazy danych
 void Session::addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl)
 {
     if(!dbmanager->findWord(q_en))
@@ -182,6 +186,25 @@ void Session::recalculateQuestions()
 
     toLearnWords=0;
     position=0;
+}
+
+//Funkcja zwracająca numer numer ciągu Fibonacciego o złożoności O(n)
+unsigned long long Session::fibonacci(const int &n)
+{
+    if(n <= 0) return 0;
+    if(n > 0 && n < 3) return 1;
+
+    unsigned long long result = 0;
+    unsigned long long preOldResult = 1;
+    unsigned long long oldResult = 1;
+
+    for (int i=2;i<n;i++)
+    {
+        result = preOldResult + oldResult;
+        preOldResult = oldResult;
+        oldResult = result;
+    }
+    return result;
 }
 
 //Funkcja pobierająca pytania do nauki słówek

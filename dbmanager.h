@@ -9,9 +9,11 @@ public:
     DbManager(const QString &name);
     ~DbManager();
 
-    bool addUser(const QString &name, const int &noBox);
+    bool addUser(const QString &name, const int &noBox, const long long &setStartDate, const long long &setDate=0);
     bool findUser(const QString &name);
     int findUserBox(const QString &name);
+    long long getLastUsed(const QString &name);
+    long long getStartDate(const QString &name);
 
     bool findWord(const QString &q_en);
     void addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
