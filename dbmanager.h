@@ -13,6 +13,9 @@ public:
     bool findUser(const QString &name);
     int findUserBox(const QString &name);
 
+    bool findWord(const QString &q_en);
+    void addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
+
     bool removeAllUsers();
     bool removeUser(const QString &name);
     void resetUserBox(const QString &userBox);

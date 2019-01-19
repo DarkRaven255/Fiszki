@@ -56,6 +56,9 @@
       <height>480</height>
      </size>
     </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
@@ -64,7 +67,7 @@
       <property name="geometry">
        <rect>
         <x>240</x>
-        <y>40</y>
+        <y>30</y>
         <width>211</width>
         <height>51</height>
        </rect>
@@ -82,7 +85,7 @@
       <property name="geometry">
        <rect>
         <x>240</x>
-        <y>100</y>
+        <y>90</y>
         <width>191</width>
         <height>41</height>
        </rect>
@@ -97,7 +100,7 @@
       <property name="geometry">
        <rect>
         <x>240</x>
-        <y>210</y>
+        <y>200</y>
         <width>191</width>
         <height>41</height>
        </rect>
@@ -110,7 +113,7 @@
       <property name="geometry">
        <rect>
         <x>240</x>
-        <y>260</y>
+        <y>250</y>
         <width>191</width>
         <height>41</height>
        </rect>
@@ -123,7 +126,7 @@
       <property name="geometry">
        <rect>
         <x>240</x>
-        <y>360</y>
+        <y>400</y>
         <width>191</width>
         <height>41</height>
        </rect>
@@ -136,7 +139,7 @@
       <property name="geometry">
        <rect>
         <x>240</x>
-        <y>160</y>
+        <y>150</y>
         <width>191</width>
         <height>41</height>
        </rect>
@@ -149,7 +152,7 @@
       <property name="geometry">
        <rect>
         <x>240</x>
-        <y>310</y>
+        <y>350</y>
         <width>191</width>
         <height>41</height>
        </rect>
@@ -162,7 +165,7 @@
       <property name="geometry">
        <rect>
         <x>440</x>
-        <y>100</y>
+        <y>90</y>
         <width>51</width>
         <height>41</height>
        </rect>
@@ -175,6 +178,19 @@
       </property>
       <property name="text">
        <string>OK</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="addWordsBtn">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>300</y>
+        <width>191</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Dodaj słówka</string>
       </property>
      </widget>
     </widget>

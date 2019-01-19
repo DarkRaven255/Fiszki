@@ -32,6 +32,8 @@ private slots:
 
     void on_setUserBtn_clicked();
 
+    void on_addWordsBtn_clicked();
+
 private:
     Ui::FiszkiMainWindow *ui;
 

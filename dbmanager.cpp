@@ -74,6 +74,33 @@ int DbManager::findUserBox(const QString &name)
     return query.value(idNoBox).toInt();
 }
 
+bool DbManager::findWord(const QString &q_en)
+{
+    QSqlQuery query;
+    query.prepare("SELECT question_en FROM questions WHERE question_en = (:Q_EN)");
+    query.bindValue(":Q_EN", q_en);
+
+    if (query.exec())
+    {
+       if (query.next())
+       {
+          return true;
+       }
+    }
+    return false;
+}
+
+void DbManager::addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl)
+{
+    QSqlQuery query;
+    query.prepare("INSERT INTO questions (question_en, explanation_en, question_pl, explanation_pl) VALUES (:Q_EN, :E_EN, :Q_PL, :E_PL)");
+    query.bindValue(":Q_EN", q_en);
+    query.bindValue(":E_EN", e_en);
+    query.bindValue(":Q_PL", q_pl);
+    query.bindValue(":E_PL", e_pl);
+    query.exec();
+}
+
 bool DbManager::removeAllUsers()
 {
     QSqlQuery query;
@@ -128,7 +155,8 @@ void DbManager::closeUserDB()
     qDebug() << "DB closed";
 }
 
-void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
+void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox,
+                               int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
 {
     QSqlQuery query;
 

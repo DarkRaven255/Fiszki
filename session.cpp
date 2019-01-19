@@ -91,6 +91,15 @@ void Session::deleteUser()
     delete user;
 }
 
+void Session::addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl)
+{
+    if(!dbmanager->findWord(q_en))
+    {
+        dbmanager->addWord(q_en,e_en,q_pl,e_pl);
+    }
+}
+
+
 //Funkcja wyświetlająca procent przebiegu lekcji
 int Session::getProgressPercent()
 {
