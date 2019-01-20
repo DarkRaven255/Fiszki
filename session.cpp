@@ -30,6 +30,34 @@ QStringList Session::getUserList()
     return userList;
 }
 
+//Funkcja generująca losową tablicę bez powtórzeń
+void Session::randomTable()
+{
+    bool isRepeated;
+    int random;
+    recalculateQuestions();
+    testWordsList.resize(noTestWords);
+
+    for(int j=0;j<noTestWords;j++)
+    {
+        do
+        {
+            isRepeated=false;
+            random=randomInt(0,noTestWords-1);
+            for(int i=0;i<noTestWords;i++)
+            {
+                if(testWordsList.at(i)==random)
+                {
+
+                    isRepeated=true;
+                }
+            }
+            testWordsList[j]=random;
+        }while(isRepeated);
+    }
+
+}
+
 //Funkcja dodająca nowego użytkownika i przypisująca mu wolny noBox
 bool Session::addUser(const QString &name)
 {
@@ -76,9 +104,17 @@ bool Session::addUser(const QString &name)
 //Stworzenie użytkownika w sesji
 void Session::setUser(const QString &name)
 {
-    user = new User(name,"box"+static_cast<QString>(dbmanager->findUserBox(name)+48),dbmanager->getStartDate(name),dbmanager->getLastUsed(name),this);
-    qDebug()<<user->getLastUsed();
-    qDebug()<<user->getStartDate();
+    user = new User(name,
+                    "box"+static_cast<QString>(static_cast<int>(dbmanager->returnUserInfo(name,"noBox"))+48),
+                    dbmanager->returnUserInfo(name,"start_date"),
+                    dbmanager->returnUserInfo(name,"last_used"),
+                    static_cast<int>(dbmanager->returnUserInfo(name,"last_action")),this);
+
+    if (user->getLastUsed()<date)
+    {
+        user->setLastAction(0);
+        dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
+    }
     recalculateQuestions();
 }
 
@@ -92,6 +128,19 @@ QString Session::getUser()
 void Session::deleteUser()
 {
     delete user;
+}
+
+void Session::setUserAction(const int &action)
+{
+    if(user->getLastAction()==0)
+    {
+        user->setLastAction(action);
+    }
+    else if(user->getLastAction()==1||user->getLastAction()==2)
+    {
+        user->setLastAction(3);
+    }
+    dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
 }
 
 //Funkcja dodająca nowe pytania do bazy danych
@@ -111,7 +160,7 @@ int Session::getProgressPercent()
 }
 
 //Funkcja zmieniająca "pudełko"
-void Session::markQuestion()
+void Session::markWord()
 {
     question->set_isChanged();
 }
@@ -210,11 +259,14 @@ unsigned long long Session::fibonacci(const int &n)
 //Funkcja pobierająca pytania do nauki słówek
 void Session::learnWords()
 {
-    qList.resize(toLearnWords+1);
-    qList[toLearnWords] = new Question(toLearnWords,user->getNoBox(),-1);
-    question=qList.at(toLearnWords);
-    position=toLearnWords;
-    toLearnWords++;
+    //if((user->getLastAction()==0))
+   // {
+        qList.resize(toLearnWords+1);
+        qList[toLearnWords] = new Question(toLearnWords,user->getNoBox(),-1);
+        question=qList.at(toLearnWords);
+        position=toLearnWords;
+        toLearnWords++;
+    //}
 }
 
 //Funkcja pokazująca następne pytanie
@@ -276,39 +328,12 @@ void Session::testWords()
     nextTestBtn();
 }
 
-//Funkcja generująca losową tablicę bez powtórzeń
-void Session::randomTable()
-{
-    bool isRepeated;
-    int random;
-    recalculateQuestions();
-    testWordsList.resize(noTestWords);
-
-    for(int j=0;j<noTestWords;j++)
-    {
-        do
-        {
-            isRepeated=false;
-            random=randomInt(0,noTestWords-1);
-            for(int i=0;i<noTestWords;i++)
-            {
-                if(testWordsList.at(i)==random)
-                {
-
-                    isRepeated=true;
-                }
-            }
-            testWordsList[j]=random;
-        }while(isRepeated);
-    }
-}
-
 //Funkcja sprawdzająca odpowiedź
 void Session::checkAnswer(const QString &answer)
 {
     if(answer==question->getQ_pl())
     {
-        markQuestion();
+        markWord();
     }
     nextTestBtn();
 }

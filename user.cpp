@@ -1,11 +1,12 @@
 #include "user.h"
 
-User::User(const QString &setName, const QString &setNoBox,
-           const long long &setStartDate, const long long &setlastUsed, QObject *parent):
+User::User(const QString &setName, const QString &setNoBox, const long long &setStartDate,
+           const long long &setlastUsed, const int &setLastAction, QObject *parent):
   name(setName),
   noBox(setNoBox),
   lastUsed(setlastUsed),
-  startDate(setStartDate)
+  startDate(setStartDate),
+  lastAction(setLastAction)
 {
 
 }
@@ -38,4 +39,14 @@ void User::setLastUsed(const int &setLastUsed)
 long long User::getStartDate()
 {
     return startDate;
+}
+
+int User::getLastAction()
+{
+    return lastAction;
+}
+
+void User::setLastAction(const int &action)
+{
+    lastAction=action;
 }

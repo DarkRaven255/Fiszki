@@ -8,7 +8,7 @@ class User : public QObject
     Q_OBJECT
 public:
     explicit User (const QString &setName, const QString &setNoBox, const long long &setStartDate,
-                   const long long &setlastUsed, QObject *parent = nullptr);
+                   const long long &setlastUsed, const int &setLastAction, QObject *parent = nullptr);
     ~User();
 
     QString getUserName();
@@ -19,6 +19,9 @@ public:
 
     long long getStartDate();
 
+    int getLastAction();
+    void setLastAction(const int &action);
+
 signals:
 
 public slots:
@@ -28,6 +31,7 @@ private:
     QString noBox;
     long long lastUsed;
     long long startDate;
+    int lastAction;
 };
 
 #endif // USER_H

@@ -9,11 +9,8 @@ public:
     DbManager(const QString &name);
     ~DbManager();
 
-    bool addUser(const QString &name, const int &noBox, const long long &setStartDate, const long long &setDate=0);
+    bool addUser(const QString &name, const int &noBox, const long long &setStartDate);
     bool findUser(const QString &name);
-    int findUserBox(const QString &name);
-    long long getLastUsed(const QString &name);
-    long long getStartDate(const QString &name);
 
     bool findWord(const QString &q_en);
     void addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
@@ -22,14 +19,18 @@ public:
     bool removeUser(const QString &name);
     void resetUserBox(const QString &userBox);
 
+    void setUserLastAction(const QString &name, const int &action);
+
     void setBox(const int &q_id, const QString &userBox);
 
-    int countQuestions(const int noBox, const QString &userBox);
+    int countQuestions(const int &noBox, const QString &userBox);
     int countUsers();
 
     void returnBoxesInUse(QVector<int> &listFreeBoxes);
     QStringList returnUserList();
-    void returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox, int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
+    void returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox,
+                        int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
+    long long returnUserInfo(const QString &name, const QString parameter);
 
     void closeUserDB();
 

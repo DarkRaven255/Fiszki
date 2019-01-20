@@ -18,7 +18,7 @@ public:
     ~Session();
 
     int getProgressPercent();
-    void markQuestion();
+    void markWord();
     void exportBoxToDB(Status status);
     void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check);
 
@@ -34,6 +34,8 @@ public:
     void setUser(const QString &name);
     QString getUser();
     void deleteUser();
+
+    void setUserAction(const int &action);
 
     void addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
 
