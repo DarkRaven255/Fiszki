@@ -121,7 +121,7 @@ void FiszkiMainWindow::on_endLearnBtn_clicked()
     session->exportBoxToDB(currStatus);
     setWindowIndex(Menu);
     setBtns();
-    session->setUserAction(1);
+    session->setUserAction(Learn);
 }
 
 void FiszkiMainWindow::on_nextFlashcardBtn_clicked()
@@ -184,7 +184,7 @@ void FiszkiMainWindow::on_stopBtn_clicked()
     session->exportBoxToDB(currStatus);
     setWindowIndex(Menu);
     setBtns();
-    session->setUserAction(2);
+    session->setUserAction(Test);
 }
 
 

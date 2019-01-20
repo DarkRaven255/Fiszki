@@ -19,7 +19,7 @@ public:
 
     int getProgressPercent();
     void markWord();
-    void exportBoxToDB(Status status);
+    void exportBoxToDB(const Status &status);
     void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check);
 
     void learnWords();
@@ -35,7 +35,7 @@ public:
     QString getUser();
     void deleteUser();
 
-    void setUserAction(const int &action);
+    void setUserAction(const LastAction &action);
 
     void addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
 

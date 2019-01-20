@@ -130,15 +130,15 @@ void Session::deleteUser()
     delete user;
 }
 
-void Session::setUserAction(const int &action)
+void Session::setUserAction(const LastAction &action)
 {
-    if(user->getLastAction()==0)
+    if(user->getLastAction()==None)
     {
         user->setLastAction(action);
     }
-    else if(user->getLastAction()==1||user->getLastAction()==2)
+    else if(user->getLastAction()==Learn||user->getLastAction()==Test)
     {
-        user->setLastAction(3);
+        user->setLastAction(LearnTest);
     }
     dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
 }
@@ -339,7 +339,7 @@ void Session::checkAnswer(const QString &answer)
 }
 
 //Funkcja do przeniesienia informacji do DB
-void Session::exportBoxToDB(Status status)
+void Session::exportBoxToDB(const Status &status)
 {
     int size=0;
     //qDebug()<<status;

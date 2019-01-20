@@ -13,4 +13,12 @@ enum Constans
     MaxUsers = 5,
 };
 
+enum LastAction
+{
+    None = 0,
+    Learn = 1,
+    Test = 2,
+    LearnTest = 3,
+};
+
 #endif // ENUMS_H
