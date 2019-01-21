@@ -11,8 +11,6 @@ Session::Session(QObject *parent):
     addToLearn(0),
     date(QDate::currentDate().toJulianDay()),
     user(nullptr)
-
-
 {
     setUserList();
 }
@@ -36,32 +34,30 @@ QStringList Session::getUserList()
 }
 
 //Funkcja generująca losową tablicę bez powtórzeń
-void Session::randomTable()
-{
-    bool isRepeated;
-    int random;
-    recalculateQuestions();
-    testWordsList.resize(noTestWords);
+//void Session::randomTable()
+//{
+//    bool isRepeated;
+//    int random;
+//    recalculateQuestions();
+//    testWordsList.resize(noTestWords);
 
-    for(int j=0;j<noTestWords;j++)
-    {
-        do
-        {
-            isRepeated=false;
-            random=randomInt(0,noTestWords-1);
-            for(int i=0;i<noTestWords;i++)
-            {
-                if(testWordsList.at(i)==random)
-                {
-
-                    isRepeated=true;
-                }
-            }
-            testWordsList[j]=random;
-        }while(isRepeated);
-    }
-
-}
+//    for(int j=0;j<noTestWords;j++)
+//    {
+//        do
+//        {
+//            isRepeated=false;
+//            random=randomInt(0,noTestWords-1);
+//            for(int i=0;i<noTestWords;i++)
+//            {
+//                if(testWordsList.at(i)==random)
+//                {
+//                    isRepeated=true;
+//                }
+//            }
+//            testWordsList[j]=random;
+//        }while(isRepeated);
+//    }
+//}
 
 //Funkcja dodająca nowego użytkownika i przypisująca mu wolny noBox
 bool Session::addUser(const QString &name)
@@ -117,6 +113,7 @@ void Session::setUser(const QString &name)
                     static_cast<int>(dbmanager->returnUserInfo(name,"unknown_questions"))
                     ,this);
 //qDebug()<<user->getLastUsed()<<date;
+
     if (user->getLastUsed()<date)
     {
 
@@ -127,6 +124,7 @@ void Session::setUser(const QString &name)
             addToLearn=MaxLearnWords-2;
         }
     }
+    courseDay = date - user->getStartDate();
     recalculateQuestions();
 }
 
@@ -165,7 +163,6 @@ void Session::addWord(const QString &q_en, const QString &e_en, const QString &q
         dbmanager->addWord(q_en,e_en,q_pl,e_pl);
     }
 }
-
 
 //Funkcja wyświetlająca procent przebiegu lekcji
 int Session::getProgressPercent()
@@ -218,13 +215,13 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
 
 //    if(position==noMinusOneWords-1) next=false;
 //    if(position<noMinusOneWords-1) next=true;
-    if(noMinusOneWords==1)
+    if(noLearnWords==1)
     {
         next=false;
         back=false;
     }
 
-    if(noMinusOneWords==0)
+    if(noLearnWords==0)
     {
         next=false;
         back=false;
@@ -234,7 +231,7 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
 
     if((position!=0&&position<noTestWords)||toLearnWords!=0)
     {
-        if(qList[position]->qet_isChanged())
+        if(qLearnList[position]->qet_isChanged())
         {
             remember=false;
         }
@@ -264,14 +261,7 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
 //Funkcja przeliczająca pytania w bazie danych
 void Session::recalculateQuestions()
 {
-    noMinusOneWords=dbmanager->countQuestions(-1,user->getNoBox(),0);
-    noZeroWords=dbmanager->countQuestions(0,user->getNoBox(),0);
-    noOneWords=dbmanager->countQuestions(1,user->getNoBox(),0);
-    noTwoWords=dbmanager->countQuestions(2,user->getNoBox(),0);
-    noThreeWords=dbmanager->countQuestions(3,user->getNoBox(),0);
-    noFourWords=dbmanager->countQuestions(4,user->getNoBox(),0);
-    noFiveWords=dbmanager->countQuestions(5,user->getNoBox(),0);
-    noSixWords=dbmanager->countQuestions(6,user->getNoBox(),0);
+    noLearnWords=dbmanager->countQuestions(-1,user->getNoBox(),0);
 
     noTestWords=dbmanager->countQuestions(-2,user->getNoBox(),0);
 
@@ -284,17 +274,17 @@ void Session::learnWords()
 {   
     if(position<MaxLearnWords-1+user->getUnknownQuestions()+addToLearn)
     {
-        qList.resize(toLearnWords+1);
-        qList[toLearnWords] = new Question(toLearnWords,user->getNoBox(),-1);
-        question=qList.at(toLearnWords);
+        qLearnList.resize(toLearnWords+1);
+        qLearnList[toLearnWords] = new Question(toLearnWords,user->getNoBox(),-1);
+        question=qLearnList.at(toLearnWords);
         position=toLearnWords;
         toLearnWords++;
     }
     else if(position==MaxLearnWords-1+user->getUnknownQuestions()+addToLearn)
     {
-        qList.resize(toLearnWords+1);
-        qList[toLearnWords] = new Question();
-        question=qList.at(toLearnWords);
+        qLearnList.resize(toLearnWords+1);
+        qLearnList[toLearnWords] = new Question();
+        question=qLearnList.at(toLearnWords);
         position=toLearnWords;
         toLearnWords++;
     }
@@ -306,11 +296,11 @@ void Session::nextLearnBtn()
     if(position<toLearnWords-1)
     {
         position++;
-        question=qList.at(position);
+        question=qLearnList.at(position);
     }
-    else if(position==noMinusOneWords-1)
+    else if(position==noLearnWords-1)
     {
-        question=qList.at(position);
+        question=qLearnList.at(position);
     }
     else
     {
@@ -322,7 +312,7 @@ void Session::nextLearnBtn()
 void Session::backLearnBtn()
 {
     position--;
-    question=qList.at(position);
+    question=qLearnList.at(position);
 }
 
 
@@ -331,7 +321,7 @@ void Session::nextTestBtn()
 {
     if(position<noTestWords)
     {
-        question=qList.at(position);
+        question=qTestList.at(position);
         position++;
     }
     else
@@ -341,47 +331,28 @@ void Session::nextTestBtn()
 }
 
 //Funkcja pobierająca pytania do testu
-//void Session::testWords()
-//{
-//    qList.resize(noTestWords);
-//    if(noTestWords==1)
-//    {
-//        qList[0] = new Question(0,user->getNoBox(),-2);
-//    }
-//    else
-//    {
-//        randomTable();
-//        for(int i=0;i<noTestWords;i++)
-//        {
-//            qList[i] = new Question(testWordsList.at(i),user->getNoBox(),-2);
-//        }
-//    }
-//    nextTestBtn();
-//}
 void Session::testWords()
-{
-    long long courseDay = date - user->getStartDate();
-    qDebug()<<"dnie"<<courseDay;
-    int counter =0;
+{ 
+//    qDebug()<<"dnie"<<courseDay;
     noTestWords = dbmanager->countQuestions(-3,user->getNoBox(),courseDay);
-    qDebug()<<noTestWords;
+//    qDebug()<<noTestWords;
     if(noTestWords==1)
     {
-        qList.push_back(new Question(0,user->getNoBox(),-2));
+        qTestList.push_back(new Question(0,user->getNoBox(),-2));
     }
     else
     {
+        int j=0;
         for(int i=0;i<noTestWords;i++)
         {
-            int noIQuestions = dbmanager->countQuestions(i,user->getNoBox(),NULL) + counter;
+            qDebug()<<"I"<<i;
+            int noIQuestions = dbmanager->countQuestions(i,user->getNoBox(),NULL) + j;
             int k=0;
-            int j=counter;
 //            qDebug()<<i<<"noIQ"<<noIQuestions;
-            for(j,k;j<noIQuestions;j++,k++)
+            for(;j<noIQuestions;j++,k++)
             {
-                qList.push_back(new Question(k,user->getNoBox(),i));
+                qTestList.push_back(new Question(k,user->getNoBox(),i));
             }
-            counter=j;
         }
     }
     nextTestBtn();
@@ -415,13 +386,14 @@ void Session::exportBoxToDB(const Status &status)
 
     for(int i=0;i<size;i++)
     {
-        if(qList.at(i)->qet_isChanged())
+        if(qLearnList.at(i)->qet_isChanged())
         {
-            dbmanager->setBox(qList.at(i)->getQ_id(),user->getNoBox());
+            dbmanager->setBox(qLearnList.at(i)->getQ_id(),user->getNoBox());
             unknownCounter++;
         }
-        delete qList.at(i);
     }
+//    qList.clear();
+//    qList.resize(0);
 //tu ma byc >= pacanie popraw to potem
     if(unknownCounter> 0 && status == LearnMode)
     {

@@ -44,14 +44,7 @@ public:
     Question *question;
 
 private:
-    int noMinusOneWords;
-    int noZeroWords;
-    int noOneWords;
-    int noTwoWords;
-    int noThreeWords;
-    int noFourWords;
-    int noFiveWords;
-    int noSixWords;
+    int noLearnWords;
     int noTestWords;
 
     int toLearnWords;
@@ -60,8 +53,10 @@ private:
     int addToLearn;
 
     long long date;
+    long long courseDay;
 
-    QVector<Question *> qList;
+    QVector<Question *> qLearnList;
+    QVector<Question *> qTestList;
     QVector<int> testWordsList;
     QVector<int> boxesInUse;
 
