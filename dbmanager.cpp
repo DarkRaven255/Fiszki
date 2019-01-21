@@ -302,7 +302,7 @@ void DbManager::returnBoxesInUse(QVector<int> &listFreeBoxes)
     QSqlQuery query;
     query.exec("SELECT * FROM users");
 
-    for(int i=0;i<noUsers && i<MaxUsers;i++)
+    for(int i=0;i<noUsers && i<ConstansMaxUsers;i++)
     {
         query.seek(i);
         listFreeBoxes[i] = query.value(query.record().indexOf("noBox")).toInt();

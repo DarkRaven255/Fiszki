@@ -22,6 +22,8 @@ public:
     void exportBoxToDB(const Status &status);
     void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check, bool &learn, bool &testBtn);
 
+    void startLearn();
+    void endLearn();
     void learnWords();
     void nextLearnBtn();
     void backLearnBtn();
@@ -45,13 +47,13 @@ public:
 
 private:
     int noMinusOneWords;
-    int noZeroWords;
-    int noOneWords;
-    int noTwoWords;
-    int noThreeWords;
-    int noFourWords;
-    int noFiveWords;
-    int noSixWords;
+//    int noZeroWords;
+//    int noOneWords;
+//    int noTwoWords;
+//    int noThreeWords;
+//    int noFourWords;
+//    int noFiveWords;
+//    int noSixWords;
     int noTestWords;
 
     int toLearnWords;
@@ -60,8 +62,10 @@ private:
     int addToLearn;
 
     long long date;
+    long long courseDay;
 
     QVector<Question *> qList;
+    QVector<Question *> qTestList;
     QVector<int> testWordsList;
     QVector<int> boxesInUse;
 

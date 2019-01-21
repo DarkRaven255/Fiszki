@@ -13,7 +13,7 @@ FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     ui(new Ui::FiszkiMainWindow)
 {
     ui->setupUi(this);
-    setWindowIndex(Menu);
+    setWindowIndex(StatusMenu);
 
     ui->availableUsersComboBox->addItems(session->getUserList());
     connect(ui->enterAnwserLineEdit,SIGNAL(returnPressed()),ui->checkBtn,SIGNAL(clicked()));
@@ -82,13 +82,13 @@ void FiszkiMainWindow::on_userListBtn_clicked()
 
 void FiszkiMainWindow::on_learnBtn_clicked()
 {
-    setWindowIndex(LearnMode);
+    setWindowIndex(StatusLearnMode);
     on_nextFlashcardBtn_clicked();
 }
 
 void FiszkiMainWindow::on_testBtn_clicked()
 {
-    setWindowIndex(TestMode);
+    setWindowIndex(StatusTestMode);
     setBtns();
     session->testWords();
     test();
@@ -124,8 +124,8 @@ void FiszkiMainWindow::on_setUserBtn_clicked()
 void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
     session->exportBoxToDB(currStatus);
-    setWindowIndex(Menu);
-    session->setUserAction(Learn);
+    setWindowIndex(StatusMenu);
+    session->setUserAction(LastActionLearn);
     setBtns();
 }
 
@@ -186,10 +186,11 @@ void FiszkiMainWindow::test()
 
 void FiszkiMainWindow::on_stopBtn_clicked()
 {
+    qDebug()<<currStatus;
     session->exportBoxToDB(currStatus);
-    setWindowIndex(Menu);
+    setWindowIndex(StatusMenu);
     setBtns();
-    session->setUserAction(Test);
+    session->setUserAction(LastActionTest);
 }
 
 
