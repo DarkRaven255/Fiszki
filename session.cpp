@@ -108,7 +108,10 @@ void Session::setUser(const QString &name)
                     "box"+static_cast<QString>(static_cast<int>(dbmanager->returnUserInfo(name,"noBox"))+48),
                     dbmanager->returnUserInfo(name,"start_date"),
                     dbmanager->returnUserInfo(name,"last_used"),
-                    static_cast<int>(dbmanager->returnUserInfo(name,"last_action")),this);
+                    static_cast<int>(dbmanager->returnUserInfo(name,"last_action")),
+                    static_cast<int>(dbmanager->returnUserInfo(name,"unknown_questions"))
+                    ,this);
+    qDebug()<<user->getUnknownQuestions();
 
     if (user->getLastUsed()<date)
     {
@@ -259,14 +262,15 @@ unsigned long long Session::fibonacci(const int &n)
 //Funkcja pobierająca pytania do nauki słówek
 void Session::learnWords()
 {
-    //if((user->getLastAction()==0))
-   // {
+    if(position<MaxLearnWords+user->getUnknownQuestions())
+    {
         qList.resize(toLearnWords+1);
         qList[toLearnWords] = new Question(toLearnWords,user->getNoBox(),-1);
         question=qList.at(toLearnWords);
         position=toLearnWords;
         toLearnWords++;
-    //}
+        qDebug()<<position;
+    }
 }
 
 //Funkcja pokazująca następne pytanie
@@ -342,6 +346,7 @@ void Session::checkAnswer(const QString &answer)
 void Session::exportBoxToDB(const Status &status)
 {
     int size=0;
+    int unknownCounter=0;
     //qDebug()<<status;
 
     if(status == LearnMode)
@@ -358,8 +363,14 @@ void Session::exportBoxToDB(const Status &status)
         if(qList.at(i)->qet_isChanged())
         {
             dbmanager->setBox(qList.at(i)->getQ_id(),user->getNoBox());
+            unknownCounter++;
         }
         delete qList.at(i);
+    }
+
+    if(unknownCounter> 0 && status == LearnMode)
+    {
+        dbmanager->setUnknownQuestions(user->getUserName(),unknownCounter);
     }
     recalculateQuestions();
 }

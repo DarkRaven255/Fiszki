@@ -1,12 +1,13 @@
 #include "user.h"
 
 User::User(const QString &setName, const QString &setNoBox, const long long &setStartDate,
-           const long long &setlastUsed, const int &setLastAction, QObject *parent):
+           const long long &setlastUsed, const int &setLastAction, const int &setUnknownQuestions, QObject *parent):
   name(setName),
   noBox(setNoBox),
   lastUsed(setlastUsed),
   startDate(setStartDate),
-  lastAction(setLastAction)
+  lastAction(setLastAction),
+  unknownQuestions(setUnknownQuestions)
 {
 
 }
@@ -49,4 +50,14 @@ int User::getLastAction()
 void User::setLastAction(const int &action)
 {
     lastAction=action;
+}
+
+int User::getUnknownQuestions()
+{
+    return unknownQuestions;
+}
+
+void User::setUnknownQuestions(const int &setUnknownQuestions)
+{
+    unknownQuestions = setUnknownQuestions;
 }

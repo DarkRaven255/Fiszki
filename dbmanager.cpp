@@ -75,8 +75,8 @@ long long DbManager::returnUserInfo(const QString &name, const QString parameter
     query.bindValue(":name", name);
     query.exec();
     query.first();
-    int idStartDate = query.record().indexOf(parameter);
-    return query.value(idStartDate).toInt();
+    int idInfo = query.record().indexOf(parameter);
+    return query.value(idInfo).toInt();
 }
 
 //Funkcja szukająca konkretnego pytania po nazwie angielskiej
@@ -216,6 +216,15 @@ void DbManager::setBox(const int &q_id, const QString &userBox)
     QSqlQuery query;
     query.prepare("UPDATE questions SET "+ userBox +" = "+ userBox +" +1 WHERE id = (:q_id)");
     query.bindValue(":q_id", q_id);
+    query.exec();
+}
+
+void DbManager::setUnknownQuestions(const QString &name, const int &number)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE users SET unknown_questions = unknown_questions + (:NUMBER) WHERE name = (:NAME)");
+    query.bindValue(":NAME", name);
+    query.bindValue(":NUMBER", number);
     query.exec();
 }
 

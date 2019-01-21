@@ -11,6 +11,7 @@ enum Status
 enum Constans
 {
     MaxUsers = 5,
+    MaxLearnWords = 10,
 };
 
 enum LastAction
