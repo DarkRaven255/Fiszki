@@ -37,7 +37,7 @@ FiszkiMainWindow::~FiszkiMainWindow()
 
 void FiszkiMainWindow::setBtns()
 {
-    session->getButtonStatus(back,remember,next,noQuestionsInDB,noTestQuestions,check);
+    session->getButtonStatus(back,remember,next,noQuestionsInDB,noTestQuestions,check,learn,testBtn);
 
     ui->nextFlashcardBtn->setEnabled(next);
     ui->backFlashcardBtn->setEnabled(back);
@@ -45,9 +45,13 @@ void FiszkiMainWindow::setBtns()
     ui->checkBtn->setEnabled(check);
     ui->enterAnwserLineEdit->setEnabled(check);
     ui->testBtn->setEnabled(!noTestQuestions);
+    ui->learnBtn->setEnabled(learn);
 
-    ui->testBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
-    ui->learnBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
+//    ui->testBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
+//    ui->learnBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
+
+    ui->learnBtn->setEnabled(learn);
+    ui->testBtn->setEnabled(testBtn);
 
     ui->setUserBtn->setEnabled(!(ui->availableUsersComboBox->count()==0));
 }
@@ -113,6 +117,7 @@ void FiszkiMainWindow::on_setUserBtn_clicked()
         ui->activeUser_2->setText(session->getUser());
     }
     ui->availableUsersComboBox->setEnabled(!ui->availableUsersComboBox->isEnabled());
+    setBtns();
 }
 
 ////////////////////////////////////LEARN PAGE
@@ -120,8 +125,8 @@ void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
     session->exportBoxToDB(currStatus);
     setWindowIndex(Menu);
-    setBtns();
     session->setUserAction(Learn);
+    setBtns();
 }
 
 void FiszkiMainWindow::on_nextFlashcardBtn_clicked()

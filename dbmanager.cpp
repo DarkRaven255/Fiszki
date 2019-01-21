@@ -156,6 +156,15 @@ void DbManager::setUserLastAction(const QString &name, const int &action)
     query.exec();
 }
 
+void DbManager::setUserLastUsed(const QString &name, const long long &lastUsed)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE users SET last_used = (:LASTUSED) WHERE name = (:name)");
+    query.bindValue(":LASTUSED", lastUsed);
+    query.bindValue(":name", name);
+    query.exec();
+}
+
 //Funkcja zwracająca listę zawierającą wszystkich użytkowników
 QStringList DbManager::returnUserList()
 {

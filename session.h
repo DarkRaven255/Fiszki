@@ -20,7 +20,7 @@ public:
     int getProgressPercent();
     void markWord();
     void exportBoxToDB(const Status &status);
-    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check);
+    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check, bool &learn, bool &testBtn);
 
     void learnWords();
     void nextLearnBtn();
@@ -57,6 +57,7 @@ private:
     int toLearnWords;
     int testCounterQuestions;
     int position;
+    int addToLearn;
 
     long long date;
 

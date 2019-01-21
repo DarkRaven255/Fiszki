@@ -20,6 +20,7 @@ public:
     void resetUserBox(const QString &userBox);
 
     void setUserLastAction(const QString &name, const int &action);
+    void setUserLastUsed(const QString &name, const long long &lastUsed);
     void setBox(const int &q_id, const QString &userBox);
     void setUnknownQuestions(const QString &name, const int &number);
 
