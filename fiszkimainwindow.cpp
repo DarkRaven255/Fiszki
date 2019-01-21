@@ -186,7 +186,6 @@ void FiszkiMainWindow::test()
 
 void FiszkiMainWindow::on_stopBtn_clicked()
 {
-    qDebug()<<currStatus;
     session->exportBoxToDB(currStatus);
     setWindowIndex(StatusMenu);
     setBtns();

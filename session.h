@@ -22,8 +22,6 @@ public:
     void exportBoxToDB(const Status &status);
     void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check, bool &learn, bool &testBtn);
 
-    void startLearn();
-    void endLearn();
     void learnWords();
     void nextLearnBtn();
     void backLearnBtn();
