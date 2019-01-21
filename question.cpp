@@ -6,6 +6,16 @@ Question::Question(const int &noQuestion, const QString &userBox, const int &noB
     dbmanager->returnQuestion(noQuestion,noBox,userBox,q_id,q_en,e_en,q_pl,e_pl);
 }
 
+Question::Question():
+    q_id(-1),
+    q_en("Zobaczyłeś"),
+    e_en("wszystkie"),
+    q_pl("fiszki"),
+    e_pl("na dziś")
+{
+
+}
+
 int Question::getQ_id()
 {
     return q_id;

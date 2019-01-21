@@ -111,7 +111,6 @@ void Session::setUser(const QString &name)
                     static_cast<int>(dbmanager->returnUserInfo(name,"last_action")),
                     static_cast<int>(dbmanager->returnUserInfo(name,"unknown_questions"))
                     ,this);
-    qDebug()<<user->getUnknownQuestions();
 
     if (user->getLastUsed()<date)
     {
@@ -171,14 +170,23 @@ void Session::markWord()
 //Funkcja ustawiająca flagi przycisków
 void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check)
 {
-    noQuestionsInDB=false;
-    noTestQuestions=false;
+    noQuestionsInDB = false;
+    noTestQuestions = false;
     check=true;
+    next = true;
+    back = true;
+    remember = true;
 
     if(position==0) back=false;
     if(position>0) back=true;
-    if(position==noMinusOneWords-1) next=false;
-    if(position<noMinusOneWords-1) next=true;
+
+    if(position>0&&question->getQ_id()==-1)
+    {
+        next = false;
+        remember = false;
+    }
+//    if(position==noMinusOneWords-1) next=false;
+//    if(position<noMinusOneWords-1) next=true;
     if(noMinusOneWords==1)
     {
         next=false;
@@ -262,14 +270,21 @@ unsigned long long Session::fibonacci(const int &n)
 //Funkcja pobierająca pytania do nauki słówek
 void Session::learnWords()
 {
-    if(position<MaxLearnWords+user->getUnknownQuestions())
+    if(position<MaxLearnWords-1+user->getUnknownQuestions())
     {
         qList.resize(toLearnWords+1);
         qList[toLearnWords] = new Question(toLearnWords,user->getNoBox(),-1);
         question=qList.at(toLearnWords);
         position=toLearnWords;
         toLearnWords++;
-        qDebug()<<position;
+    }
+    else if(position==MaxLearnWords-1+user->getUnknownQuestions())
+    {
+        qList.resize(toLearnWords+1);
+        qList[toLearnWords] = new Question();
+        question=qList.at(toLearnWords);
+        position=toLearnWords;
+        toLearnWords++;
     }
 }
 
@@ -351,7 +366,7 @@ void Session::exportBoxToDB(const Status &status)
 
     if(status == LearnMode)
     {
-        size = toLearnWords;
+        size = toLearnWords -1;
     }
     else if(status == TestMode)
     {
@@ -370,7 +385,7 @@ void Session::exportBoxToDB(const Status &status)
 
     if(unknownCounter> 0 && status == LearnMode)
     {
-        dbmanager->setUnknownQuestions(user->getUserName(),unknownCounter);
+        dbmanager->setUnknownQuestions(user->getUserName(),MaxLearnWords-unknownCounter-2);
     }
     recalculateQuestions();
 }
