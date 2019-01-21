@@ -8,8 +8,10 @@ Session::Session(QObject *parent):
     toLearnWords(0),
     testCounterQuestions(0),
     position(0),
+    addToLearn(0),
     date(QDate::currentDate().toJulianDay()),
     user(nullptr)
+
 
 {
     setUserList();
@@ -122,7 +124,7 @@ qDebug()<<user->getLastUsed()<<date;
         dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
         if (user->getLastUsed()>user->getStartDate())
         {
-            addToLearn=MaxLearnWords;
+            addToLearn=MaxLearnWords-2;
         }
     }
     recalculateQuestions();
@@ -299,7 +301,7 @@ unsigned long long Session::fibonacci(const int &n)
 //Funkcja pobierająca pytania do nauki słówek
 void Session::learnWords()
 {   
-    if(position<MaxLearnWords-1+user->getUnknownQuestions())
+    if(position<MaxLearnWords-1+user->getUnknownQuestions()+addToLearn)
     {
         qList.resize(toLearnWords+1);
         qList[toLearnWords] = new Question(toLearnWords,user->getNoBox(),-1);
@@ -307,7 +309,7 @@ void Session::learnWords()
         position=toLearnWords;
         toLearnWords++;
     }
-    else if(position==MaxLearnWords-1+user->getUnknownQuestions())
+    else if(position==MaxLearnWords-1+user->getUnknownQuestions()+addToLearn)
     {
         qList.resize(toLearnWords+1);
         qList[toLearnWords] = new Question();
@@ -414,7 +416,7 @@ void Session::exportBoxToDB(const Status &status)
 
     if(unknownCounter> 0 && status == LearnMode)
     {
-        int toAdd=MaxLearnWords-unknownCounter-2;
+        int toAdd=MaxLearnWords-unknownCounter-2+addToLearn;
         if(toAdd<=0)toAdd=0;
         dbmanager->setUnknownQuestions(user->getUserName(),toAdd);
     }
