@@ -49,6 +49,8 @@ private:
     bool noQuestionsInDB;
     bool noTestQuestions;
     bool check;
+    bool learn;
+    bool testBtn;
 
     QString user;
 

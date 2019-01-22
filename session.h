@@ -18,9 +18,9 @@ public:
     ~Session();
 
     int getProgressPercent();
-    void markQuestion();
-    void exportBoxToDB(Status status);
-    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check);
+    void markWord();
+    void exportBoxToDB(const Status &status);
+    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check, bool &learn, bool &testBtn);
 
     void learnWords();
     void nextLearnBtn();
@@ -35,6 +35,8 @@ public:
     QString getUser();
     void deleteUser();
 
+    void setUserAction(const LastAction &action);
+
     void addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
 
     QStringList getUserList();
@@ -43,20 +45,25 @@ public:
 
 private:
     int noMinusOneWords;
-    int noZeroWords;
-    int noOneWords;
-    int noTwoWords;
-    int noThreeWords;
-    int noFourWords;
-    int noFiveWords;
-    int noSixWords;
+//    int noZeroWords;
+//    int noOneWords;
+//    int noTwoWords;
+//    int noThreeWords;
+//    int noFourWords;
+//    int noFiveWords;
+//    int noSixWords;
     int noTestWords;
 
     int toLearnWords;
     int testCounterQuestions;
     int position;
+    int addToLearn;
+
+    long long date;
+    long long courseDay;
 
     QVector<Question *> qList;
+    QVector<Question *> qTestList;
     QVector<int> testWordsList;
     QVector<int> boxesInUse;
 
@@ -67,6 +74,8 @@ private:
     void randomTable();
     void setUserList();
     void recalculateQuestions();
+
+    unsigned long long fibonacci(int &n);
 
     DbManager *dbmanager = new DbManager("database.db");
     User *user;

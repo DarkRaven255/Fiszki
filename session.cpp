@@ -4,9 +4,13 @@
 
 Session::Session(QObject *parent):
     QObject(parent),
+    question(nullptr),
     toLearnWords(0),
     testCounterQuestions(0),
-    position(0)
+    position(0),
+    addToLearn(0),
+    date(QDate::currentDate().toJulianDay()),
+    user(nullptr)
 {
     setUserList();
 }
@@ -32,17 +36,16 @@ QStringList Session::getUserList()
 //Funkcja dodająca nowego użytkownika i przypisująca mu wolny noBox
 bool Session::addUser(const QString &name)
 {
-    if(dbmanager->countUsers()>=MaxUsers)
+    if(dbmanager->countUsers()>=ConstansMaxUsers)
     {
         return false;
     }
 
-    boxesInUse.resize(MaxUsers);
-    boxesInUse.fill(0,MaxUsers);
+    boxesInUse.resize(ConstansMaxUsers);
+    boxesInUse.fill(0,ConstansMaxUsers);
 
     dbmanager->returnBoxesInUse(boxesInUse);
 
-    ///RANDOM TABLE DO UNIFIKACJI !!!////////////////////////////////////////////////////////////////////
     int isRepeated;
     int freeBox = 1;
 
@@ -51,8 +54,8 @@ bool Session::addUser(const QString &name)
         do
         {
             isRepeated=false;
-            int random=randomInt(1,MaxUsers);
-            for(int i=0;i<MaxUsers;i++)
+            int random=randomInt(1,ConstansMaxUsers);
+            for(int i=0;i<ConstansMaxUsers;i++)
             {
                 if(boxesInUse.at(i)==random)
                 {
@@ -64,7 +67,7 @@ bool Session::addUser(const QString &name)
         }while(isRepeated);
     }
 
-    if(dbmanager->addUser(name,freeBox))
+    if(dbmanager->addUser(name,freeBox,date))
     {
         dbmanager->resetUserBox("box"+static_cast<QString>(freeBox+48));
         return true;
@@ -75,7 +78,25 @@ bool Session::addUser(const QString &name)
 //Stworzenie użytkownika w sesji
 void Session::setUser(const QString &name)
 {
-    user = new User(name,"box"+static_cast<QString>(dbmanager->findUserBox(name)+48),this);
+    user = new User(name,
+                    "box"+static_cast<QString>(static_cast<int>(dbmanager->returnUserInfo(name,"noBox"))+48),
+                    dbmanager->returnUserInfo(name,"start_date"),
+                    dbmanager->returnUserInfo(name,"last_used"),
+                    static_cast<int>(dbmanager->returnUserInfo(name,"last_action")),
+                    static_cast<int>(dbmanager->returnUserInfo(name,"unknown_questions"))
+                    ,this);
+
+    if (user->getLastUsed()<date)
+    {
+        user->setLastAction(0);
+        dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
+        if (user->getLastUsed()>user->getStartDate())
+        {
+            addToLearn=ConstansMaxLearnWords-2;
+        }
+        //dbmanager->incrementUserLastFibonacci(user->getUserName());
+    }
+    courseDay = date - user->getStartDate();
     recalculateQuestions();
 }
 
@@ -89,8 +110,24 @@ QString Session::getUser()
 void Session::deleteUser()
 {
     delete user;
+    user=nullptr;
 }
 
+void Session::setUserAction(const LastAction &action)
+{
+    if(user->getLastAction()==LastActionNone)
+    {
+        user->setLastAction(action);
+    }
+    else if((user->getLastAction()==LastActionLearn&&action==LastActionTest)||(user->getLastAction()==LastActionTest&&action==LastActionLearn))
+    {
+        user->setLastAction(LastActionLearnTest);
+    }
+    dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
+    dbmanager->setUserLastUsed(user->getUserName(),date);
+}
+
+//Funkcja dodająca nowe pytania do bazy danych
 void Session::addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl)
 {
     if(!dbmanager->findWord(q_en))
@@ -107,22 +144,54 @@ int Session::getProgressPercent()
 }
 
 //Funkcja zmieniająca "pudełko"
-void Session::markQuestion()
+void Session::markWord()
 {
     question->set_isChanged();
 }
 
 //Funkcja ustawiająca flagi przycisków
-void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check)
+void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check, bool &learn, bool &testBtn)
 {
-    noQuestionsInDB=false;
-    noTestQuestions=false;
+    noQuestionsInDB = false;
+    noTestQuestions = false;
     check=true;
+    next = true;
+    back = true;
+    remember = true;
+    learn = true;
+    testBtn = true;
 
     if(position==0) back=false;
-    if(position>0) back=true;
-    if(position==noMinusOneWords-1) next=false;
-    if(position<noMinusOneWords-1) next=true;
+
+    if(question!=nullptr&&question->getQ_id()==-1)
+    {
+        next = false;
+        remember = false;
+    }
+
+    if(user==nullptr)
+    {
+        learn=false;
+        testBtn=false;
+    }
+
+    if(user!=nullptr&&(user->getLastAction()==LastActionLearn||user->getLastAction()==LastActionLearnTest))
+    {
+        learn = false;
+    }
+
+    if(user!=nullptr&&(user->getLastAction()==LastActionTest||user->getLastAction()==LastActionLearnTest))
+    {
+        testBtn = false;
+    }
+
+    if(noTestWords==0)
+    {
+        testBtn = false;
+    }
+
+//    if(position==noMinusOneWords-1) next=false;
+//    if(position<noMinusOneWords-1) next=true;
     if(noMinusOneWords==1)
     {
         next=false;
@@ -149,11 +218,11 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
         }
     }
 
-    if(position>noTestWords)
-    {
-        noTestQuestions=true;
-        check=false;
-    }
+//    if(position>noTestWords)
+//    {
+//        noTestQuestions=true;
+//        check=false;
+//    }
 
     if(noTestWords==0)
     {
@@ -169,16 +238,8 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
 //Funkcja przeliczająca pytania w bazie danych
 void Session::recalculateQuestions()
 {
-    noMinusOneWords=dbmanager->countQuestions(-1,user->getNoBox());
-    noZeroWords=dbmanager->countQuestions(0,user->getNoBox());
-    noOneWords=dbmanager->countQuestions(1,user->getNoBox());
-    noTwoWords=dbmanager->countQuestions(2,user->getNoBox());
-    noThreeWords=dbmanager->countQuestions(3,user->getNoBox());
-    noFourWords=dbmanager->countQuestions(4,user->getNoBox());
-    noFiveWords=dbmanager->countQuestions(5,user->getNoBox());
-    noSixWords=dbmanager->countQuestions(6,user->getNoBox());
-
-    noTestWords=dbmanager->countQuestions(7,user->getNoBox());
+    noMinusOneWords=dbmanager->countQuestions(-1,user->getNoBox(),0);
+    noTestWords = dbmanager->countQuestions(-3,user->getNoBox(),courseDay);
 
     toLearnWords=0;
     position=0;
@@ -186,12 +247,23 @@ void Session::recalculateQuestions()
 
 //Funkcja pobierająca pytania do nauki słówek
 void Session::learnWords()
-{
-    qList.resize(toLearnWords+1);
-    qList[toLearnWords] = new Question(toLearnWords,user->getNoBox(),-1);
-    question=qList.at(toLearnWords);
-    position=toLearnWords;
-    toLearnWords++;
+{   
+    if(position<ConstansMaxLearnWords-1+user->getUnknownQuestions()+addToLearn)
+    {
+        qList.resize(toLearnWords+1);
+        qList[toLearnWords] = new Question(toLearnWords,user->getNoBox(),-1);
+        question=qList.at(toLearnWords);
+        position=toLearnWords;
+        toLearnWords++;
+    }
+    else if(position==ConstansMaxLearnWords-1+user->getUnknownQuestions()+addToLearn)
+    {
+        qList.resize(toLearnWords+1);
+        qList[toLearnWords] = new Question();
+        question=qList.at(toLearnWords);
+        position=toLearnWords;
+        toLearnWords++;
+    }
 }
 
 //Funkcja pokazująca następne pytanie
@@ -225,7 +297,7 @@ void Session::nextTestBtn()
 {
     if(position<noTestWords)
     {
-        question=qList.at(position);
+        question=qTestList.at(position);
         position++;
     }
     else
@@ -237,47 +309,29 @@ void Session::nextTestBtn()
 //Funkcja pobierająca pytania do testu
 void Session::testWords()
 {
-    qList.resize(noTestWords);
+    qDebug()<<"dnie"<<courseDay;
+    recalculateQuestions();
+//    int counter =0;
+//    qDebug()<<"LPTAN"<<noTestWords;
+    //qTestList.resize(noTestWords);
     if(noTestWords==1)
     {
-        qList[0] = new Question(0,user->getNoBox(),7);
+        qTestList.push_back(new Question(0,user->getNoBox(),-2));
     }
     else
     {
-        randomTable();
-        for(int i=0;i<noTestWords;i++)
+        for(int i=0;i<=courseDay;i++)
         {
-            qList[i] = new Question(testWordsList.at(i),user->getNoBox(),7);
+            int noIQuestions = dbmanager->countQuestions(i,user->getNoBox(),NULL);
+//            qDebug()<<i<<"noIQ"<<noIQuestions;
+            for(int k=0;k<noIQuestions;k++)
+            {
+//                qDebug()<<"k"<<k<<"noIQ"<<noIQuestions;
+                qTestList.push_back(new Question(k,user->getNoBox(),i));
+            }
         }
     }
     nextTestBtn();
-}
-
-//Funkcja generująca losową tablicę bez powtórzeń
-void Session::randomTable()
-{
-    bool isRepeated;
-    int random;
-    recalculateQuestions();
-    testWordsList.resize(noTestWords);
-
-    for(int j=0;j<noTestWords;j++)
-    {
-        do
-        {
-            isRepeated=false;
-            random=randomInt(0,noTestWords-1);
-            for(int i=0;i<noTestWords;i++)
-            {
-                if(testWordsList.at(i)==random)
-                {
-
-                    isRepeated=true;
-                }
-            }
-            testWordsList[j]=random;
-        }while(isRepeated);
-    }
 }
 
 //Funkcja sprawdzająca odpowiedź
@@ -285,33 +339,51 @@ void Session::checkAnswer(const QString &answer)
 {
     if(answer==question->getQ_pl())
     {
-        markQuestion();
+        markWord();
     }
-    nextTestBtn();
 }
 
 //Funkcja do przeniesienia informacji do DB
-void Session::exportBoxToDB(Status status)
+void Session::exportBoxToDB(const Status &status)
 {
     int size=0;
-    //qDebug()<<status;
+    int unknownCounter=0;
 
-    if(status == LearnMode)
+    if(status == StatusLearnMode)
     {
-        size = toLearnWords;
+        size = toLearnWords -1;
+        for(int i=0;i<size;i++)
+        {
+            if(qList.at(i)->qet_isChanged())
+            {
+                dbmanager->setBox(qList.at(i)->getQ_id(),user->getNoBox());
+                unknownCounter++;
+            }
+           // delete qList.at(i);
+        }
+        if(unknownCounter>=0)
+        {
+            int toAdd=ConstansMaxLearnWords-unknownCounter-2+addToLearn;
+            if(toAdd<=0)toAdd=0;
+            dbmanager->setUserUnknownQuestions(user->getUserName(),toAdd);
+        }
     }
-    else if(status == TestMode)
+    else if(status == StatusTestMode)
     {
         size = noTestWords;
-    }
-
-    for(int i=0;i<size;i++)
-    {
-        if(qList.at(i)->qet_isChanged())
+        for(int i=0;i<size;i++)
         {
-            dbmanager->setBox(qList.at(i)->getQ_id(),user->getNoBox());
+            if(qTestList.at(i)->qet_isChanged())
+            {
+                dbmanager->incrementUserLastFibonacci(qTestList.at(i)->getQ_id(),user->getNoBox());
+
+                int fbox = qTestList.at(i)->get_fBox();
+                unsigned long long newBox = fibonacci(fbox);
+
+                dbmanager->setBox(qTestList.at(i)->getQ_id(),user->getNoBox(),newBox);
+            }
+            //delete qList.at(i);
         }
-        delete qList.at(i);
     }
     recalculateQuestions();
 }
@@ -322,4 +394,23 @@ int Session::randomInt(int min, int max)
     QTime time = QTime::currentTime();
     qsrand(static_cast<uint>(time.msec()));
     return qrand() % ((max + 1) - min) + min;
+}
+
+//Funkcja zwracająca numer numer ciągu Fibonacciego o złożoności O(n)
+unsigned long long Session::fibonacci(int &n)
+{
+    //if(n <= 0) return 0;
+    if(n >= 0 && n < 3) return 1;
+
+    unsigned long long result = 0;
+    unsigned long long preOldResult = 1;
+    unsigned long long oldResult = 1;
+
+    for (int i=2;i<n;i++)
+    {
+        result = preOldResult + oldResult;
+        preOldResult = oldResult;
+        oldResult = result;
+    }
+    return result;
 }

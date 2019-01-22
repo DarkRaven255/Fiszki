@@ -13,7 +13,7 @@ FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     ui(new Ui::FiszkiMainWindow)
 {
     ui->setupUi(this);
-    setWindowIndex(Menu);
+    setWindowIndex(StatusMenu);
 
     ui->availableUsersComboBox->addItems(session->getUserList());
     connect(ui->enterAnwserLineEdit,SIGNAL(returnPressed()),ui->checkBtn,SIGNAL(clicked()));
@@ -37,7 +37,7 @@ FiszkiMainWindow::~FiszkiMainWindow()
 
 void FiszkiMainWindow::setBtns()
 {
-    session->getButtonStatus(back,remember,next,noQuestionsInDB,noTestQuestions,check);
+    session->getButtonStatus(back,remember,next,noQuestionsInDB,noTestQuestions,check,learn,testBtn);
 
     ui->nextFlashcardBtn->setEnabled(next);
     ui->backFlashcardBtn->setEnabled(back);
@@ -45,9 +45,13 @@ void FiszkiMainWindow::setBtns()
     ui->checkBtn->setEnabled(check);
     ui->enterAnwserLineEdit->setEnabled(check);
     ui->testBtn->setEnabled(!noTestQuestions);
+    ui->learnBtn->setEnabled(learn);
 
-    ui->testBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
-    ui->learnBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
+//    ui->testBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
+//    ui->learnBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
+
+    ui->learnBtn->setEnabled(learn);
+    ui->testBtn->setEnabled(testBtn);
 
     ui->setUserBtn->setEnabled(!(ui->availableUsersComboBox->count()==0));
 }
@@ -78,13 +82,13 @@ void FiszkiMainWindow::on_userListBtn_clicked()
 
 void FiszkiMainWindow::on_learnBtn_clicked()
 {
-    setWindowIndex(LearnMode);
+    setWindowIndex(StatusLearnMode);
     on_nextFlashcardBtn_clicked();
 }
 
 void FiszkiMainWindow::on_testBtn_clicked()
 {
-    setWindowIndex(TestMode);
+    setWindowIndex(StatusTestMode);
     setBtns();
     session->testWords();
     test();
@@ -113,13 +117,15 @@ void FiszkiMainWindow::on_setUserBtn_clicked()
         ui->activeUser_2->setText(session->getUser());
     }
     ui->availableUsersComboBox->setEnabled(!ui->availableUsersComboBox->isEnabled());
+    setBtns();
 }
 
 ////////////////////////////////////LEARN PAGE
 void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
     session->exportBoxToDB(currStatus);
-    setWindowIndex(Menu);
+    setWindowIndex(StatusMenu);
+    session->setUserAction(LastActionLearn);
     setBtns();
 }
 
@@ -158,7 +164,7 @@ void FiszkiMainWindow::on_backFlashcardBtn_clicked()
 
 void FiszkiMainWindow::on_rememberBtn_clicked()
 {
-    session->markQuestion();
+    session->markWord();
     on_nextFlashcardBtn_clicked();
 }
 
@@ -181,8 +187,9 @@ void FiszkiMainWindow::test()
 void FiszkiMainWindow::on_stopBtn_clicked()
 {
     session->exportBoxToDB(currStatus);
-    setWindowIndex(Menu);
+    setWindowIndex(StatusMenu);
     setBtns();
+    session->setUserAction(LastActionTest);
 }
 
 
@@ -190,7 +197,7 @@ void FiszkiMainWindow::on_checkBtn_clicked()
 {
     session->checkAnswer(ui->enterAnwserLineEdit->text());
     ui->enterAnwserLineEdit->clear();
-    setBtns();
+    session->nextTestBtn();
     test();
 }
 

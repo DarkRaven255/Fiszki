@@ -7,6 +7,7 @@ class Question
 {
 public:
     Question(const int &noQuestion, const QString &userBox, const int &noBox);
+    Question();
     int getQ_id();
     QString getQ_en();
     QString getE_en();
@@ -16,6 +17,9 @@ public:
     bool qet_isChanged();
     void set_isChanged();
 
+//    int get_noBox();
+
+    int get_fBox();
 
 private:
     int q_id;
@@ -23,6 +27,9 @@ private:
     QString e_en;
     QString q_pl;
     QString e_pl;
+//    int noBox;
+
+    int fBox;
 
     bool isChanged;
 
