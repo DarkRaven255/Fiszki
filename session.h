@@ -45,13 +45,6 @@ public:
 
 private:
     int noMinusOneWords;
-    int noZeroWords;
-    int noOneWords;
-    int noTwoWords;
-    int noThreeWords;
-    int noFourWords;
-    int noFiveWords;
-    int noSixWords;
     int noTestWords;
 
     int toLearnWords;

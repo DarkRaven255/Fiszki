@@ -265,14 +265,6 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
 void Session::recalculateQuestions()
 {
     noMinusOneWords=dbmanager->countQuestions(-1,user->getNoBox(),0);
-    noZeroWords=dbmanager->countQuestions(0,user->getNoBox(),0);
-    noOneWords=dbmanager->countQuestions(1,user->getNoBox(),0);
-    noTwoWords=dbmanager->countQuestions(2,user->getNoBox(),0);
-    noThreeWords=dbmanager->countQuestions(3,user->getNoBox(),0);
-    noFourWords=dbmanager->countQuestions(4,user->getNoBox(),0);
-    noFiveWords=dbmanager->countQuestions(5,user->getNoBox(),0);
-    noSixWords=dbmanager->countQuestions(6,user->getNoBox(),0);
-
     noTestWords=dbmanager->countQuestions(-2,user->getNoBox(),0);
 
     toLearnWords=0;
