@@ -186,19 +186,27 @@ void DbManager::closeUserDB()
 }
 
 //Funkcja przekazująca pytanie odczytane z bazy danych
-void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox,
+void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox/*, const long long &courseDay*/,
                                int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
 {
     QSqlQuery query;
 
     switch(noBox)
     {
-    case -1: case 0: case 1: case 2: case 3: case 4: case 5: case 6:
+    case -1:/* case 0: case 1: case 2: case 3: case 4: case 5: case 6:*/
         query.prepare("SELECT * FROM questions WHERE " + userBox + " = (:noBox)");
         query.bindValue(":noBox",noBox);
         break;
-    case 7:
-        query.prepare("SELECT * FROM questions WHERE "+ userBox +" > -1");
+    case -2:
+        query.prepare("SELECT * FROM questions WHERE "+ userBox +" > -1 ORDER BY " + userBox);
+        break;
+//    case -3:
+//        query.prepare("SELECT * FROM questions WHERE "+ userBox +" <= (:COURSEDAY)");
+//        query.bindValue(":COURSEDAY",courseDay);
+//        break;
+    default:
+        query.prepare("SELECT * FROM questions WHERE " + userBox + " = (:noBox)");
+        query.bindValue(":noBox",noBox);
         break;
     }
 
@@ -238,23 +246,32 @@ void DbManager::setUnknownQuestions(const QString &name, const int &number)
 }
 
 //Funkcja zwracająca ilość słówek z bazie danych
-int DbManager::countQuestions(const int &noBox, const QString &userBox)
+int DbManager::countQuestions(const int &noBox, const QString &userBox, const long long &courseDay)
 {
     QSqlQuery query;
     int noQuestions=0;
 
     switch(noBox)
     {
-    case -1: case 0: case 1: case 2: case 3: case 4: case 5: case 6:
-        query.prepare("SELECT * FROM questions WHERE "+ userBox +" is (:box)");
-        query.bindValue(":box",noBox);
+    case -1:/* case 0: case 1: case 2: case 3: case 4: case 5: case 6:*/
+        query.prepare("SELECT * FROM questions WHERE " + userBox + " = (:noBox)");
+        query.bindValue(":noBox",noBox);
         break;
-    case 7:
+    case -2:
         query.prepare("SELECT * FROM questions WHERE "+ userBox +" > -1");
+        break;
+    case -3:
+        query.prepare("SELECT * FROM questions WHERE "+ userBox +" <= (:COURSEDAY) and "+ userBox + " is not -1");
+        query.bindValue(":COURSEDAY",courseDay);
+        break;
+    default:
+        query.prepare("SELECT * FROM questions WHERE " + userBox + " = (:noBox)");
+        query.bindValue(":noBox",noBox);
         break;
     }
 
     query.exec();
+    //qDebug() << "addUser error:  " << query.lastError();
     if(query.last())
     {
         noQuestions = query.at()+1;

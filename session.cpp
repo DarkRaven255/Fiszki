@@ -116,7 +116,7 @@ void Session::setUser(const QString &name)
                     static_cast<int>(dbmanager->returnUserInfo(name,"last_action")),
                     static_cast<int>(dbmanager->returnUserInfo(name,"unknown_questions"))
                     ,this);
-qDebug()<<user->getLastUsed()<<date;
+//qDebug()<<user->getLastUsed()<<date;
     if (user->getLastUsed()<date)
     {
 
@@ -264,38 +264,19 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
 //Funkcja przeliczająca pytania w bazie danych
 void Session::recalculateQuestions()
 {
-    noMinusOneWords=dbmanager->countQuestions(-1,user->getNoBox());
-    noZeroWords=dbmanager->countQuestions(0,user->getNoBox());
-    noOneWords=dbmanager->countQuestions(1,user->getNoBox());
-    noTwoWords=dbmanager->countQuestions(2,user->getNoBox());
-    noThreeWords=dbmanager->countQuestions(3,user->getNoBox());
-    noFourWords=dbmanager->countQuestions(4,user->getNoBox());
-    noFiveWords=dbmanager->countQuestions(5,user->getNoBox());
-    noSixWords=dbmanager->countQuestions(6,user->getNoBox());
+    noMinusOneWords=dbmanager->countQuestions(-1,user->getNoBox(),0);
+    noZeroWords=dbmanager->countQuestions(0,user->getNoBox(),0);
+    noOneWords=dbmanager->countQuestions(1,user->getNoBox(),0);
+    noTwoWords=dbmanager->countQuestions(2,user->getNoBox(),0);
+    noThreeWords=dbmanager->countQuestions(3,user->getNoBox(),0);
+    noFourWords=dbmanager->countQuestions(4,user->getNoBox(),0);
+    noFiveWords=dbmanager->countQuestions(5,user->getNoBox(),0);
+    noSixWords=dbmanager->countQuestions(6,user->getNoBox(),0);
 
-    noTestWords=dbmanager->countQuestions(7,user->getNoBox());
+    noTestWords=dbmanager->countQuestions(-2,user->getNoBox(),0);
 
     toLearnWords=0;
     position=0;
-}
-
-//Funkcja zwracająca numer numer ciągu Fibonacciego o złożoności O(n)
-unsigned long long Session::fibonacci(const int &n)
-{
-    if(n <= 0) return 0;
-    if(n > 0 && n < 3) return 1;
-
-    unsigned long long result = 0;
-    unsigned long long preOldResult = 1;
-    unsigned long long oldResult = 1;
-
-    for (int i=2;i<n;i++)
-    {
-        result = preOldResult + oldResult;
-        preOldResult = oldResult;
-        oldResult = result;
-    }
-    return result;
 }
 
 //Funkcja pobierająca pytania do nauki słówek
@@ -360,19 +341,47 @@ void Session::nextTestBtn()
 }
 
 //Funkcja pobierająca pytania do testu
+//void Session::testWords()
+//{
+//    qList.resize(noTestWords);
+//    if(noTestWords==1)
+//    {
+//        qList[0] = new Question(0,user->getNoBox(),-2);
+//    }
+//    else
+//    {
+//        randomTable();
+//        for(int i=0;i<noTestWords;i++)
+//        {
+//            qList[i] = new Question(testWordsList.at(i),user->getNoBox(),-2);
+//        }
+//    }
+//    nextTestBtn();
+//}
 void Session::testWords()
 {
-    qList.resize(noTestWords);
+    long long courseDay = date - user->getStartDate();
+    qDebug()<<"dnie"<<courseDay;
+    int counter =0;
+    noTestWords = dbmanager->countQuestions(-3,user->getNoBox(),courseDay);
+    qDebug()<<noTestWords;
     if(noTestWords==1)
     {
-        qList[0] = new Question(0,user->getNoBox(),7);
+        qList.push_back(new Question(0,user->getNoBox(),-2));
     }
     else
     {
-        randomTable();
         for(int i=0;i<noTestWords;i++)
         {
-            qList[i] = new Question(testWordsList.at(i),user->getNoBox(),7);
+            int noIQuestions = dbmanager->countQuestions(i,user->getNoBox(),NULL) + counter;
+            int k=0;
+            int j=counter;
+//            qDebug()<<i<<"noIQ"<<noIQuestions;
+            for(j,k;j<noIQuestions;j++,k++)
+            {
+                qList.push_back(new Question(k,user->getNoBox(),i));
+            }
+            counter=j;
         }
     }
     nextTestBtn();
@@ -413,7 +422,7 @@ void Session::exportBoxToDB(const Status &status)
         }
         delete qList.at(i);
     }
-
+//tu ma byc >= pacanie popraw to potem
     if(unknownCounter> 0 && status == LearnMode)
     {
         int toAdd=MaxLearnWords-unknownCounter-2+addToLearn;
@@ -429,4 +438,23 @@ int Session::randomInt(int min, int max)
     QTime time = QTime::currentTime();
     qsrand(static_cast<uint>(time.msec()));
     return qrand() % ((max + 1) - min) + min;
+}
+
+//Funkcja zwracająca numer numer ciągu Fibonacciego o złożoności O(n)
+unsigned long long Session::fibonacci(const int &n)
+{
+    if(n <= 0) return 0;
+    if(n > 0 && n < 3) return 1;
+
+    unsigned long long result = 0;
+    unsigned long long preOldResult = 1;
+    unsigned long long oldResult = 1;
+
+    for (int i=2;i<n;i++)
+    {
+        result = preOldResult + oldResult;
+        preOldResult = oldResult;
+        oldResult = result;
+    }
+    return result;
 }

@@ -24,12 +24,12 @@ public:
     void setBox(const int &q_id, const QString &userBox);
     void setUnknownQuestions(const QString &name, const int &number);
 
-    int countQuestions(const int &noBox, const QString &userBox);
+    int countQuestions(const int &noBox, const QString &userBox, const long long &courseDay);
     int countUsers();
 
     void returnBoxesInUse(QVector<int> &listFreeBoxes);
     QStringList returnUserList();
-    void returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox,
+    void returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox/*, const long long &courseDay*/,
                         int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
     long long returnUserInfo(const QString &name, const QString parameter);
 
