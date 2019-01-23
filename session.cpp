@@ -116,7 +116,7 @@ void Session::setUser(const QString &name)
                     static_cast<int>(dbmanager->returnUserInfo(name,"last_action")),
                     static_cast<int>(dbmanager->returnUserInfo(name,"unknown_questions"))
                     ,this);
-//qDebug()<<user->getLastUsed()<<date;
+qDebug()<<user->getLastUsed()<<date;
     if (user->getLastUsed()<date)
     {
 
