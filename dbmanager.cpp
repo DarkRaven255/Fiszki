@@ -228,10 +228,18 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QS
 }
 
 //Funkcja ustawiająca konkretny numer w pudełku dla danego pytania i użytkownika
-void DbManager::setBox(const int &q_id, const QString &userBox)
+void DbManager::setBox(const int &q_id, const QString &userBox, const unsigned long long &noBox)
 {
     QSqlQuery query;
-    query.prepare("UPDATE questions SET "+ userBox +" = "+ userBox +" +1 WHERE id = (:q_id)");
+    if(noBox>0)
+    {
+        query.prepare("UPDATE questions SET "+ userBox +" = (:NOBOX) WHERE id = (:q_id)");
+        query.bindValue(":NOBOX", noBox);
+    }
+    else
+    {
+        query.prepare("UPDATE questions SET "+ userBox +" = "+ userBox +" +1 WHERE id = (:q_id)");
+    }
     query.bindValue(":q_id", q_id);
     query.exec();
 }

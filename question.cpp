@@ -1,6 +1,7 @@
 #include "question.h"
 
 Question::Question(const int &noQuestion, const QString &userBox, const int &noBox):
+    noBox(noBox),
     isChanged(false)
 {
     dbmanager->returnQuestion(noQuestion,noBox,userBox,q_id,q_en,e_en,q_pl,e_pl);
@@ -49,4 +50,9 @@ bool Question::qet_isChanged()
 void Question::set_isChanged()
 {
     isChanged=true;
+}
+
+bool Question::get_noBox()
+{
+    return noBox;
 }
