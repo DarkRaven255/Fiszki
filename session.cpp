@@ -94,6 +94,7 @@ void Session::setUser(const QString &name)
         {
             addToLearn=ConstansMaxLearnWords-2;
         }
+        //dbmanager->incrementUserLastFibonacci(user->getUserName());
     }
     courseDay = date - user->getStartDate();
     recalculateQuestions();
@@ -294,23 +295,21 @@ void Session::backLearnBtn()
 //Funkcja pokazująca następne pytanie w opcji testu
 void Session::nextTestBtn()
 {
-    qDebug()<<"pos"<<position;
     if(position<noTestWords)
     {
         question=qTestList.at(position);
         position++;
-//        qDebug()<<question->getQ_en();
     }
-//    else
-//    {
-//        question=qTestList.at(position);
-//    }
+    else
+    {
+        position++;
+    }
 }
 
 //Funkcja pobierająca pytania do testu
 void Session::testWords()
 {
-//    qDebug()<<"dnie"<<courseDay;
+    qDebug()<<"dnie"<<courseDay;
     recalculateQuestions();
 //    int counter =0;
 //    qDebug()<<"LPTAN"<<noTestWords;
@@ -342,7 +341,6 @@ void Session::checkAnswer(const QString &answer)
     {
         markWord();
     }
-   // nextTestBtn();
 }
 
 //Funkcja do przeniesienia informacji do DB
@@ -367,7 +365,7 @@ void Session::exportBoxToDB(const Status &status)
         {
             int toAdd=ConstansMaxLearnWords-unknownCounter-2+addToLearn;
             if(toAdd<=0)toAdd=0;
-            dbmanager->setUnknownQuestions(user->getUserName(),toAdd);
+            dbmanager->setUserUnknownQuestions(user->getUserName(),toAdd);
         }
     }
     else if(status == StatusTestMode)
@@ -377,21 +375,11 @@ void Session::exportBoxToDB(const Status &status)
         {
             if(qTestList.at(i)->qet_isChanged())
             {
-                qDebug()<<qTestList.at(i)->get_noBox();
-                unsigned long long newBox;
-                if(qTestList.at(i)->get_noBox()==0)
-                {
-                    newBox=1;
-                }
-                else if(qTestList.at(i)->get_noBox()==1)
-                {
-                    newBox=2;
-                }
-                else
-                {
-                    qDebug()<<"DZIALAM"<<fibonacci(qTestList.at(i)->get_noBox()+2);
-                    newBox=fibonacci(qTestList.at(i)->get_noBox()+2);
-                }
+                dbmanager->incrementUserLastFibonacci(qTestList.at(i)->getQ_id(),user->getNoBox());
+
+                int fbox = qTestList.at(i)->get_fBox();
+                unsigned long long newBox = fibonacci(fbox);
+
                 dbmanager->setBox(qTestList.at(i)->getQ_id(),user->getNoBox(),newBox);
             }
             //delete qList.at(i);
@@ -409,10 +397,10 @@ int Session::randomInt(int min, int max)
 }
 
 //Funkcja zwracająca numer numer ciągu Fibonacciego o złożoności O(n)
-unsigned long long Session::fibonacci(const int &n)
+unsigned long long Session::fibonacci(int &n)
 {
-    if(n <= 0) return 0;
-    if(n > 0 && n < 3) return 1;
+    //if(n <= 0) return 0;
+    if(n >= 0 && n < 3) return 1;
 
     unsigned long long result = 0;
     unsigned long long preOldResult = 1;

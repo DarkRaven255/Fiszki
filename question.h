@@ -17,8 +17,9 @@ public:
     bool qet_isChanged();
     void set_isChanged();
 
-    int get_noBox();
+//    int get_noBox();
 
+    int get_fBox();
 
 private:
     int q_id;
@@ -26,7 +27,9 @@ private:
     QString e_en;
     QString q_pl;
     QString e_pl;
-    int noBox;
+//    int noBox;
+
+    int fBox;
 
     bool isChanged;
 

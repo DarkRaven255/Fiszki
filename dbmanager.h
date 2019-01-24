@@ -19,18 +19,21 @@ public:
     bool removeUser(const QString &name);
     void resetUserBox(const QString &userBox);
 
+    void setBox(const int &q_id, const QString &userBox, const unsigned long long &noBox=0);
+
     void setUserLastAction(const QString &name, const int &action);
     void setUserLastUsed(const QString &name, const long long &lastUsed);
-    void setBox(const int &q_id, const QString &userBox, const unsigned long long &noBox=0);
-    void setUnknownQuestions(const QString &name, const int &number);
+    void setUserUnknownQuestions(const QString &name, const int &number);
+
+    void incrementUserLastFibonacci(const int &q_id, const QString &userBox);
 
     int countQuestions(const int &noBox, const QString &userBox, const long long &courseDay);
     int countUsers();
 
     void returnBoxesInUse(QVector<int> &listFreeBoxes);
     QStringList returnUserList();
-    void returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox/*, const long long &courseDay*/,
-                        int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl);
+    void returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox,
+                        int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl, int &fBox);
     long long returnUserInfo(const QString &name, const QString parameter);
 
     void closeUserDB();

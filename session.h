@@ -75,7 +75,7 @@ private:
     void setUserList();
     void recalculateQuestions();
 
-    unsigned long long fibonacci(const int &n);
+    unsigned long long fibonacci(int &n);
 
     DbManager *dbmanager = new DbManager("database.db");
     User *user;

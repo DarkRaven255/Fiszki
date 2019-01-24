@@ -1,10 +1,9 @@
 #include "question.h"
 
 Question::Question(const int &noQuestion, const QString &userBox, const int &noBox):
-    noBox(noBox),
     isChanged(false)
 {
-    dbmanager->returnQuestion(noQuestion,noBox,userBox,q_id,q_en,e_en,q_pl,e_pl);
+    dbmanager->returnQuestion(noQuestion,noBox,userBox,q_id,q_en,e_en,q_pl,e_pl,fBox);
 }
 
 Question::Question():
@@ -52,7 +51,12 @@ void Question::set_isChanged()
     isChanged=true;
 }
 
-int Question::get_noBox()
+int Question::get_fBox()
 {
-    return noBox;
+    return fBox;
 }
+
+//int Question::get_noBox()
+//{
+//    return noBox;
+//}

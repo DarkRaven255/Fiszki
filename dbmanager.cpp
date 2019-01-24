@@ -144,6 +144,7 @@ void DbManager::resetUserBox(const QString &userBox)
 {
     QSqlQuery query;
     query.exec("UPDATE questions SET " + userBox + "=-1");
+    query.exec("UPDATE questions SET f" + userBox + "=0");
 }
 
 //Funkcja ustawiająca ostatnią aktywność użytkownika w bazie danych
@@ -162,6 +163,23 @@ void DbManager::setUserLastUsed(const QString &name, const long long &lastUsed)
     query.prepare("UPDATE users SET last_used = (:LASTUSED) WHERE name = (:name)");
     query.bindValue(":LASTUSED", lastUsed);
     query.bindValue(":name", name);
+    query.exec();
+}
+
+void DbManager::setUserUnknownQuestions(const QString &name, const int &number)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE users SET unknown_questions = unknown_questions + (:NUMBER) WHERE name = (:NAME)");
+    query.bindValue(":NAME", name);
+    query.bindValue(":NUMBER", number);
+    query.exec();
+}
+
+void DbManager::incrementUserLastFibonacci(const int &q_id, const QString &userBox)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE questions SET f"+ userBox +" = f"+ userBox +" +1 WHERE id = (:q_id)");
+    query.bindValue(":q_id", q_id);
     query.exec();
 }
 
@@ -186,8 +204,8 @@ void DbManager::closeUserDB()
 }
 
 //Funkcja przekazująca pytanie odczytane z bazy danych
-void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox/*, const long long &courseDay*/,
-                               int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl)
+void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QString &userBox,
+                               int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl, int &fBox)
 {
     QSqlQuery query;
 
@@ -219,12 +237,14 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QS
     int idExplanationEN = query.record().indexOf("explanation_en");
     int idQuestionPL = query.record().indexOf("question_pl");
     int idExplanationPL = query.record().indexOf("explanation_pl");
+    int idFBox = query.record().indexOf("f"+userBox);
 
     q_id=query.value(idQuestion).toInt();
     q_en=query.value(idQuestionEN).toString();
     e_en=query.value(idExplanationEN).toString();
     q_pl=query.value(idQuestionPL).toString();
     e_pl=query.value(idExplanationPL).toString();
+    fBox=query.value(idFBox).toInt();
 }
 
 //Funkcja ustawiająca konkretny numer w pudełku dla danego pytania i użytkownika
@@ -241,15 +261,6 @@ void DbManager::setBox(const int &q_id, const QString &userBox, const unsigned l
         query.prepare("UPDATE questions SET "+ userBox +" = "+ userBox +" +1 WHERE id = (:q_id)");
     }
     query.bindValue(":q_id", q_id);
-    query.exec();
-}
-
-void DbManager::setUnknownQuestions(const QString &name, const int &number)
-{
-    QSqlQuery query;
-    query.prepare("UPDATE users SET unknown_questions = unknown_questions + (:NUMBER) WHERE name = (:NAME)");
-    query.bindValue(":NAME", name);
-    query.bindValue(":NUMBER", number);
     query.exec();
 }
 
