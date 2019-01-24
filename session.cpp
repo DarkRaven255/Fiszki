@@ -94,7 +94,6 @@ void Session::setUser(const QString &name)
         {
             addToLearn=ConstansMaxLearnWords-2;
         }
-        //dbmanager->incrementUserLastFibonacci(user->getUserName());
     }
     courseDay = date - user->getStartDate();
     recalculateQuestions();
@@ -185,26 +184,12 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
         testBtn = false;
     }
 
-    if(noTestWords==0)
+    if(user!=nullptr&&(user->getLastAction()==LastActionNone))
     {
         testBtn = false;
     }
 
-//    if(position==noMinusOneWords-1) next=false;
-//    if(position<noMinusOneWords-1) next=true;
-    if(noMinusOneWords==1)
-    {
-        next=false;
-        back=false;
-    }
 
-    if(noMinusOneWords==0)
-    {
-        next=false;
-        back=false;
-        remember=false;
-        noQuestionsInDB=true;
-    }
 
     if((position!=0&&position<noTestWords)||toLearnWords!=0)
     {
@@ -218,27 +203,35 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
         }
     }
 
-//    if(position>noTestWords)
+//    if(noTestWords==0)
 //    {
 //        noTestQuestions=true;
-//        check=false;
 //    }
 
-    if(noTestWords==0)
-    {
-        noTestQuestions=true;
-    }
+//    if(noTestWords!=0)
+//    {
+//        noTestQuestions=false;
+//    }
 
-    if(noTestWords!=0)
-    {
-        noTestQuestions=false;
-    }
+    //    if(noMinusOneWords==1)
+    //    {
+    //        next=false;
+    //        back=false;
+    //    }
+
+    //    if(noMinusOneWords==0)
+    //    {
+    //        next=false;
+    //        back=false;
+    //        remember=false;
+    //        noQuestionsInDB=true;
+    //    }
 }
 
 //Funkcja przeliczająca pytania w bazie danych
 void Session::recalculateQuestions()
 {
-    noMinusOneWords=dbmanager->countQuestions(-1,user->getNoBox(),0);
+    noMinusOneWords=dbmanager->countQuestions(-1,user->getNoBox());
     noTestWords = dbmanager->countQuestions(-3,user->getNoBox(),courseDay);
 
     toLearnWords=0;
@@ -311,9 +304,6 @@ void Session::testWords()
 {
     qDebug()<<"dnie"<<courseDay;
     recalculateQuestions();
-//    int counter =0;
-//    qDebug()<<"LPTAN"<<noTestWords;
-    //qTestList.resize(noTestWords);
     if(noTestWords==1)
     {
         qTestList.push_back(new Question(0,user->getNoBox(),-2));
@@ -322,11 +312,9 @@ void Session::testWords()
     {
         for(int i=0;i<=courseDay;i++)
         {
-            int noIQuestions = dbmanager->countQuestions(i,user->getNoBox(),NULL);
-//            qDebug()<<i<<"noIQ"<<noIQuestions;
+            int noIQuestions = dbmanager->countQuestions(i,user->getNoBox());
             for(int k=0;k<noIQuestions;k++)
             {
-//                qDebug()<<"k"<<k<<"noIQ"<<noIQuestions;
                 qTestList.push_back(new Question(k,user->getNoBox(),i));
             }
         }
@@ -359,7 +347,6 @@ void Session::exportBoxToDB(const Status &status)
                 dbmanager->setBox(qList.at(i)->getQ_id(),user->getNoBox());
                 unknownCounter++;
             }
-           // delete qList.at(i);
         }
         if(unknownCounter>=0)
         {

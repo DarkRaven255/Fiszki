@@ -27,7 +27,7 @@ public:
 
     void incrementUserLastFibonacci(const int &q_id, const QString &userBox);
 
-    int countQuestions(const int &noBox, const QString &userBox, const long long &courseDay);
+    int countQuestions(const int &noBox, const QString &userBox, const long long &courseDay=0);
     int countUsers();
 
     void returnBoxesInUse(QVector<int> &listFreeBoxes);
