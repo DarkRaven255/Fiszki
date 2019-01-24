@@ -189,8 +189,6 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
         testBtn = false;
     }
 
-
-
     if((position!=0&&position<noTestWords)||toLearnWords!=0)
     {
         if(qList[position]->qet_isChanged())
@@ -202,30 +200,6 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
             remember=true;
         }
     }
-
-//    if(noTestWords==0)
-//    {
-//        noTestQuestions=true;
-//    }
-
-//    if(noTestWords!=0)
-//    {
-//        noTestQuestions=false;
-//    }
-
-    //    if(noMinusOneWords==1)
-    //    {
-    //        next=false;
-    //        back=false;
-    //    }
-
-    //    if(noMinusOneWords==0)
-    //    {
-    //        next=false;
-    //        back=false;
-    //        remember=false;
-    //        noQuestionsInDB=true;
-    //    }
 }
 
 //Funkcja przeliczająca pytania w bazie danych
@@ -389,7 +363,6 @@ int Session::randomInt(int min, int max)
 //Funkcja zwracająca numer numer ciągu Fibonacciego o złożoności O(n)
 unsigned long long Session::fibonacci(int &n)
 {
-    //if(n <= 0) return 0;
     if(n >= 0 && n < 3) return 1;
 
     unsigned long long result = 0;

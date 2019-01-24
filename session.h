@@ -17,29 +17,30 @@ public:
     explicit Session(QObject *parent = nullptr);
     ~Session();
 
-    int getProgressPercent();
-    void markWord();
-    void exportBoxToDB(const Status &status);
-    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB, bool &noTestQuestions, bool &check, bool &learn, bool &testBtn);
+    QString getUser();
+    QStringList getUserList();
+    void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB,
+                         bool &noTestQuestions, bool &check, bool &learn, bool &testBtn);
 
     void learnWords();
     void nextLearnBtn();
     void backLearnBtn();
 
+    int getProgressPercent();
     void testWords();
     void nextTestBtn();
     void checkAnswer(const QString &answer);
 
     bool addUser(const QString &name);
     void setUser(const QString &name);
-    QString getUser();
     void deleteUser();
+
+    void markWord();
+    void exportBoxToDB(const Status &status);
 
     void setUserAction(const LastAction &action);
 
     void addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
-
-    QStringList getUserList();
 
     Question *question;
 
@@ -57,7 +58,6 @@ private:
 
     QVector<Question *> qList;
     QVector<Question *> qTestList;
-    QVector<int> testWordsList;
     QVector<int> boxesInUse;
 
     QStringList userList;

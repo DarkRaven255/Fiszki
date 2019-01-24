@@ -47,9 +47,6 @@ void FiszkiMainWindow::setBtns()
     ui->testBtn->setEnabled(!noTestQuestions);
     ui->learnBtn->setEnabled(learn);
 
-//    ui->testBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
-//    ui->learnBtn->setEnabled(!ui->availableUsersComboBox->isEnabled());
-
     ui->learnBtn->setEnabled(learn);
     ui->testBtn->setEnabled(testBtn);
 
@@ -172,7 +169,7 @@ void FiszkiMainWindow::on_rememberBtn_clicked()
 void FiszkiMainWindow::test()
 {
     ui->progressBar->setValue(session->getProgressPercent());
-    if(check)
+    if(session->getProgressPercent()!=100)
     {
         ui->questionTextBrowser->setText(session->question->getQ_en());
         ui->explanationTextBrowser->setText(session->question->getE_en());
@@ -180,7 +177,7 @@ void FiszkiMainWindow::test()
     else
     {
         ui->questionTextBrowser->setText("Koniec");
-        ui->explanationTextBrowser->setText("Wróć jutro, lub dodaj nowe fiszki do powtórek, w opcji \"Nauka\"");
+        ui->explanationTextBrowser->setText("Wróć jutro!");
     }
 }
 
@@ -188,8 +185,9 @@ void FiszkiMainWindow::on_stopBtn_clicked()
 {
     session->exportBoxToDB(currStatus);
     setWindowIndex(StatusMenu);
-    setBtns();
     session->setUserAction(LastActionTest);
+    setBtns();
+
 }
 
 
