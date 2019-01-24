@@ -367,6 +367,8 @@ void Session::exportBoxToDB(const Status &status)
             if(toAdd<=0)toAdd=0;
             dbmanager->setUserUnknownQuestions(user->getUserName(),toAdd);
         }
+        qDeleteAll(qList);
+        qList.clear();
     }
     else if(status == StatusTestMode)
     {
@@ -382,8 +384,9 @@ void Session::exportBoxToDB(const Status &status)
 
                 dbmanager->setBox(qTestList.at(i)->getQ_id(),user->getNoBox(),newBox);
             }
-            //delete qList.at(i);
         }
+        qDeleteAll(qTestList);
+        qTestList.clear();
     }
     recalculateQuestions();
 }
