@@ -157,6 +157,7 @@ void DbManager::setUserLastAction(const QString &name, const int &action)
     query.exec();
 }
 
+//Funkcja ustawiajaca datę ostatniego użycia fiszek
 void DbManager::setUserLastUsed(const QString &name, const long long &lastUsed)
 {
     QSqlQuery query;
@@ -166,6 +167,7 @@ void DbManager::setUserLastUsed(const QString &name, const long long &lastUsed)
     query.exec();
 }
 
+//Funkcja ustawiajca ilosć pytań, których nie udało się zapamiętać
 void DbManager::setUserUnknownQuestions(const QString &name, const int &number)
 {
     QSqlQuery query;
