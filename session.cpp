@@ -112,6 +112,7 @@ void Session::deleteUser()
     user=nullptr;
 }
 
+//Funkcja zapisaująca ostatnią akcję wykonaną przez użytkownika
 void Session::setUserAction(const LastAction &action)
 {
     if(user->getLastAction()==LastActionNone)
@@ -297,12 +298,14 @@ void Session::testWords()
 }
 
 //Funkcja sprawdzająca odpowiedź
-void Session::checkAnswer(const QString &answer)
+bool Session::checkAnswer(const QString &answer)
 {
     if(answer==question->getQ_pl())
     {
         markWord();
+        return true;
     }
+    return false;
 }
 
 //Funkcja do przeniesienia informacji do DB

@@ -29,7 +29,7 @@ public:
     int getProgressPercent();
     void testWords();
     void nextTestBtn();
-    void checkAnswer(const QString &answer);
+    bool checkAnswer(const QString &answer);
 
     bool addUser(const QString &name);
     void setUser(const QString &name);

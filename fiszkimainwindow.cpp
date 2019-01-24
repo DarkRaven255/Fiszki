@@ -25,6 +25,9 @@ FiszkiMainWindow::FiszkiMainWindow(QWidget *parent) :
     ui->explanationPlTextBrowser->setFontPointSize(10);
     ui->explanationTextBrowser->setFontPointSize(10);
 
+    ui->labelIsGood->setAlignment(Qt::AlignRight);
+    ui->labelIsGood->setText("");
+
     setBtns();
 }
 
@@ -193,7 +196,16 @@ void FiszkiMainWindow::on_stopBtn_clicked()
 
 void FiszkiMainWindow::on_checkBtn_clicked()
 {
-    session->checkAnswer(ui->enterAnwserLineEdit->text());
+    if(session->checkAnswer(ui->enterAnwserLineEdit->text()))
+    {
+        ui->labelIsGood->setStyleSheet("QLabel { color : green; }");
+        ui->labelIsGood->setText("Dobrze!");
+    }
+    else
+    {
+        ui->labelIsGood->setStyleSheet("QLabel { color : red; }");
+        ui->labelIsGood->setText("Źle!");
+    }
     ui->enterAnwserLineEdit->clear();
     session->nextTestBtn();
     test();
