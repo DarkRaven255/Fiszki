@@ -17,7 +17,7 @@ public:
     bool qet_isChanged();
     void set_isChanged();
 
-    bool get_noBox();
+    int get_noBox();
 
 
 private:

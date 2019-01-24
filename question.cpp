@@ -52,7 +52,7 @@ void Question::set_isChanged()
     isChanged=true;
 }
 
-bool Question::get_noBox()
+int Question::get_noBox()
 {
     return noBox;
 }

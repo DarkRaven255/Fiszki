@@ -197,7 +197,7 @@ void FiszkiMainWindow::on_checkBtn_clicked()
 {
     session->checkAnswer(ui->enterAnwserLineEdit->text());
     ui->enterAnwserLineEdit->clear();
-    setBtns();
+    session->nextTestBtn();
     test();
 }
 

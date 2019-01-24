@@ -294,47 +294,45 @@ void Session::backLearnBtn()
 //Funkcja pokazująca następne pytanie w opcji testu
 void Session::nextTestBtn()
 {
+    qDebug()<<"pos"<<position;
     if(position<noTestWords)
     {
         question=qTestList.at(position);
         position++;
+//        qDebug()<<question->getQ_en();
     }
-    else
-    {
-        position++;
-    }
+//    else
+//    {
+//        question=qTestList.at(position);
+//    }
 }
 
 //Funkcja pobierająca pytania do testu
 void Session::testWords()
 {
-    qDebug()<<"dnie"<<courseDay;
+//    qDebug()<<"dnie"<<courseDay;
     recalculateQuestions();
-    qDebug()<<"dnie"<<courseDay;
-    int counter =0;
-    qDebug()<<"LPTAN"<<noTestWords;
+//    int counter =0;
+//    qDebug()<<"LPTAN"<<noTestWords;
     //qTestList.resize(noTestWords);
     if(noTestWords==1)
     {
-        qDebug()<<"DZIALAM";
         qTestList.push_back(new Question(0,user->getNoBox(),-2));
     }
-//    else
-//    {
-//        for(int i=0;i<courseDay;i++)
-//        {
-//            int noIQuestions = dbmanager->countQuestions(i,user->getNoBox(),NULL) + counter;
-//            int k=0;
-//            int j=counter;
+    else
+    {
+        for(int i=0;i<=courseDay;i++)
+        {
+            int noIQuestions = dbmanager->countQuestions(i,user->getNoBox(),NULL);
 //            qDebug()<<i<<"noIQ"<<noIQuestions;
-//            for(;j<noIQuestions;j++,k++)
-//            {
-//                qTestList.push_back(new Question(k,user->getNoBox(),i));
-//            }
-//            counter=j;
-//        }
-//    }
-//    nextTestBtn();
+            for(int k=0;k<noIQuestions;k++)
+            {
+//                qDebug()<<"k"<<k<<"noIQ"<<noIQuestions;
+                qTestList.push_back(new Question(k,user->getNoBox(),i));
+            }
+        }
+    }
+    nextTestBtn();
 }
 
 //Funkcja sprawdzająca odpowiedź
@@ -344,7 +342,7 @@ void Session::checkAnswer(const QString &answer)
     {
         markWord();
     }
-    nextTestBtn();
+   // nextTestBtn();
 }
 
 //Funkcja do przeniesienia informacji do DB
@@ -374,30 +372,30 @@ void Session::exportBoxToDB(const Status &status)
     }
     else if(status == StatusTestMode)
     {
-//        size = noTestWords;
-//        for(int i=0;i<size;i++)
-//        {
-//            if(qTestList.at(i)->qet_isChanged())
-//            {
-//                qDebug()<<qTestList.at(i)->get_noBox();
-//                unsigned long long newBox;
-//                if(qTestList.at(i)->get_noBox()==0)
-//                {
-//                    newBox=1;
-//                }
-//                else if(qTestList.at(i)->get_noBox()==1)
-//                {
-//                    qDebug()<<"DZIALAM";
-//                    newBox=2;
-//                }
-//                else
-//                {
-//                    newBox=fibonacci(qTestList.at(i)->get_noBox()+1);
-//                }
-//                dbmanager->setBox(qTestList.at(i)->getQ_id(),user->getNoBox(),newBox);
-//            }
-//            //delete qList.at(i);
-//        }
+        size = noTestWords;
+        for(int i=0;i<size;i++)
+        {
+            if(qTestList.at(i)->qet_isChanged())
+            {
+                qDebug()<<qTestList.at(i)->get_noBox();
+                unsigned long long newBox;
+                if(qTestList.at(i)->get_noBox()==0)
+                {
+                    newBox=1;
+                }
+                else if(qTestList.at(i)->get_noBox()==1)
+                {
+                    newBox=2;
+                }
+                else
+                {
+                    qDebug()<<"DZIALAM"<<fibonacci(qTestList.at(i)->get_noBox()+2);
+                    newBox=fibonacci(qTestList.at(i)->get_noBox()+2);
+                }
+                dbmanager->setBox(qTestList.at(i)->getQ_id(),user->getNoBox(),newBox);
+            }
+            //delete qList.at(i);
+        }
     }
     recalculateQuestions();
 }
