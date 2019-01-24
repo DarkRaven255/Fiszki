@@ -33,11 +33,11 @@ bool DbManager::addUser(const QString &name, const int &noBox, const long long &
     {
         QSqlQuery query;
 
-        query.prepare("INSERT INTO users (name, noBox, start_date, last_used) VALUES (:name, :noBox, :setStartDate, :setLastUsed)");
-        query.bindValue(":name", name);
-        query.bindValue(":noBox", noBox);
-        query.bindValue(":setStartDate", setStartDate);
-        query.bindValue(":setLastUsed", setStartDate);
+        query.prepare("INSERT INTO users (name, noBox, start_date, last_used) VALUES (:NAME, :NOBOX, :SETSTARTDATE, :SETLASTUSED)");
+        query.bindValue(":NAME", name);
+        query.bindValue(":NOBOX", noBox);
+        query.bindValue(":SETSTARTDATE", setStartDate);
+        query.bindValue(":SETLASTUSED", setStartDate);
         if(query.exec())
         {
             return true;
@@ -54,8 +54,8 @@ bool DbManager::addUser(const QString &name, const int &noBox, const long long &
 bool DbManager::findUser(const QString &name)
 {
     QSqlQuery query;
-    query.prepare("SELECT name FROM users WHERE name = (:name)");
-    query.bindValue(":name", name);
+    query.prepare("SELECT name FROM users WHERE name = (:NAME)");
+    query.bindValue(":NAME", name);
 
     if (query.exec())
     {
@@ -71,8 +71,8 @@ bool DbManager::findUser(const QString &name)
 long long DbManager::returnUserInfo(const QString &name, const QString parameter)
 {
     QSqlQuery query;
-    query.prepare("SELECT " + parameter + " FROM users WHERE name = (:name)");
-    query.bindValue(":name", name);
+    query.prepare("SELECT " + parameter + " FROM users WHERE name = (:NAME)");
+    query.bindValue(":NAME", name);
     query.exec();
     query.first();
     int idInfo = query.record().indexOf(parameter);
@@ -126,8 +126,8 @@ bool DbManager::removeUser(const QString &name)
     if (findUser(name))
     {
        QSqlQuery query;
-       query.prepare("DELETE FROM users WHERE name = (:name)");
-       query.bindValue(":name", name);
+       query.prepare("DELETE FROM users WHERE name = (:NAME)");
+       query.bindValue(":NAME", name);
        bool success = query.exec();
 
        if(!success)
@@ -139,7 +139,7 @@ bool DbManager::removeUser(const QString &name)
     return true;
 }
 
-//Funkcja ustawiająca -1 w boxie dla danego użytkownika
+//Funkcja ustawiająca -1 w boxie dla danego użytkownika oraz ustawiająca wszystkie numery liczb Fibonacciego na 0
 void DbManager::resetUserBox(const QString &userBox)
 {
     QSqlQuery query;
@@ -151,18 +151,18 @@ void DbManager::resetUserBox(const QString &userBox)
 void DbManager::setUserLastAction(const QString &name, const int &action)
 {
     QSqlQuery query;
-    query.prepare("UPDATE users SET last_action = (:ACTION) WHERE name = (:name)");
+    query.prepare("UPDATE users SET last_action = (:ACTION) WHERE name = (:NAME)");
     query.bindValue(":ACTION", action);
-    query.bindValue(":name", name);
+    query.bindValue(":NAME", name);
     query.exec();
 }
 
 void DbManager::setUserLastUsed(const QString &name, const long long &lastUsed)
 {
     QSqlQuery query;
-    query.prepare("UPDATE users SET last_used = (:LASTUSED) WHERE name = (:name)");
+    query.prepare("UPDATE users SET last_used = (:LASTUSED) WHERE name = (:NAME)");
     query.bindValue(":LASTUSED", lastUsed);
-    query.bindValue(":name", name);
+    query.bindValue(":NAME", name);
     query.exec();
 }
 
@@ -175,11 +175,12 @@ void DbManager::setUserUnknownQuestions(const QString &name, const int &number)
     query.exec();
 }
 
+//Funkcja zwiększająca numer liczby Fibonacciego przypisanej do danego pytania
 void DbManager::incrementUserLastFibonacci(const int &q_id, const QString &userBox)
 {
     QSqlQuery query;
-    query.prepare("UPDATE questions SET f"+ userBox +" = f"+ userBox +" +1 WHERE id = (:q_id)");
-    query.bindValue(":q_id", q_id);
+    query.prepare("UPDATE questions SET f"+ userBox +" = f"+ userBox +" +1 WHERE id = (:Q_ID)");
+    query.bindValue(":Q_ID", q_id);
     query.exec();
 }
 
@@ -200,7 +201,6 @@ QStringList DbManager::returnUserList()
 void DbManager::closeUserDB()
 {
     database.close();
-    qDebug() << "DB closed";
 }
 
 //Funkcja zwracająca ilość słówek z bazie danych
@@ -215,9 +215,6 @@ int DbManager::countQuestions(const int &noBox, const QString &userBox, const lo
         query.prepare("SELECT * FROM questions WHERE " + userBox + " = (:noBox)");
         query.bindValue(":noBox",noBox);
         break;
-//    case -2:
-//        query.prepare("SELECT * FROM questions WHERE "+ userBox +" > -1");
-//        break;
     case -3:
         query.prepare("SELECT * FROM questions WHERE "+ userBox +" <= (:COURSEDAY) and "+ userBox + " is not -1");
         query.bindValue(":COURSEDAY",courseDay);
@@ -284,14 +281,14 @@ void DbManager::setBox(const int &q_id, const QString &userBox, const unsigned l
     QSqlQuery query;
     if(noBox>0)
     {
-        query.prepare("UPDATE questions SET "+ userBox +" = (:NOBOX) WHERE id = (:q_id)");
+        query.prepare("UPDATE questions SET "+ userBox +" = (:NOBOX) WHERE id = (:Q_ID)");
         query.bindValue(":NOBOX", noBox);
     }
     else
     {
-        query.prepare("UPDATE questions SET "+ userBox +" = "+ userBox +" +1 WHERE id = (:q_id)");
+        query.prepare("UPDATE questions SET "+ userBox +" = "+ userBox +" +1 WHERE id = (:Q_ID)");
     }
-    query.bindValue(":q_id", q_id);
+    query.bindValue(":Q_ID", q_id);
     query.exec();
 }
 
