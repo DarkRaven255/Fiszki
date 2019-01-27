@@ -213,13 +213,12 @@ int DbManager::countQuestions(const int &noBox, const QString &userBox, const lo
 
     switch(noBox)
     {
-    case -1:
-        query.prepare("SELECT id FROM questions WHERE " + userBox + " = (:noBox)");
-        query.bindValue(":noBox",noBox);
-        break;
     case -3:
         query.prepare("SELECT id FROM questions WHERE "+ userBox +" <= (:COURSEDAY) and "+ userBox + " is not -1");
         query.bindValue(":COURSEDAY",courseDay);
+        break;
+    case -4:
+        query.prepare("SELECT id FROM questions");
         break;
     default:
         query.prepare("SELECT id FROM questions WHERE " + userBox + " = (:noBox)");
@@ -245,10 +244,6 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QS
 
     switch(noBox)
     {
-    case -1:
-        query.prepare("SELECT id, question_en, explanation_en, question_pl, explanation_pl, f" + userBox + " FROM questions WHERE " + userBox + " = (:noBox)");
-        query.bindValue(":noBox",noBox);
-        break;
     case -2:
         query.prepare("SELECT id, question_en, explanation_en, question_pl, explanation_pl, f" + userBox + " FROM questions WHERE "+ userBox +" > -1 ORDER BY " + userBox);
         break;

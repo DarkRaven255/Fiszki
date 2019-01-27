@@ -123,7 +123,7 @@ void FiszkiMainWindow::on_setUserBtn_clicked()
 ////////////////////////////////////LEARN PAGE
 void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
-    session->exportChangesToDB(currStatus);
+    session->exportWordsToDB(currStatus);
     setWindowIndex(StatusMenu);
     session->setUserLastAction(LastActionLearn);
     setBtns();
@@ -186,7 +186,7 @@ void FiszkiMainWindow::test()
 
 void FiszkiMainWindow::on_stopBtn_clicked()
 {
-    session->exportChangesToDB(currStatus);
+    session->exportWordsToDB(currStatus);
     setWindowIndex(StatusMenu);
     session->setUserLastAction(LastActionTest);
     setBtns();

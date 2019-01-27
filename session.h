@@ -22,6 +22,7 @@ public:
     void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB,
                          bool &noTestQuestions, bool &check, bool &learn, bool &testBtn);
 
+    void startLearn();
     void learnWords();
     void nextLearnBtn();
     void backLearnBtn();
@@ -40,16 +41,18 @@ public:
 
     void addWordToDB(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
     bool addUserToDB(const QString &name);
-    void exportChangesToDB(const Status &status);
+    void exportWordsToDB(const Status &status);
+
+
 
     Question *question;
 
 private:
     int noLearnWords;
     int noTestWords;
+    int noAllWords;
 
     int toLearnWords;
-    int testCounterQuestions;
     int position;
     int addToLearn;
 
@@ -68,6 +71,8 @@ private:
     void recalculateQuestions();
 
     unsigned long long fibonacci(int &n);
+
+    void exportUserToDB();
 
     DbManager *dbmanager = new DbManager("database.db");
     User *user;

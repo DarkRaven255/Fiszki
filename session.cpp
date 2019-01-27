@@ -122,8 +122,7 @@ void Session::setUserLastAction(const LastAction &action)
     {
         user->setLastAction(LastActionLearnTest);
     }
-    dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
-    dbmanager->setUserLastUsed(user->getUserName(),date);
+    exportUserToDB();
 }
 
 //Funkcja dodająca nowe pytania do bazy danych
@@ -202,11 +201,17 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
     }
 }
 
+void Session::startLearn()
+{
+
+}
+
 //Funkcja przeliczająca pytania w bazie danych
 void Session::recalculateQuestions()
 {
-    noMinusOneWords=dbmanager->countQuestions(-1,user->getNoBox());
+    noLearnWords = dbmanager->countQuestions(-1,user->getNoBox());
     noTestWords = dbmanager->countQuestions(-3,user->getNoBox(),courseDay);
+    noAllWords = dbmanager->countQuestions(-4,user->getNoBox());
 
     toLearnWords=0;
     position=0;
@@ -307,10 +312,10 @@ bool Session::checkAnswer(const QString &answer)
 }
 
 //Funkcja do przeniesienia informacji do DB
-void Session::exportChangesToDB(const Status &status)
+void Session::exportWordsToDB(const Status &status)
 {
     int size=0;
-    int unknownCounter=0;
+    int knownCounter=0;
 
     if(status == StatusLearnMode)
     {
@@ -320,14 +325,15 @@ void Session::exportChangesToDB(const Status &status)
             if(qList.at(i)->qet_isChanged())
             {
                 dbmanager->setBox(qList.at(i)->getQ_id(),user->getNoBox());
-                unknownCounter++;
+                knownCounter++;
             }
         }
-        if(unknownCounter>=0)
+        if(knownCounter>=0)
         {
-            int toAdd=ConstansMaxLearnWords-unknownCounter-2+addToLearn;
+            int toAdd=ConstansMaxLearnWords-knownCounter-2+addToLearn;
             if(toAdd<=0)toAdd=0;
-            dbmanager->setUserUnknownQuestions(user->getUserName(),toAdd);
+            else if (toAdd>noLearnWords) toAdd=noLearnWords;
+            user->setUnknownQuestions(toAdd);
         }
         qDeleteAll(qList);
         qList.clear();
@@ -377,4 +383,11 @@ unsigned long long Session::fibonacci(int &n)
         oldResult = result;
     }
     return result;
+}
+
+void Session::exportUserToDB()
+{
+    dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
+    dbmanager->setUserLastUsed(user->getUserName(),date);
+    dbmanager->setUserUnknownQuestions(user->getUserName(),user->getUnknownQuestions());
 }
