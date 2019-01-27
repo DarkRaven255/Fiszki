@@ -190,7 +190,7 @@ void DbManager::incrementUserLastFibonacci(const int &q_id, const QString &userB
 QStringList DbManager::returnUserList()
 {
     QStringList userlist;
-    QSqlQuery query("SELECT * FROM users");
+    QSqlQuery query("SELECT name FROM users");
     int idName = query.record().indexOf("name");
     while (query.next())
     {
@@ -214,15 +214,15 @@ int DbManager::countQuestions(const int &noBox, const QString &userBox, const lo
     switch(noBox)
     {
     case -1:
-        query.prepare("SELECT * FROM questions WHERE " + userBox + " = (:noBox)");
+        query.prepare("SELECT id FROM questions WHERE " + userBox + " = (:noBox)");
         query.bindValue(":noBox",noBox);
         break;
     case -3:
-        query.prepare("SELECT * FROM questions WHERE "+ userBox +" <= (:COURSEDAY) and "+ userBox + " is not -1");
+        query.prepare("SELECT id FROM questions WHERE "+ userBox +" <= (:COURSEDAY) and "+ userBox + " is not -1");
         query.bindValue(":COURSEDAY",courseDay);
         break;
     default:
-        query.prepare("SELECT * FROM questions WHERE " + userBox + " = (:noBox)");
+        query.prepare("SELECT id FROM questions WHERE " + userBox + " = (:noBox)");
         query.bindValue(":noBox",noBox);
         break;
     }
@@ -246,14 +246,14 @@ void DbManager::returnQuestion(const int &noQuestion, const int &noBox, const QS
     switch(noBox)
     {
     case -1:
-        query.prepare("SELECT * FROM questions WHERE " + userBox + " = (:noBox)");
+        query.prepare("SELECT id, question_en, explanation_en, question_pl, explanation_pl, f" + userBox + " FROM questions WHERE " + userBox + " = (:noBox)");
         query.bindValue(":noBox",noBox);
         break;
     case -2:
-        query.prepare("SELECT * FROM questions WHERE "+ userBox +" > -1 ORDER BY " + userBox);
+        query.prepare("SELECT id, question_en, explanation_en, question_pl, explanation_pl, f" + userBox + " FROM questions WHERE "+ userBox +" > -1 ORDER BY " + userBox);
         break;
     default:
-        query.prepare("SELECT * FROM questions WHERE " + userBox + " = (:noBox)");
+        query.prepare("SELECT id, question_en, explanation_en, question_pl, explanation_pl, f" + userBox + " FROM questions WHERE " + userBox + " = (:noBox)");
         query.bindValue(":noBox",noBox);
         break;
     }
@@ -300,7 +300,7 @@ int DbManager::countUsers()
 {
     QSqlQuery query;
     int noUsers=0;
-    query.exec("SELECT * FROM users");
+    query.exec("SELECT id FROM users");
     if(query.last())
     {
         noUsers = query.at()+1;
