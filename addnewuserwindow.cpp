@@ -18,7 +18,7 @@ AddNewUserWindow::~AddNewUserWindow()
 
 void AddNewUserWindow::on_buttonBox_accepted()
 {
-    if(!session->addUser(ui->lineEdit->text()))
+    if(!session->addUserToDB(ui->lineEdit->text()))
     {
         ErrorCreatingUserWindow errorcreatinguserwindow;
         errorcreatinguserwindow.exec();

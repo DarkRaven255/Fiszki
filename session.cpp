@@ -6,7 +6,6 @@ Session::Session(QObject *parent):
     QObject(parent),
     question(nullptr),
     toLearnWords(0),
-    testCounterQuestions(0),
     position(0),
     addToLearn(0),
     date(QDate::currentDate().toJulianDay()),
@@ -34,7 +33,7 @@ QStringList Session::getUserList()
 }
 
 //Funkcja dodająca nowego użytkownika i przypisująca mu wolny noBox
-bool Session::addUser(const QString &name)
+bool Session::addUserToDB(const QString &name)
 {
     if(dbmanager->countUsers()>=ConstansMaxUsers)
     {
@@ -92,7 +91,7 @@ void Session::setUser(const QString &name)
         dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
         if (user->getLastUsed()>user->getStartDate())
         {
-            addToLearn=ConstansMaxLearnWords-2;
+            addToLearn=user->getUnknownQuestions();
         }
     }
     courseDay = date - user->getStartDate();
@@ -113,7 +112,7 @@ void Session::deleteUser()
 }
 
 //Funkcja zapisaująca ostatnią akcję wykonaną przez użytkownika
-void Session::setUserAction(const LastAction &action)
+void Session::setUserLastAction(const LastAction &action)
 {
     if(user->getLastAction()==LastActionNone)
     {
@@ -128,7 +127,7 @@ void Session::setUserAction(const LastAction &action)
 }
 
 //Funkcja dodająca nowe pytania do bazy danych
-void Session::addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl)
+void Session::addWordToDB(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl)
 {
     if(!dbmanager->findWord(q_en))
     {
@@ -144,7 +143,7 @@ int Session::getProgressPercent()
 }
 
 //Funkcja zmieniająca "pudełko"
-void Session::markWord()
+void Session::toggleIsChanged()
 {
     question->set_isChanged();
 }
@@ -242,7 +241,7 @@ void Session::nextLearnBtn()
         position++;
         question=qList.at(position);
     }
-    else if(position==noMinusOneWords-1)
+    else if(position==noLearnWords-1)
     {
         question=qList.at(position);
     }
@@ -277,7 +276,6 @@ void Session::nextTestBtn()
 //Funkcja pobierająca pytania do testu
 void Session::testWords()
 {
-    qDebug()<<"dnie"<<courseDay;
     recalculateQuestions();
     if(noTestWords==1)
     {
@@ -302,14 +300,14 @@ bool Session::checkAnswer(const QString &answer)
 {
     if(answer==question->getQ_pl())
     {
-        markWord();
+        toggleIsChanged();
         return true;
     }
     return false;
 }
 
 //Funkcja do przeniesienia informacji do DB
-void Session::exportBoxToDB(const Status &status)
+void Session::exportChangesToDB(const Status &status)
 {
     int size=0;
     int unknownCounter=0;

@@ -123,9 +123,9 @@ void FiszkiMainWindow::on_setUserBtn_clicked()
 ////////////////////////////////////LEARN PAGE
 void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
-    session->exportBoxToDB(currStatus);
+    session->exportChangesToDB(currStatus);
     setWindowIndex(StatusMenu);
-    session->setUserAction(LastActionLearn);
+    session->setUserLastAction(LastActionLearn);
     setBtns();
 }
 
@@ -164,7 +164,7 @@ void FiszkiMainWindow::on_backFlashcardBtn_clicked()
 
 void FiszkiMainWindow::on_rememberBtn_clicked()
 {
-    session->markWord();
+    session->toggleIsChanged();
     on_nextFlashcardBtn_clicked();
 }
 
@@ -186,9 +186,9 @@ void FiszkiMainWindow::test()
 
 void FiszkiMainWindow::on_stopBtn_clicked()
 {
-    session->exportBoxToDB(currStatus);
+    session->exportChangesToDB(currStatus);
     setWindowIndex(StatusMenu);
-    session->setUserAction(LastActionTest);
+    session->setUserLastAction(LastActionTest);
     setBtns();
 
 }

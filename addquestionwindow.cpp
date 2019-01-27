@@ -16,7 +16,7 @@ AddQuestionWindow::~AddQuestionWindow()
 
 void AddQuestionWindow::on_buttonBox_accepted()
 {
-    session->addWord(ui->inputWordEnTextEdit->toPlainText(),
+    session->addWordToDB(ui->inputWordEnTextEdit->toPlainText(),
                      ui->inputExplanationEnTextEdit->toPlainText(),
                      ui->inputWordPlTextEdit->toPlainText(),
                      ui->inputExplanationPlTextEdit->toPlainText());

@@ -31,21 +31,21 @@ public:
     void nextTestBtn();
     bool checkAnswer(const QString &answer);
 
-    bool addUser(const QString &name);
+
     void setUser(const QString &name);
     void deleteUser();
 
-    void markWord();
-    void exportBoxToDB(const Status &status);
+    void toggleIsChanged();
+    void setUserLastAction(const LastAction &action);
 
-    void setUserAction(const LastAction &action);
-
-    void addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
+    void addWordToDB(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
+    bool addUserToDB(const QString &name);
+    void exportChangesToDB(const Status &status);
 
     Question *question;
 
 private:
-    int noMinusOneWords;
+    int noLearnWords;
     int noTestWords;
 
     int toLearnWords;
@@ -64,7 +64,6 @@ private:
 
     int randomInt(int min, int max);
 
-    void randomTable();
     void setUserList();
     void recalculateQuestions();
 
