@@ -22,7 +22,7 @@ public:
     void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB,
                          bool &noTestQuestions, bool &check, bool &learn, bool &testBtn);
 
-    void startLearn();
+    void stopLearnTest(const Status &status);
     void learnWords();
     void nextLearnBtn();
     void backLearnBtn();
@@ -32,18 +32,13 @@ public:
     void nextTestBtn();
     bool checkAnswer(const QString &answer);
 
-
     void setUser(const QString &name);
     void deleteUser();
 
     void toggleIsChanged();
-    void setUserLastAction(const LastAction &action);
 
     void addWordToDB(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
     bool addUserToDB(const QString &name);
-    void exportWordsToDB(const Status &status);
-
-
 
     Question *question;
 
@@ -69,6 +64,8 @@ private:
 
     void setUserList();
     void recalculateQuestions();
+    void exportWordsToDB(const Status &status);
+    void setUserLastAction(const LastAction &action);
 
     unsigned long long fibonacci(int &n);
 

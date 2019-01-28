@@ -80,6 +80,7 @@ void FiszkiMainWindow::on_userListBtn_clicked()
     setBtns();
 }
 
+
 void FiszkiMainWindow::on_learnBtn_clicked()
 {
     setWindowIndex(StatusLearnMode);
@@ -123,9 +124,8 @@ void FiszkiMainWindow::on_setUserBtn_clicked()
 ////////////////////////////////////LEARN PAGE
 void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
-    session->exportWordsToDB(currStatus);
+    session->stopLearnTest(currStatus);
     setWindowIndex(StatusMenu);
-    session->setUserLastAction(LastActionLearn);
     setBtns();
 }
 
@@ -186,9 +186,8 @@ void FiszkiMainWindow::test()
 
 void FiszkiMainWindow::on_stopBtn_clicked()
 {
-    session->exportWordsToDB(currStatus);
+    session->stopLearnTest(currStatus);
     setWindowIndex(StatusMenu);
-    session->setUserLastAction(LastActionTest);
     setBtns();
 
 }

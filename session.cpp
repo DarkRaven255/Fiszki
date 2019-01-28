@@ -122,7 +122,6 @@ void Session::setUserLastAction(const LastAction &action)
     {
         user->setLastAction(LastActionLearnTest);
     }
-    exportUserToDB();
 }
 
 //Funkcja dodająca nowe pytania do bazy danych
@@ -188,6 +187,11 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
         testBtn = false;
     }
 
+    if(noTestWords==0)
+    {
+        testBtn = false;
+    }
+
     if((position!=0&&position<noTestWords)||toLearnWords!=0)
     {
         if(qList[position]->qet_isChanged())
@@ -201,9 +205,16 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
     }
 }
 
-void Session::startLearn()
+void Session::stopLearnTest(const Status &status)
 {
-
+    exportWordsToDB(status);
+    recalculateQuestions();
+    LastAction userAction;
+    if(status==StatusLearnMode) userAction=LastActionLearn;
+    else if(status==StatusTestMode) userAction=LastActionTest;
+    setUserLastAction(userAction);
+    exportUserToDB();
+    recalculateQuestions();
 }
 
 //Funkcja przeliczająca pytania w bazie danych
@@ -356,7 +367,6 @@ void Session::exportWordsToDB(const Status &status)
         qDeleteAll(qTestList);
         qTestList.clear();
     }
-    recalculateQuestions();
 }
 
 //Generator liczb losowych
