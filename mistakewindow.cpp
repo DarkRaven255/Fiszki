@@ -1,7 +1,7 @@
 #include "mistakewindow.h"
 #include "ui_mistakewindow.h"
 
-MistakeWindow::MistakeWindow(const QString &yourAnwser, const QString rightAnwser, Session *session):
+MistakeWindow::MistakeWindow(const QString &yourAnwser, const QString &rightAnwser, Session *session):
     ui(new Ui::MistakeWindow),
     session(session)
 {

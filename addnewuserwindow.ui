@@ -39,7 +39,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Podaj nazwę nowego użytkownika:</string>
+    <string>Podaj nazwę nowego użytkownika Fiszek:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit">
