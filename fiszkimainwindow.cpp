@@ -4,7 +4,7 @@
 #include "addnewuserwindow.h"
 #include "aboutwindow.h"
 #include "addquestionwindow.h"
-#include "mistakewindow.h"
+#include "endfortoday.h"
 #include "enums.h"
 
 #include <QDebug>
@@ -182,6 +182,12 @@ void FiszkiMainWindow::test()
     {
         ui->questionTextBrowser->setText("Koniec");
         ui->explanationTextBrowser->setText("Wróć jutro!");
+        EndForToday endfortoday;
+        endfortoday.exec();
+        if(&EndForToday::destroyed)
+        {
+            on_stopBtn_clicked();
+        }
     }
 }
 
@@ -190,7 +196,6 @@ void FiszkiMainWindow::on_stopBtn_clicked()
     session->stopLearnTest(currStatus);
     setWindowIndex(StatusMenu);
     setBtns();
-
 }
 
 void FiszkiMainWindow::on_checkBtn_clicked()
@@ -202,8 +207,6 @@ void FiszkiMainWindow::on_checkBtn_clicked()
     }
     else
     {
-//        MistakeWindow mistakewindow(ui->enterAnwserLineEdit->text(),session->question->getQ_pl(),this);
-//        mistakewindow.exec();
         ui->labelIsGood->setStyleSheet("QLabel { color : red; }");
         ui->labelIsGood->setText("Źle!");
     }

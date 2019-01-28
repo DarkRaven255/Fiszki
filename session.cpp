@@ -19,9 +19,8 @@ Session::Session(QObject *parent):
 Session::~Session()
 {
     dbmanager->closeDB();
-    delete dbmanager;
+    if(dbmanager!=nullptr)delete dbmanager;
     if(user!=nullptr) delete user;
-    if(question!=nullptr) delete question;
 }
 
 //Funkcja pobierająca listę użytkowników z bazy danych
@@ -214,6 +213,7 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
     }
 }
 
+//Funkcja kończąca Naukę i Test
 void Session::stopLearnTest(const Status &status)
 {
     exportWordsToDB(status);
@@ -415,6 +415,7 @@ unsigned long long Session::fibonacci(int &n)
     return result;
 }
 
+//Funcja zapisująca zmiany w profilu użytkownika do bazy danych
 void Session::exportUserToDB()
 {
     dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());

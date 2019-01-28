@@ -36,7 +36,8 @@ SOURCES += \
     session.cpp \
     user.cpp \
     addquestionwindow.cpp \
-    mistakewindow.cpp
+    mistakewindow.cpp \
+    endfortoday.cpp
 
 HEADERS += \
         fiszkimainwindow.h \
@@ -50,7 +51,8 @@ HEADERS += \
     enums.h \
     user.h \
     addquestionwindow.h \
-    mistakewindow.h
+    mistakewindow.h \
+    endfortoday.h
 
 FORMS += \
         fiszkimainwindow.ui \
@@ -59,7 +61,8 @@ FORMS += \
     errorcreatinguserwindow.ui \
     aboutwindow.ui \
     addquestionwindow.ui \
-    mistakewindow.ui
+    mistakewindow.ui \
+    endfortoday.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

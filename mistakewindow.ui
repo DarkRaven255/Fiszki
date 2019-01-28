@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Literówka</string>
   </property>
   <widget class="QTextBrowser" name="enteredTextBrowser">
    <property name="geometry">
