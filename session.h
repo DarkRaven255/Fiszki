@@ -22,6 +22,7 @@ public:
     void getButtonStatus(bool &back, bool &remember, bool &next, bool &noQuestionsInDB,
                          bool &noTestQuestions, bool &check, bool &learn, bool &testBtn);
 
+    void stopLearnTest(const Status &status);
     void learnWords();
     void nextLearnBtn();
     void backLearnBtn();
@@ -31,27 +32,27 @@ public:
     void nextTestBtn();
     bool checkAnswer(const QString &answer);
 
-    bool addUser(const QString &name);
     void setUser(const QString &name);
     void deleteUser();
 
-    void markWord();
-    void exportBoxToDB(const Status &status);
+    void toggleIsChanged();
+    void toggleMistake();
 
-    void setUserAction(const LastAction &action);
-
-    void addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
+    void addWordToDB(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
+    bool addUserToDB(const QString &name);
 
     Question *question;
 
 private:
-    int noMinusOneWords;
+    int noLearnWords;
     int noTestWords;
+    int noAllWords;
 
     int toLearnWords;
-    int testCounterQuestions;
     int position;
     int addToLearn;
+
+    bool mistake;
 
     long long date;
     long long courseDay;
@@ -64,11 +65,14 @@ private:
 
     int randomInt(int min, int max);
 
-    void randomTable();
     void setUserList();
     void recalculateQuestions();
+    void exportWordsToDB(const Status &status);
+    void setUserLastAction(const LastAction &action);
 
     unsigned long long fibonacci(int &n);
+
+    void exportUserToDB();
 
     DbManager *dbmanager = new DbManager("database.db");
     User *user;

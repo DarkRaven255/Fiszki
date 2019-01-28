@@ -29,9 +29,7 @@ private slots:
     void on_stopBtn_clicked();
     void on_testBtn_clicked();
     void on_aboutBtn_clicked();
-
     void on_setUserBtn_clicked();
-
     void on_addWordsBtn_clicked();
 
 private:

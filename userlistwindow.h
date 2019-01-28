@@ -16,7 +16,6 @@ public:
     explicit UserListWindow(Session *session, QWidget *parent = nullptr);
     ~UserListWindow();
     inline void refresh();
-    //DbManager *dbmanager;
 
 private slots:
     void on_okBtn_clicked();

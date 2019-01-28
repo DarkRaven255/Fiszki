@@ -36,7 +36,7 @@ public:
                         int &q_id, QString &q_en, QString &e_en, QString &q_pl, QString &e_pl, int &fBox);
     long long returnUserInfo(const QString &name, const QString parameter);
 
-    void closeUserDB();
+    void closeDB();
 
 private:
     QSqlDatabase database;

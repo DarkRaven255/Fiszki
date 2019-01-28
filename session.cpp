@@ -1,14 +1,15 @@
 #include "session.h"
 #include <QTime>
 #include <QDebug>
+#include "mistakewindow.h"
 
 Session::Session(QObject *parent):
     QObject(parent),
     question(nullptr),
     toLearnWords(0),
-    testCounterQuestions(0),
     position(0),
     addToLearn(0),
+    mistake(false),
     date(QDate::currentDate().toJulianDay()),
     user(nullptr)
 {
@@ -17,7 +18,9 @@ Session::Session(QObject *parent):
 
 Session::~Session()
 {
-    dbmanager->closeUserDB();
+    dbmanager->closeDB();
+    if(dbmanager!=nullptr)delete dbmanager;
+    if(user!=nullptr) delete user;
 }
 
 //Funkcja pobierająca listę użytkowników z bazy danych
@@ -34,7 +37,7 @@ QStringList Session::getUserList()
 }
 
 //Funkcja dodająca nowego użytkownika i przypisująca mu wolny noBox
-bool Session::addUser(const QString &name)
+bool Session::addUserToDB(const QString &name)
 {
     if(dbmanager->countUsers()>=ConstansMaxUsers)
     {
@@ -59,7 +62,6 @@ bool Session::addUser(const QString &name)
             {
                 if(boxesInUse.at(i)==random)
                 {
-
                     isRepeated=true;
                 }
             }
@@ -92,7 +94,7 @@ void Session::setUser(const QString &name)
         dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
         if (user->getLastUsed()>user->getStartDate())
         {
-            addToLearn=ConstansMaxLearnWords-2;
+            addToLearn=user->getUnknownQuestions();
         }
     }
     courseDay = date - user->getStartDate();
@@ -113,7 +115,7 @@ void Session::deleteUser()
 }
 
 //Funkcja zapisaująca ostatnią akcję wykonaną przez użytkownika
-void Session::setUserAction(const LastAction &action)
+void Session::setUserLastAction(const LastAction &action)
 {
     if(user->getLastAction()==LastActionNone)
     {
@@ -123,12 +125,10 @@ void Session::setUserAction(const LastAction &action)
     {
         user->setLastAction(LastActionLearnTest);
     }
-    dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
-    dbmanager->setUserLastUsed(user->getUserName(),date);
 }
 
 //Funkcja dodająca nowe pytania do bazy danych
-void Session::addWord(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl)
+void Session::addWordToDB(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl)
 {
     if(!dbmanager->findWord(q_en))
     {
@@ -144,9 +144,14 @@ int Session::getProgressPercent()
 }
 
 //Funkcja zmieniająca "pudełko"
-void Session::markWord()
+void Session::toggleIsChanged()
 {
     question->set_isChanged();
+}
+
+void Session::toggleMistake()
+{
+    mistake=true;
 }
 
 //Funkcja ustawiająca flagi przycisków
@@ -190,6 +195,11 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
         testBtn = false;
     }
 
+    if(noTestWords==0)
+    {
+        testBtn = false;
+    }
+
     if((position!=0&&position<noTestWords)||toLearnWords!=0)
     {
         if(qList[position]->qet_isChanged())
@@ -203,11 +213,25 @@ void Session::getButtonStatus(bool &back, bool &remember, bool &next, bool &noQu
     }
 }
 
+//Funkcja kończąca Naukę i Test
+void Session::stopLearnTest(const Status &status)
+{
+    exportWordsToDB(status);
+    recalculateQuestions();
+    LastAction userAction;
+    if(status==StatusLearnMode) userAction=LastActionLearn;
+    else if(status==StatusTestMode) userAction=LastActionTest;
+    setUserLastAction(userAction);
+    exportUserToDB();
+    recalculateQuestions();
+}
+
 //Funkcja przeliczająca pytania w bazie danych
 void Session::recalculateQuestions()
 {
-    noMinusOneWords=dbmanager->countQuestions(-1,user->getNoBox());
+    noLearnWords = dbmanager->countQuestions(-1,user->getNoBox());
     noTestWords = dbmanager->countQuestions(-3,user->getNoBox(),courseDay);
+    noAllWords = dbmanager->countQuestions(-4,user->getNoBox());
 
     toLearnWords=0;
     position=0;
@@ -242,7 +266,7 @@ void Session::nextLearnBtn()
         position++;
         question=qList.at(position);
     }
-    else if(position==noMinusOneWords-1)
+    else if(position==noLearnWords-1)
     {
         question=qList.at(position);
     }
@@ -277,7 +301,6 @@ void Session::nextTestBtn()
 //Funkcja pobierająca pytania do testu
 void Session::testWords()
 {
-    qDebug()<<"dnie"<<courseDay;
     recalculateQuestions();
     if(noTestWords==1)
     {
@@ -302,17 +325,28 @@ bool Session::checkAnswer(const QString &answer)
 {
     if(answer==question->getQ_pl())
     {
-        markWord();
+        toggleIsChanged();
         return true;
+    }
+    else
+    {
+        MistakeWindow mistakewindow(answer,question->getQ_pl(),this);
+        mistakewindow.exec();
+        if(mistake)
+        {
+            toggleIsChanged();
+            mistake=false;
+            return true;
+        }
     }
     return false;
 }
 
 //Funkcja do przeniesienia informacji do DB
-void Session::exportBoxToDB(const Status &status)
+void Session::exportWordsToDB(const Status &status)
 {
     int size=0;
-    int unknownCounter=0;
+    int knownCounter=0;
 
     if(status == StatusLearnMode)
     {
@@ -322,14 +356,15 @@ void Session::exportBoxToDB(const Status &status)
             if(qList.at(i)->qet_isChanged())
             {
                 dbmanager->setBox(qList.at(i)->getQ_id(),user->getNoBox());
-                unknownCounter++;
+                knownCounter++;
             }
         }
-        if(unknownCounter>=0)
+        if(knownCounter>=0)
         {
-            int toAdd=ConstansMaxLearnWords-unknownCounter-2+addToLearn;
+            int toAdd=ConstansMaxLearnWords-knownCounter-2+addToLearn;
             if(toAdd<=0)toAdd=0;
-            dbmanager->setUserUnknownQuestions(user->getUserName(),toAdd);
+            else if (toAdd>noLearnWords) toAdd=noLearnWords;
+            user->setUnknownQuestions(toAdd);
         }
         qDeleteAll(qList);
         qList.clear();
@@ -352,7 +387,6 @@ void Session::exportBoxToDB(const Status &status)
         qDeleteAll(qTestList);
         qTestList.clear();
     }
-    recalculateQuestions();
 }
 
 //Generator liczb losowych
@@ -379,4 +413,12 @@ unsigned long long Session::fibonacci(int &n)
         oldResult = result;
     }
     return result;
+}
+
+//Funcja zapisująca zmiany w profilu użytkownika do bazy danych
+void Session::exportUserToDB()
+{
+    dbmanager->setUserLastAction(user->getUserName(),user->getLastAction());
+    dbmanager->setUserLastUsed(user->getUserName(),date);
+    dbmanager->setUserUnknownQuestions(user->getUserName(),user->getUnknownQuestions());
 }

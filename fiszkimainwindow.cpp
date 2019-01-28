@@ -4,6 +4,7 @@
 #include "addnewuserwindow.h"
 #include "aboutwindow.h"
 #include "addquestionwindow.h"
+#include "endfortoday.h"
 #include "enums.h"
 
 #include <QDebug>
@@ -80,6 +81,7 @@ void FiszkiMainWindow::on_userListBtn_clicked()
     setBtns();
 }
 
+
 void FiszkiMainWindow::on_learnBtn_clicked()
 {
     setWindowIndex(StatusLearnMode);
@@ -123,9 +125,8 @@ void FiszkiMainWindow::on_setUserBtn_clicked()
 ////////////////////////////////////LEARN PAGE
 void FiszkiMainWindow::on_endLearnBtn_clicked()
 {
-    session->exportBoxToDB(currStatus);
+    session->stopLearnTest(currStatus);
     setWindowIndex(StatusMenu);
-    session->setUserAction(LastActionLearn);
     setBtns();
 }
 
@@ -164,7 +165,7 @@ void FiszkiMainWindow::on_backFlashcardBtn_clicked()
 
 void FiszkiMainWindow::on_rememberBtn_clicked()
 {
-    session->markWord();
+    session->toggleIsChanged();
     on_nextFlashcardBtn_clicked();
 }
 
@@ -181,18 +182,21 @@ void FiszkiMainWindow::test()
     {
         ui->questionTextBrowser->setText("Koniec");
         ui->explanationTextBrowser->setText("Wróć jutro!");
+        EndForToday endfortoday;
+        endfortoday.exec();
+        if(&EndForToday::destroyed)
+        {
+            on_stopBtn_clicked();
+        }
     }
 }
 
 void FiszkiMainWindow::on_stopBtn_clicked()
 {
-    session->exportBoxToDB(currStatus);
+    session->stopLearnTest(currStatus);
     setWindowIndex(StatusMenu);
-    session->setUserAction(LastActionTest);
     setBtns();
-
 }
-
 
 void FiszkiMainWindow::on_checkBtn_clicked()
 {

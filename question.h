@@ -25,10 +25,7 @@ private:
     QString e_en;
     QString q_pl;
     QString e_pl;
-//    int noBox;
-
     int fBox;
-
     bool isChanged;
 
     DbManager *dbmanager;
