@@ -36,6 +36,7 @@ public:
     void deleteUser();
 
     void toggleIsChanged();
+    void toggleMistake();
 
     void addWordToDB(const QString &q_en, const QString &e_en, const QString &q_pl, const QString &e_pl);
     bool addUserToDB(const QString &name);
@@ -50,6 +51,8 @@ private:
     int toLearnWords;
     int position;
     int addToLearn;
+
+    bool mistake;
 
     long long date;
     long long courseDay;

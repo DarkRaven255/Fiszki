@@ -200,7 +200,7 @@ QStringList DbManager::returnUserList()
 }
 
 //Funkcja zamykająca bazę danych
-void DbManager::closeUserDB()
+void DbManager::closeDB()
 {
     database.close();
 }

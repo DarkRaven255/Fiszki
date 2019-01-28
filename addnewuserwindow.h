@@ -4,7 +4,6 @@
 #include <QDialog>
 #include "session.h"
 
-
 namespace Ui {
 class AddNewUserWindow;
 }

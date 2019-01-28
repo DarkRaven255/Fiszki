@@ -1,6 +1,7 @@
 #include "session.h"
 #include <QTime>
 #include <QDebug>
+#include "mistakewindow.h"
 
 Session::Session(QObject *parent):
     QObject(parent),
@@ -8,6 +9,7 @@ Session::Session(QObject *parent):
     toLearnWords(0),
     position(0),
     addToLearn(0),
+    mistake(false),
     date(QDate::currentDate().toJulianDay()),
     user(nullptr)
 {
@@ -16,7 +18,10 @@ Session::Session(QObject *parent):
 
 Session::~Session()
 {
-    dbmanager->closeUserDB();
+    dbmanager->closeDB();
+    delete dbmanager;
+    if(user!=nullptr) delete user;
+    if(question!=nullptr) delete question;
 }
 
 //Funkcja pobierająca listę użytkowników z bazy danych
@@ -58,7 +63,6 @@ bool Session::addUserToDB(const QString &name)
             {
                 if(boxesInUse.at(i)==random)
                 {
-
                     isRepeated=true;
                 }
             }
@@ -144,6 +148,11 @@ int Session::getProgressPercent()
 void Session::toggleIsChanged()
 {
     question->set_isChanged();
+}
+
+void Session::toggleMistake()
+{
+    mistake=true;
 }
 
 //Funkcja ustawiająca flagi przycisków
@@ -318,6 +327,17 @@ bool Session::checkAnswer(const QString &answer)
     {
         toggleIsChanged();
         return true;
+    }
+    else
+    {
+        MistakeWindow mistakewindow(answer,question->getQ_pl(),this);
+        mistakewindow.exec();
+        if(mistake)
+        {
+            toggleIsChanged();
+            mistake=false;
+            return true;
+        }
     }
     return false;
 }

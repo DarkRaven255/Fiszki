@@ -4,6 +4,7 @@
 #include "addnewuserwindow.h"
 #include "aboutwindow.h"
 #include "addquestionwindow.h"
+#include "mistakewindow.h"
 #include "enums.h"
 
 #include <QDebug>
@@ -192,7 +193,6 @@ void FiszkiMainWindow::on_stopBtn_clicked()
 
 }
 
-
 void FiszkiMainWindow::on_checkBtn_clicked()
 {
     if(session->checkAnswer(ui->enterAnwserLineEdit->text()))
@@ -202,6 +202,8 @@ void FiszkiMainWindow::on_checkBtn_clicked()
     }
     else
     {
+//        MistakeWindow mistakewindow(ui->enterAnwserLineEdit->text(),session->question->getQ_pl(),this);
+//        mistakewindow.exec();
         ui->labelIsGood->setStyleSheet("QLabel { color : red; }");
         ui->labelIsGood->setText("Źle!");
     }
